@@ -1,0 +1,55 @@
+Codigo;Nombre
+A1;Alergología
+A2;Análisis clínico
+A3;Anatomía patológica
+A4;Anestesiología
+A5;Angiología
+B1;Bioquímica clínica
+C1;Cardiología
+C2;Cirugía cardíaca
+C3;Cirugía general
+C4;Cirugía oral y maxilofacial
+C5;Cirugía ortopédica
+C6;Cirugía pediátrica
+C7;Cirugía plástica
+C8;Cirugía torácica
+D1;Dermatología
+E1;Endocrinología
+F1;Farmacología
+G1;Gastroenterología
+G2;Genética médica
+G3;Geriatría
+G4;Ginecología y obstetricia o tocología
+H1;Hematología
+I1;Infectología
+I2;Inmunología
+M1;Medicina aeroespacial
+M2;Medicina de urgencias
+M3;Medicina del deporte
+M4;Medicina del trabajo
+M5;Medicina familiar y comunitaria
+M6;Medicina física y rehabilitación
+M7;Medicina forense
+M8;Medicina intensiva
+M9;Medicina interna
+M10;Medicina nuclear
+M11;Medicina preventiva y salud pública
+M12;Microbiología y parasitología
+N1;Nefrología
+N2;Neumología
+N3;Neurocirugía
+N4;Neurofisiología clínica
+N5;Neurología
+N6;Nutriología
+O1;Oftalmología
+O2;Oncología médica
+O3;Oncología radioterápica
+O4;Otorrinolaringología
+P1;Pediatría
+P2;Psiquiatría
+R1;Radiología
+R2;Reumatología
+T1;Toxicología
+T2;Traumatología
+U1;Urología
+MF;Médico de familia
