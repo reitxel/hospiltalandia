@@ -17,6 +17,7 @@ from recepcionista import Recepcionista
 from medicamento import Medicamento
 
 from datetime import datetime
+from datetime import date
 
 def pedir_datos():
     nombre=input('-> Nombre: ').title()
@@ -27,6 +28,38 @@ def pedir_datos():
     telf=input('-> Telf: ')
     email=input('-> Email: ')
     return nombre,apellido,direccion,ciudad,cp,telf,email
+
+def inicio_sesion_medica(util,dic_medicas):
+    nombre=input('-> Nombre: ')
+    apellido=input('-> Primer apellido: ')
+    nom=nombre+' '+apellido
+    for i in dic_medicas:
+        if nom in dic_medicas[i].regresa_nombre():
+            password=input('-> Contraseña: ')
+            id_r,nom,direccion,ciudad,cp,telf,email=dic_medicas[i].muestra_datos()
+            password_verdadera=util.crea_password(nombre,apellido,telf)
+            while True:
+                if password==password_verdadera:
+                    recep=Medica(id_r,nom,direccion,ciudad,cp,telf,email,password)
+                else:
+                    print('Contraseña incorrecta')
+    return med
+
+def inicio_sesion_enfermera(util,dic_enfermeras):
+    nombre=input('-> Nombre: ')
+    apellido=input('-> Primer apellido: ')
+    nom=nombre+' '+apellido
+    for i in dic_enfermeras:
+        if nom in dic_enfermeras[i].regresa_nombre():
+            password=input('-> Contraseña: ')
+            id_e,nom,direccion,ciudad,cp,telf,email,categoria=dic_enfermeras[i].muestra_datos()
+            password_verdadera=util.crea_password(nombre,apellido,telf)
+            while True:
+                if password==password_verdadera:
+                    recep=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,categoria,password)
+                else:
+                    print('Contraseña incorrecta')
+    return enf
 
 def inicio_sesion_recepcionista(util,dic_recepcionistas):
     nombre=input('-> Nombre: ')
@@ -44,6 +77,19 @@ def inicio_sesion_recepcionista(util,dic_recepcionistas):
                     print('Contraseña incorrecta')
     return recep
 
+def comprobar_fecha():
+    fecha=input('fecha')
+    while True:
+        try:
+            fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd/mm/aaaa": ') #criterio para que la fecha que me introduzca por pantalla mantenga este formato
+            fecha=datetime.strptime(fecha_str,'%d/%m/%Y')
+        
+        except ValueError:
+            print("\nNo ha introducido una fecha correcta")
+            
+    now = datetime.now()
+    fecha = now.strftime('Día :%d, Mes: %m, Año: %Y, Hora: %H, Minutos: %M, Segundos: %S')
+    print(fechas)
 #def comprobar(nombre,apellido,direccion,ciudad,cp,telf,email,espe_gruposang):
 #    if len(nombre)!=0 and len(apellido)!=0 and len(direccion)!=0 and len(ciudad)!=0 and len(cp)!=0 and len(telf)!=0 and len(email)!=0 and len(espe_gruposang)!=0:
 #        if len(nombre)>=2 and len(apellido)>=2 and len(telf)>=2: #asi puedo hacer la contraseña
@@ -70,13 +116,13 @@ def main():
             if opcion==1:
                 #MENU ALTAS
                 opcion1=0
+                inicio_sesion_recepcionista(util,dic_recepcionistas)
                 while opcion1!=7:
                     try:
                         print('\nMenú de altas\n 1) Médica\n 2) Paciente\n 3) Enfermeras\n 4) Recepcionista\n 5) Especialidad\n 6) Medicamento\n 7) Regresar al menú de opciones')
                         opcion1=int(input('Seleccione una opción: ')) #input ha de ser un integer, sino salta a la expeción
                         if opcion1==1: #ALTA MEDICA
-                             
-                            inicio_sesion_recepcionista(util,dic_recepcionistas)
+                            comprobar_fechas(fecha)
                             print('\nInformación de la médica a dar de alta: ')
                             #pido por pantalla todos los inputs necesarios para dar de alta una médica, en este caso no ponemos criterios de entrada por pantalla
                             nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
@@ -92,7 +138,6 @@ def main():
                         
                         elif opcion1==2: #ALTA PACIENTE
                             
-                            inicio_sesion_recepcionista(util,dic_recepcionistas)
                             print('\nInformación de la paciente a dar de alta: ')
                             nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
                             nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
@@ -111,7 +156,6 @@ def main():
                                     
                         elif opcion1==3: #ALTA ENFERMERA
                             
-                            inicio_sesion_recepcionista(util,dic_recepcionistas)
                             print('\nInformación de la enfermera a dar de alta: ')
                             nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
                             nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
@@ -139,7 +183,6 @@ def main():
                                     
                         elif opcion1==4: # ALTA RECEPCIONISTA
                             
-                            inicio_sesion_recepcionista(util,dic_recepcionistas)
                             print('\nInformación de la recepcionista a dar de alta: ')
                             nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
                             nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
@@ -161,7 +204,6 @@ def main():
                             
                         elif opcion1==5: #ALTA ESPECIALIDAD
                             
-                            inicio_sesion_recepcionista(util,dic_recepcionistas)
                              print('Información de la especialidad a dar de alta: ')
                              codigo=input('-> Código: ').upper()
                              if codigo in dic_especialidades.keys():
@@ -391,6 +433,8 @@ def main():
                             
 #                        elif opcion2==7: #BUSQUEDA RECETAS               
 #                        elif opcion2==8: #BUSQUEDA DERIVACIONES
+#                            nombre=input('Nombre: ')
+                            
                                     
                                     
                         elif opcion2==9: #BUSQUEDA MEDICO POR ESPECIALIDAD
@@ -407,7 +451,27 @@ def main():
                             print('la opcion seleccionada no está disponible')
                     except ValueError:
                         print('opcion seleccionada no es valida')
-
+                        
+                elif opcion==3:
+                    opcion4=0
+                    while opcion4!=3:
+                        try:
+                            print('\nMenú revisiones\n 1) Altas revisiones\n 2) Realiza revisión\n 3) Regresa menú de opciones')
+                            opcion4=int(input('Selecciones una opción: '))
+                            if opcion4==1: #ALTAS REVISIONES
+                                inicio_sesion_enfermera(util,dic_medicas):
+                                nom=input('Nombre paciente: ')
+                                    
+                            elif opcion4==2: #REALIZAR REVISION
+                                inicio_sesion_medica(util,dic_medicas):
+                                nom=input('Nombre paciente: ')
+                                
+                            elif opcion4<1 or opcion4>3:#SALIDA
+                            print('la opcion seleccionada no está disponible')
+                                
+                            
+                        except ValueError:
+                            print('La opción seleccionada no es válida, por favor, seleccione otra opción')
 
 
                         
