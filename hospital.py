@@ -88,9 +88,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             
     #METODOS DE CONSULTA: medica, paciente, enfermera, recepcionista, especiaidad, medicamento, recetas, derivaciones, medico por especialidad
     def consulta_dics(self,nom,lista,entrada):
-        if entrada=='pac':
-            dic=self.pacientes
-        elif entrada=='med':
+        if entrada=='med':
             dic=self.medicas
         elif entrada=='recep':
             dic=self.recepcionistas
@@ -103,6 +101,12 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             if nom in dic[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
                 lista_consulta.append(dic.muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
         return lista #me devuelve una lista con todos los datos de las medicas cuyo nombre coincida con algo de lo que se haya introducido por pantalla
+    
+    def consulta_paciente(self,nom,recep):
+        lista=[]
+        for pac in recep.informa(nom,self.pacientes):
+            lista.append(recep.informa(nom,self.pacientes))
+        return lista
     
     def consulta_recetas(self,nom):
         for i in self.pacientes:

@@ -12,15 +12,26 @@ from paciente import Paciente
 from medica import Medica
 from datetime import datetime
 
-def comprobar(nombre,apellido,direccion,ciudad,cp,telf,email,espe_gruposang):
-    if len(nombre)!=0 and len(apellido)!=0 and len(direccion)!=0 and len(ciudad)!=0 and len(cp)!=0 and len(telf)!=0 and len(email)!=0 and len(espe_gruposang)!=0:
-        if len(nombre)>=2 and len(apellido)>=2 and len(telf)>=2: #asi puedo hacer la contraseña
-            if nombre.isalpha()==True and apellido.isalpha()==True:
-                nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
-            elif cp.isnumeric()==True:
-                #NO SE QUE PONER
-    else:
-        #algun campo esta vacio
+def pedir_datos():
+    nombre=input('-> Nombre: ').title()
+    apellido=input('-> Primer apellido: ').title()
+    nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
+    direccion=input('-> Dirección: ')
+    ciudad=input('-> Ciudad: ')
+    cp=input('-> CP: ')
+    telf=input('-> Telf: ')
+    email=input('-> Email: ')
+    return nom,direccion,ciudad,cp,telf,email
+
+#def comprobar(nombre,apellido,direccion,ciudad,cp,telf,email,espe_gruposang):
+#    if len(nombre)!=0 and len(apellido)!=0 and len(direccion)!=0 and len(ciudad)!=0 and len(cp)!=0 and len(telf)!=0 and len(email)!=0 and len(espe_gruposang)!=0:
+#        if len(nombre)>=2 and len(apellido)>=2 and len(telf)>=2: #asi puedo hacer la contraseña
+#            if nombre.isalpha()==True and apellido.isalpha()==True:
+#                nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
+#            elif cp.isnumeric()==True:
+#                #NO SE QUE PONER
+#    else:
+#        #algun campo esta vacio
 
 def main():
     util=Utilidades() #creo objeto de la clase Utilidades
@@ -46,14 +57,7 @@ def main():
                                 
                             print('\nInformación de la médica a dar de alta: ')
                             #pido por pantalla todos los inputs necesarios para dar de alta una médica, en este caso no ponemos criterios de entrada por pantalla
-                            nombre=input('-> Nombre: ').title()
-                            apellido=input('-> Primer apellido: ').title()
-                            nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
-                            direccion=input('-> Dirección: ')
-                            ciudad=input('-> Ciudad: ')
-                            cp=input('-> CP: ')
-                            telf=input('-> Telf: ')
-                            email=input('-> Email: ')
+                            nom,direccion,ciudad,cp,telf,email=pedir_datos()
                             especialidad=input('-> Especialidad: ') #ningún criterio de entrada de especialidad, no se especifica que tenga que estar dentro del dic_especialidades
                             
                             id_m=len(dic_medicas.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
@@ -66,14 +70,7 @@ def main():
                         elif opcion1==2: #ALTA PACIENTE
                             
                             print('\nInformación de la paciente a dar de alta: ')
-                            nombre=input('-> Nombre: ').title()
-                            apellido=input('-> Primer apellido: ').title()
-                            nom=nombre+' '+apellido
-                            direccion=input('-> Dirección: ')
-                            ciudad=input('-> Ciudad: ')
-                            cp=input('-> CP: ')
-                            telf=input('-> Telf: ')
-                            email=input('-> Email: ')
+                            nom,direccion,ciudad,cp,telf,email=pedir_datos()
                             
                             grupos_sanguineos=('AB+','AB-','A+','A-','B+','B-','0+','0-')
                             while True:
@@ -90,55 +87,51 @@ def main():
                         elif opcion1==3: #ALTA ENFERMERA
                             
                             print('\nInformación de la enfermera a dar de alta: ')
-                            nombre=input('-> Nombre: ').title()
-                            apellido=input('-> Primer apellido: ').title()
-                            nom=nombre+' '+apellido
-                            direccion=input('-> Dirección: ')
-                            ciudad=input('-> Ciudad: ')
-                            cp=input('-> CP: ')
-                            telf=input('-> Telf: ')
-                            email=input('-> Email: ')
+                            nom,direccion,ciudad,cp,telf,email=pedir_datos()
                             
-                            id_e=len(dic_enfermeras.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
-                            password=util.crea_password(nombre,apellido,telf)
+                            categorias=['P:practicante','J:enfermera junior','M:enfermera senior','JE:jefa de enfermeras']
+                            print('Categorías disponibles: ',categorias, '\nSeleccione una categoría')
+
+                            while True:
+                                categoria=input('-> Categoria: ')
+                                if categoria in categorias:
+                                    id_e=len(dic_enfermeras.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
+                                    password=util.crea_password(nombre,apellido,telf)
+                                    hosp.metodo_alta(enf,id_e,recep,'enf')
+                                    print('Enfermera dada de alta con éxito')
+                                    break
+                                else:
+                                    print('No existe tal categoría')
                             
-                            categorias_disponibles=['J:enfermera junior','M:enfermera senior'] #solo me quedan por asigar estas dos categorias
-                            if categorias_disponibles[0] in dic_enfermeras[-1]:
-                                enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,password,categorias_disponibles[1])
-                            elif categorias_disponibles[1] in dic_enfermeras[-1]:
-                                enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,password,categorias_disponibles[0])
-                                
-                            hosp.metodo_alta(enf,id_e,recep,'enf')
-                            print('Enfermera dada de alta con éxito')
-                            
+#                            categorias_disponibles=['J:enfermera junior','M:enfermera senior'] #solo me quedan por asigar estas dos categorias
+#                            if categorias_disponibles[0] in dic_enfermeras[-1]:
+#                                enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,password,categorias_disponibles[1])
+#                            elif categorias_disponibles[1] in dic_enfermeras[-1]:
+#                                enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,password,categorias_disponibles[0])
+                                    
                         elif opcion1==4: # ALTA RECEPCIONISTA
                             
                             print('\nInformación de la recepcionista a dar de alta: ')
-                            nombre=input('-> Nombre: ').title()
-                            apellido=input('-> Primer apellido: ').title()
-                            nom=nombre+' '+apellido
-                            direccion=input('-> Dirección: ')
-                            ciudad=input('-> Ciudad: ')
-                            cp=input('-> CP: ')
-                            telf=input('-> Telf: ')
-                            email=input('-> Email: ')
+                            nom,direccion,ciudad,cp,telf,email=pedir_datos()
                             
-                            id_r=len(dic_recepcionistas.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
-                            password=util.crea_password(nombre,apellido,telf)
-                            
-                            #NO SE COMO OTORGAR LOS TURNOS
-                            turnos=['1:matutino','2:verspertino','3:nocturno','4:rotatorio'] #turnos de recepcionistas
-                            for i in turnos:
-                                if turnos[i] is in dic_recepcionistas[-1]:
-                                    rec=Recepcionista(id_r,nom,direccion,ciudad,cp,telf,email,password,turno[i-1])
-        
-                            hosp.metodo_alta(rec,id_r,recep,'recep')
-                            print('Recepcionista dada de alta con éxito')
+                            turnos=['1:matutino','2:verspertino','3:nocturno','4:rotatorio']
+                            print('Turnos disponibles: ',turnos, '\nSeleccione un turno')
+
+                            while True:
+                                turno=input('-> Turno: ')
+                                if turno in turnos:
+                                    id_r=len(dic_recepcionistas.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
+                                    password=util.crea_password(nombre,apellido,telf)
+                                    hosp.metodo_alta(rec,id_r,recep,'recep')
+                                    print('Recepcionista dada de alta con éxito')
+                                    break
+                                else:
+                                    print('No existe tal turno')
                             
                         elif opcion1==5: #ALTA ESPECIALIDAD
                              print('Información de la especialidad a dar de alta: ')
-                             especialidad=input('-> Nombre: ').title()
-                             if especialidad is in dic.especialidades:
+                             especialidad=input('-> Nombre: ').capitalize()
+                             if especialidad is in dic_especialidades:
                                  print('La especialidad ya existe')
                              elif especialidad is not in dic_especialidades:
                                 try:
@@ -149,16 +142,20 @@ def main():
                                     print('EL codigo no es un numero')
                                  
                         elif opcion1==6: #ALTA MEDICAMENTO
-                            print('Infromación sobre le medicamento a dar de alta: ')
-                            codigo=input('Código: ')
-                            princ_activ=input('Principio Activo: ')
-                            marca=input('Marca: ')
-                            laboratorio=('Laboratorio: ')
-                            
-                            #FALTA COMPROBAR SI YA EXISTE Y NOTIFICAR
-                            medicamento=Medicamento(codigo,princ_activ,marca,laboratorio)
-                            hosp.metodo_alta(medicamento,codigo,recep,'medicamento')
-                            print('Medicamento dado de alta con éxito')
+                            print('Información sobre le medicamento a dar de alta: ')
+                            try:
+                                codigo=int(input('Código: '))
+                                    if codigo is in dic_medicamentos.keys():
+                                        print('El medicamento ya existe')
+                                    else:
+                                        princ_activ=input('Principio Activo: ')
+                                        marca=input('Marca: ')
+                                        laboratorio=input('Laboratorio: ')
+                                        medicamento=Medicamento(codigo,princ_activ,marca,laboratorio)
+                                        hosp.metodo_alta(medicamento,codigo,recep,'medicamento')
+                                        print('Medicamento dado de alta con éxito')
+                            except ValueError:
+                                print('El código han de ser números y enteros')
                             
                         elif opcion1<1 or opcion1>6: #SALIDA MENU ALTAS
                             print('La opcion seleccionada no está disponible')
@@ -222,7 +219,7 @@ def main():
                                     if opcion3==1: #busqueda paciente por nombre
                                         nom=input('Introduzca el nombre y apellido de la paciente: ').title()
                                         if nom.replace(' ','').isalpha()==True: #input han de ser letras
-                                            pac=hosp.consulta_dics(nom,recep,dic_pacientes)
+                                            pac=hosp.consulta_paciente(nom,recep)
                                             if p==[]: #si la lista esta vacía quiere decir que no ha encontrado ninguna paciente con ese nombre
                                                 print('\nNo figura una paciente con ese nombre')
                                             else: #la lista no está vacía, hay una o más pacientes con el nombre introducido
