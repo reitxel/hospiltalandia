@@ -36,7 +36,7 @@ class Utilidades():
         
         #CREACIÓN DICCIONARIO ESPECIALIDADES
         for row in especialidad.itertuples(): #recorro el archivo
-            dic_especialidades[row.Nombre]=Especialidad(row.Codigo,row.Nombre) #palabre clave es el nombre de la especialidad y los elementos son el nombre y el código
+            dic_especialidades[row.Codigo]=Especialidad(row.Codigo,row.Nombre) #palabre clave es el nombre de la especialidad y los elementos son el nombre y el código
         
         #CREACCION DICCIONARIO PACIENTES, MÉDICAS, ENFERMERAS Y RECEPCIONISTAS
         grupo_sanguineo=('AB+','AB-','A+','A-','B+','B-','0+','0-') #tupla  con los grupos sanguineos

@@ -87,25 +87,27 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         return lista_info #me devuelve la lista completa
             
     #METODOS DE CONSULTA: medica, paciente, enfermera, recepcionista, especiaidad, medicamento, recetas, derivaciones, medico por especialidad
-    def consulta_dics(self,nom,lista,entrada):
+    def consulta_dics(self,nom,lista_consulta,entrada):
         if entrada=='med':
             dic=self.medicas
         elif entrada=='recep':
             dic=self.recepcionistas
         elif entrada=='enf':
             dic=self.enfermeras
+        elif entrada=='espe':
+            dic=self.especialidades
         elif entrada=='medicamento':
             dic=self.medicamentos
         lista_consulta=[]
         for i in dic: #localizar un dato que no sea el campo clave del diccionario
             if nom in dic[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
-                lista_consulta.append(dic.muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
-        return lista #me devuelve una lista con todos los datos de las medicas cuyo nombre coincida con algo de lo que se haya introducido por pantalla
+                lista_consulta.append(dic[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
+        return lista_consulta #me devuelve una lista con todos los datos de las medicas cuyo nombre coincida con algo de lo que se haya introducido por pantalla
     
-    def consulta_paciente(self,nom,recep):
+    def consulta_paciente(self,nom,recep): #alusion a informa de recepcionista
         lista=[]
         for pac in recep.informa(nom,self.pacientes):
-            lista.append(recep.informa(nom,self.pacientes))
+            lista.append(recep.informa(nom,self.pacientes)) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
         return lista
     
     def consulta_recetas(self,nom):
@@ -117,11 +119,6 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
 #    def consulta_derivacion(self):
 #    def consulta_med_espe(self):
         
-    def consulta_paciente(self,nom,recep,dic_pacientes): #alusion a informa de recepcionista
-        lista=[]
-        for pac in recep.informa(nom,dic_pacientes):
-            lista.append(recep.informa(nom,dic_pacientes)) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
-        return lista
     
     def consulta_revmed(self,nom):
         for i in self.pacientes:
@@ -139,6 +136,8 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             dic=self.recepcionistas
         elif entrada=='enf':
             dic=self.enfermeras
+        elif entrada=='espe':
+            dic=self.especialidades
         elif entrada=='medicamento':
             dic=self.medicamentos
         
