@@ -33,11 +33,16 @@ def inicio_sesion_recepcionista(util,dic_recepcionistas):
     apellido=input('-> Primer apellido: ')
     nom=nombre+' '+apellido
     for i in dic_recepcionistas:
-        if nom in dic_recepcionistas[i]:
-            
-    password=input('-> Contraseña: ')
-    password_verdadera
-    if password==util.cre
+        if nom in dic_recepcionistas[i].regresa_nombre():
+            password=input('-> Contraseña: ')
+            id_r,nom,direccion,ciudad,cp,telf,email,turno=dic_recepcionistas[i].muestra_datos()
+            password_verdadera=util.crea_password(nombre,apellido,telf)
+            while True:
+                if password==password_verdadera:
+                    recep=Recepcionista(id_r,nom,direccion,ciudad,cp,telf,email,turno,password)
+                else:
+                    print('Contraseña incorrecta')
+    return recep
 
 #def comprobar(nombre,apellido,direccion,ciudad,cp,telf,email,espe_gruposang):
 #    if len(nombre)!=0 and len(apellido)!=0 and len(direccion)!=0 and len(ciudad)!=0 and len(cp)!=0 and len(telf)!=0 and len(email)!=0 and len(espe_gruposang)!=0:
@@ -70,7 +75,8 @@ def main():
                         print('\nMenú de altas\n 1) Médica\n 2) Paciente\n 3) Enfermeras\n 4) Recepcionista\n 5) Especialidad\n 6) Medicamento\n 7) Regresar al menú de opciones')
                         opcion1=int(input('Seleccione una opción: ')) #input ha de ser un integer, sino salta a la expeción
                         if opcion1==1: #ALTA MEDICA
-                                
+                             
+                            inicio_sesion_recepcionista(util,dic_recepcionistas)
                             print('\nInformación de la médica a dar de alta: ')
                             #pido por pantalla todos los inputs necesarios para dar de alta una médica, en este caso no ponemos criterios de entrada por pantalla
                             nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
@@ -86,6 +92,7 @@ def main():
                         
                         elif opcion1==2: #ALTA PACIENTE
                             
+                            inicio_sesion_recepcionista(util,dic_recepcionistas)
                             print('\nInformación de la paciente a dar de alta: ')
                             nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
                             nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
@@ -104,6 +111,7 @@ def main():
                                     
                         elif opcion1==3: #ALTA ENFERMERA
                             
+                            inicio_sesion_recepcionista(util,dic_recepcionistas)
                             print('\nInformación de la enfermera a dar de alta: ')
                             nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
                             nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
@@ -131,6 +139,7 @@ def main():
                                     
                         elif opcion1==4: # ALTA RECEPCIONISTA
                             
+                            inicio_sesion_recepcionista(util,dic_recepcionistas)
                             print('\nInformación de la recepcionista a dar de alta: ')
                             nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
                             nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
@@ -151,6 +160,8 @@ def main():
                                     print('No existe tal turno')
                             
                         elif opcion1==5: #ALTA ESPECIALIDAD
+                            
+                            inicio_sesion_recepcionista(util,dic_recepcionistas)
                              print('Información de la especialidad a dar de alta: ')
                              codigo=input('-> Código: ').upper()
                              if codigo in dic_especialidades.keys():
@@ -162,6 +173,8 @@ def main():
                                 print('Especialidad dada de alta con éxito')
                                  
                         elif opcion1==6: #ALTA MEDICAMENTO
+                            
+                            inicio_sesion_recepcionista(util,dic_recepcionistas)
                             print('Información sobre le medicamento a dar de alta: ')
                             try:
                                 codigo=int(input('Código: '))
