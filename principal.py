@@ -8,8 +8,14 @@ Created on Thu Jan 30 16:17:18 2020
 #programa principal que tendrá el menú inicial y la llamada a las clases utilidades y hospital.
 from hospital import Hospital
 from utilidades import Utilidades
-from paciente import Paciente
+
 from medica import Medica
+from paciente import Paciente
+from especialidad import Especialidad
+from enfermera import Enfermera
+from recepcionista import Recepcionista
+from medicamento import Medicamento
+
 from datetime import datetime
 
 def pedir_datos():
@@ -21,6 +27,17 @@ def pedir_datos():
     telf=input('-> Telf: ')
     email=input('-> Email: ')
     return nombre,apellido,direccion,ciudad,cp,telf,email
+
+def inicio_sesion_recepcionista(util,dic_recepcionistas):
+    nombre=input('-> Nombre: ')
+    apellido=input('-> Primer apellido: ')
+    nom=nombre+' '+apellido
+    for i in dic_recepcionistas:
+        if nom in dic_recepcionistas[i]:
+            
+    password=input('-> Contraseña: ')
+    password_verdadera
+    if password==util.cre
 
 #def comprobar(nombre,apellido,direccion,ciudad,cp,telf,email,espe_gruposang):
 #    if len(nombre)!=0 and len(apellido)!=0 and len(direccion)!=0 and len(ciudad)!=0 and len(cp)!=0 and len(telf)!=0 and len(email)!=0 and len(espe_gruposang)!=0:
@@ -99,6 +116,7 @@ def main():
                                 if categoria in categorias:
                                     id_e=len(dic_enfermeras.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
                                     password=util.crea_password(nombre,apellido,telf)
+                                    enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,categoria,password)
                                     hosp.metodo_alta(enf,id_e,recep,'enf')
                                     print('Enfermera dada de alta con éxito')
                                     break
@@ -125,7 +143,8 @@ def main():
                                 if turno in turnos:
                                     id_r=len(dic_recepcionistas.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
                                     password=util.crea_password(nombre,apellido,telf)
-                                    hosp.metodo_alta(rec,id_r,recep,'recep')
+                                    recep=Recepcionista(id_r,nom,direccion,ciudad,cp,telf,email,turno,password)
+                                    hosp.metodo_alta(recep,id_r,recep,'recep')
                                     print('Recepcionista dada de alta con éxito')
                                     break
                                 else:
@@ -133,16 +152,14 @@ def main():
                             
                         elif opcion1==5: #ALTA ESPECIALIDAD
                              print('Información de la especialidad a dar de alta: ')
-                             especialidad=input('-> Nombre: ').capitalize()
-                             if especialidad in dic_especialidades:
+                             codigo=input('-> Código: ').upper()
+                             if codigo in dic_especialidades.keys():
                                  print('La especialidad ya existe')
-                             elif especialidad not in dic_especialidades:
-                                try:
-                                    codigo=int(input('Introduzca el codigo de la especialidad: '))
-                                    espe=Especialidad(codigo,nombre)
-                                    hosp.metodo_altas(espe,codigo,recep,'espe')
-                                except ValueError:
-                                    print('EL codigo no es un numero')
+                             elif codigo not in dic_especialidades.keys():
+                                nombre=input('-> Nombre: ').capitalize()
+                                espe=Especialidad(codigo,nombre)
+                                hosp.metodo_alta(espe,codigo,recep,'espe')
+                                print('Especialidad dada de alta con éxito')
                                  
                         elif opcion1==6: #ALTA MEDICAMENTO
                             print('Información sobre le medicamento a dar de alta: ')
@@ -150,7 +167,7 @@ def main():
                                 codigo=int(input('Código: '))
                                 if codigo in dic_medicamentos.keys():
                                     print('El medicamento ya existe')
-                                else:
+                                elif codigo not in dic_medicamentos.keys():
                                     princ_activ=input('Principio Activo: ')
                                     marca=input('Marca: ')
                                     laboratorio=input('Laboratorio: ')
@@ -171,7 +188,7 @@ def main():
                                 
             elif opcion==2: #MENU CONSULTAS
                   opcion2=0
-                  while opcion2!=7:
+                  while opcion2!=10:
                     try:
                         print('\nMenú de consulta\n 1) Médica\n 2) Paciente\n 3) Enfermera\n 4) Recepcionista\n 5) Especialidad\n 6) Medicamento\n 7) Recetas\n 8) Derivaciones\n 9) Medico por especialidad\n 10) Regresar al menú de opciones\n')
                         opcion2=int(input('Seleccione una opción: ')) #input ha de ser un integer, sino salta a la expeción
@@ -321,7 +338,7 @@ def main():
                             opcion3=0
                             while opcion3!=3:
                                 try:
-                                    print('\nOpciones de consulta de especialidad\n 1) Por nombre\n 2) Por código\n 3) Regresar al menú de búsqueda\n')
+                                    print('\nOpciones de consulta de especialidades\n 1) Por nombre\n 2) Por código\n 3) Regresar al menú de búsqueda\n')
                                     opcion3=int(input('Seleccione una opción: ')) 
                                     if opcion3==1:
                                         nom=input('Introduzca el nombre de la especialidad: ').capitalize()
@@ -335,7 +352,7 @@ def main():
                                         
                                     elif opcion3==2:
                                         codigo=input('Introduzca el código de la especialidad: ').upper()
-                                        espe=hosp.consulta_ident(codigo,'espe')
+                                        espe=hosp.consulta_cod_espe(codigo)
                                         if espe==None: #no ha encontrado ninguna coincidencia
                                             print('\nNo figura una especialidad con ese código')
                                         else: #lo ha encontrado
@@ -347,13 +364,33 @@ def main():
                                 except ValueError: #cuando al introducir la opcion introduzca algo que no sea un entero
                                     print('La opción seleccionada no es válida, por favor, seleccione otra opción')
                                     
-#                        elif opcion2==6: #BUSQUEDA MEDICAMENTO
-#                        elif opcion2==7: #BUSQUEDA RECETAS
+                        elif opcion2==6: #BUSQUEDA MEDICAMENTO
+                            try:
+                                print('\nOpciones de consulta de medicamentos\n')
+                                codigo=int(input('Introduzca el código del medicamento: '))
+                                medicamento=hosp.consulta_ident(codigo,'medicamento')
+                                if medicamento==None: #no ha encontrado ninguna coincidencia
+                                    print('\nNo figura una medicamento con ese código')
+                                else: #lo ha encontrado
+                                    print(medicamento)
+                            except ValueError: #cuando al introducir la opcion introduzca algo que no sea un entero
+                                    print('La opción seleccionada no es válida, por favor, seleccione otra opción')
+                            
+#                        elif opcion2==7: #BUSQUEDA RECETAS               
 #                        elif opcion2==8: #BUSQUEDA DERIVACIONES
-#                        elif opcion2==9: #BUSQUEDA MEDICO POR ESPECIALIDAD
+                                    
+                                    
+                        elif opcion2==9: #BUSQUEDA MEDICO POR ESPECIALIDAD
+                            especialidad=input('-> Introduzca la especialidad: ').capitalize() #hemos cambaido las claves del diccionario a codigos ya que es mas práctico 
+                            meds=hosp.consulta_med_espe(especialidad)
+                            if meds==[]: #si la lista esta vacía quiere decir que no ha encontrado ninguna médica con ese nombre
+                                print('\nNo figura una especialidad con ese nombre')
+                            else: #la lista no está vacía, hay una o más médicas con el nombre introducido
+                                for i in range(len(meds)): #recorro la lista, puede que recorra más posiciones de las que necesito, pero solo me imprimirá las que encuentre en la lista
+                                    print('\n -> ',meds[i],'\n')                        
                                 
                                 
-                        elif opcion2<0 or opcion2>9: #SALIDA
+                        elif opcion2<0 or opcion2>10: #SALIDA
                             print('la opcion seleccionada no está disponible')
                     except ValueError:
                         print('opcion seleccionada no es valida')

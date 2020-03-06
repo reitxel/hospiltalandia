@@ -47,3 +47,6 @@ class Medica(Datos):
     def muestra_datos(self):
         nombre,direccion,ciudad,cp,telefono,email=self.obtener_datos() #llamada al método de la clase de la que hereda y guardando lo que devulve en sus respectivas variables
         return [self.id_num,nombre,direccion,ciudad,cp,telefono,self.especialidad] 
+    
+    def regresa_numpac(self):
+        return (len(self.pacrev)+len(self.pacnorev))

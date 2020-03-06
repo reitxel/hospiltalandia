@@ -96,8 +96,8 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             dic=self.enfermeras
         elif entrada=='espe':
             dic=self.especialidades
-        elif entrada=='medicamento':
-            dic=self.medicamentos
+#        elif entrada=='medicamento':
+#            dic=self.medicamentos
         lista_consulta=[]
         for i in dic: #localizar un dato que no sea el campo clave del diccionario
             if nom in dic[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
@@ -117,8 +117,14 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         return pac.muestra_datos()[-1] #me muestra el último componente de pacientes que se corresponde con la revisión médica
     
 #    def consulta_derivacion(self):
-#    def consulta_med_espe(self):
         
+    def consulta_med_espe(self,especialidad):
+        lista_medesp=[]
+        for i in self.medicas:#recorro el dic de medicos y miro que medicos tienen la especialidad puesta como input
+            if especialidad in self.medicas[i].muestra_datos():
+                print('None')
+                lista_medesp.append([self.medicas[i].regresa_nombre(),self.medicas[i].regresa_numpac()])#si la espeicalida coincide meto el nombre y el numero de pacientes del medico en una lista
+        return lista_medesp
     
     def consulta_revmed(self,nom):
         for i in self.pacientes:
@@ -136,14 +142,16 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             dic=self.recepcionistas
         elif entrada=='enf':
             dic=self.enfermeras
-        elif entrada=='espe':
-            dic=self.especialidades
         elif entrada=='medicamento':
             dic=self.medicamentos
         
         if identificador in dic.keys(): #condición de que el parametro introducido coincida con alguna clave del diccionario de médicas, que son los numeros identificadores
             return dic[identificador].muestra_datos() #me devuelve toda la información que corresponda al número en cuestión si existe
 
+    def consulta_cod_espe(self,cod):
+        for i in self.especialidades:
+            if cod in self.especialidades[i].muestra_datos():
+                return self.especialidades[i].muestra_datos()                
         
     def consulta_revmed_ident(self,identificador):
         if identificador in self.pacientes.keys():
