@@ -43,25 +43,24 @@ class Enfermera(Datos):
         revmed=p.muestra_revisiones()
         #revmed=p.revmed()
         lista_meds=[]
-        lista_meds2=[]
         if len(revmed)==0: #si la lista esta vacia quiere decir que no hay revisiones para ese paciente
-            for i in dic_medicas:
-                if 'Médico de familia' in dic_medicas[i].muestra_datos():
-                    lista_meds.append(dic_medicas[i].regresa_nombre())
-            med=random.choice(lista_meds)
-            revmed=p.tiene_revision(len(revmed)+1,fecha,med,'Médico de Familia')
+            especialidad='Médico de familia'
         else:
             ultima_rev=revmed[-1] #revision anterior? pero tener en cuanta entre listas co cosas y una lista de objetos
-            diag=ultima_rev[-1]
-            especialidad=diag[0][0]
-            for i in dic_medicas:
-                if especialidad in dic_medicas[i].muestra_datos():
-                    lista_meds2.append(dic_medicas[i].regresa_nombre())
-            med=lista_meds2[0]
-            revmed=p.tiene_revision(len(revmed)+1,fecha,med,especialidad)
-            #miramos la revision anterior
-            #codigo se forma secuencial, uno mas que el anterior
-            #especialidad igual que la anterior
-            #nombre del medico seraw el primero que aparezca con tal especialidad
-        return revmed 
+            diagnosticos=ultima_rev[-1]# llista con todos los diagnosticos
+            diag=diagnosticos[-1]#ultimo diagnostico de todos
+            if diag.derivado==True:
+                diag=diag[5]#accedo al objeto DerivaPaciente 
+                especialidad=diag[-1].muestra_datos()  #en la ultima poscion de ese hay la especialidad     
+            elif diag.derivado==False:
+                especialidad=diag[0]
+                
+        for i in dic_medicas:#recorro el dic de medicos y guardo en una lista los medicos con la especialidad deseada
+            if especialidad in dic_medicas[i].muestra_datos():
+                lista_meds.append(dic_medicas[i].regresa_nombre())
+        for i in lista_meds:#recorro la lista por ordeny si el medico tiene menos de 10 pacientes ese sera el medico asinado
+            if len(lista_meds[i])<=10:
+                med=lista_meds[i]
+        revmed=p.tiene_revision(len(revmed)+1,fecha,med,especialidad)  #codigo se forma secuencial, uno mas que el anterior   
+        return revmed
     

@@ -87,22 +87,28 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         return lista_info #me devuelve la lista completa
             
     #METODOS DE CONSULTA: medica, paciente, enfermera, recepcionista, especiaidad, medicamento, recetas, derivaciones, medico por especialidad
-    def consulta_dics(self,nom,lista,entrada):
-        if entrada=='pac':
-            dic=self.pacientes
-        elif entrada=='med':
+    def consulta_dics(self,nom,lista_consulta,entrada):
+        if entrada=='med':
             dic=self.medicas
         elif entrada=='recep':
             dic=self.recepcionistas
         elif entrada=='enf':
             dic=self.enfermeras
-        elif entrada=='medicamento':
-            dic=self.medicamentos
+        elif entrada=='espe':
+            dic=self.especialidades
+#        elif entrada=='medicamento':
+#            dic=self.medicamentos
         lista_consulta=[]
         for i in dic: #localizar un dato que no sea el campo clave del diccionario
             if nom in dic[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
-                lista_consulta.append(dic.muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
-        return lista #me devuelve una lista con todos los datos de las medicas cuyo nombre coincida con algo de lo que se haya introducido por pantalla
+                lista_consulta.append(dic[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
+        return lista_consulta #me devuelve una lista con todos los datos de las medicas cuyo nombre coincida con algo de lo que se haya introducido por pantalla
+    
+    def consulta_paciente(self,nom,recep): #alusion a informa de recepcionista
+        lista=[]
+        for pac in recep.informa(nom,self.pacientes):
+            lista.append(recep.informa(nom,self.pacientes)) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
+        return lista
     
     def consulta_recetas(self,nom):
         for i in self.pacientes:
@@ -111,13 +117,14 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         return pac.muestra_datos()[-1] #me muestra el último componente de pacientes que se corresponde con la revisión médica
     
 #    def consulta_derivacion(self):
-#    def consulta_med_espe(self):
         
-    def consulta_paciente(self,nom,recep,dic_pacientes): #alusion a informa de recepcionista
-        lista=[]
-        for pac in recep.informa(nom,dic_pacientes):
-            lista.append(recep.informa(nom,dic_pacientes)) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
-        return lista
+    def consulta_med_espe(self,especialidad):
+        lista_medesp=[]
+        for i in self.medicas:#recorro el dic de medicos y miro que medicos tienen la especialidad puesta como input
+            if especialidad in self.medicas[i].muestra_datos():
+                print('None')
+                lista_medesp.append([self.medicas[i].regresa_nombre(),self.medicas[i].regresa_numpac()])#si la espeicalida coincide meto el nombre y el numero de pacientes del medico en una lista
+        return lista_medesp
     
     def consulta_revmed(self,nom):
         for i in self.pacientes:
@@ -141,6 +148,10 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         if identificador in dic.keys(): #condición de que el parametro introducido coincida con alguna clave del diccionario de médicas, que son los numeros identificadores
             return dic[identificador].muestra_datos() #me devuelve toda la información que corresponda al número en cuestión si existe
 
+    def consulta_cod_espe(self,cod):
+        for i in self.especialidades:
+            if cod in self.especialidades[i].muestra_datos():
+                return self.especialidades[i].muestra_datos()                
         
     def consulta_revmed_ident(self,identificador):
         if identificador in self.pacientes.keys():
