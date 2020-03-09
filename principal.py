@@ -19,7 +19,7 @@ from medicamento import Medicamento
 from datetime import datetime
 from datetime import date
 
-def pedir_datos():
+def pedir_datos():#este metodo lo creamos para no pedir los mismos datos en cada una de las altas de personas
     nombre=input('-> Nombre: ').title()
     apellido=input('-> Primer apellido: ').title()
     direccion=input('-> Dirección: ')
@@ -40,7 +40,7 @@ def inicio_sesion_medica(util,dic_medicas):
             password_verdadera=util.crea_password(nombre,apellido,telf)
             while True:
                 if password==password_verdadera:
-                    recep=Medica(id_r,nom,direccion,ciudad,cp,telf,email,password)
+                    med=Medica(id_r,nom,direccion,ciudad,cp,telf,email,password)
                 else:
                     print('Contraseña incorrecta')
     return med
@@ -56,7 +56,7 @@ def inicio_sesion_enfermera(util,dic_enfermeras):
             password_verdadera=util.crea_password(nombre,apellido,telf)
             while True:
                 if password==password_verdadera:
-                    recep=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,categoria,password)
+                    enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,categoria,password)
                 else:
                     print('Contraseña incorrecta')
     return enf
@@ -76,20 +76,22 @@ def inicio_sesion_recepcionista(util,dic_recepcionistas):
                 else:
                     print('Contraseña incorrecta')
     return recep
-
+#
 def comprobar_fecha():
     fecha=input('fecha')
     while True:
         try:
-            fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd/mm/aaaa": ') #criterio para que la fecha que me introduzca por pantalla mantenga este formato
-            fecha=datetime.strptime(fecha_str,'%d/%m/%Y')
-        
+            fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd-mm-aaaa": ')#criterio para que la fecha que me introduzca por pantalla mantenga este formato
+            fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
         except ValueError:
             print("\nNo ha introducido una fecha correcta")
-            
-    now = datetime.now()
-    fecha = now.strftime('Día :%d, Mes: %m, Año: %Y, Hora: %H, Minutos: %M, Segundos: %S')
+        if fecha>=datetime.now() 
+            False
+        elif fecha < datetime.now():
+            True
+    fechas = now.strftime('Día :%d, Mes: %m, Año: %Y, Hora: %H, Minutos: %M, Segundos: %S')
     print(fechas)
+    
 #def comprobar(nombre,apellido,direccion,ciudad,cp,telf,email,espe_gruposang):
 #    if len(nombre)!=0 and len(apellido)!=0 and len(direccion)!=0 and len(ciudad)!=0 and len(cp)!=0 and len(telf)!=0 and len(email)!=0 and len(espe_gruposang)!=0:
 #        if len(nombre)>=2 and len(apellido)>=2 and len(telf)>=2: #asi puedo hacer la contraseña
@@ -107,7 +109,7 @@ def main():
     recep=dic_recepcionistas[1] #objeto de la clase Recepcionista
     enf=dic_enfermeras[1]
     opcion=0
-    lista_info=[]
+    #lista_info=[]
     #MENU DE OPCIONES
     while opcion!=5: 
         try: 
@@ -122,7 +124,7 @@ def main():
                         print('\nMenú de altas\n 1) Médica\n 2) Paciente\n 3) Enfermeras\n 4) Recepcionista\n 5) Especialidad\n 6) Medicamento\n 7) Regresar al menú de opciones')
                         opcion1=int(input('Seleccione una opción: ')) #input ha de ser un integer, sino salta a la expeción
                         if opcion1==1: #ALTA MEDICA
-                            comprobar_fechas(fecha)
+                            #comprobar_fechas(fecha)
                             print('\nInformación de la médica a dar de alta: ')
                             #pido por pantalla todos los inputs necesarios para dar de alta una médica, en este caso no ponemos criterios de entrada por pantalla
                             nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
@@ -174,12 +176,6 @@ def main():
                                     break
                                 else:
                                     print('No existe tal categoría')
-                            
-#                            categorias_disponibles=['J:enfermera junior','M:enfermera senior'] #solo me quedan por asigar estas dos categorias
-#                            if categorias_disponibles[0] in dic_enfermeras[-1]:
-#                                enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,password,categorias_disponibles[1])
-#                            elif categorias_disponibles[1] in dic_enfermeras[-1]:
-#                                enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,password,categorias_disponibles[0])
                                     
                         elif opcion1==4: # ALTA RECEPCIONISTA
                             
@@ -309,11 +305,9 @@ def main():
                                             else: #lo ha encontrado
                                                 print(pac)
                                         except ValueError: #si mete cualquier cosa que no sea un entero
-                                            print('\nDebe introducir un número')
-                                            
+                                            print('\nDebe introducir un número')     
                                     elif opcion3<1 or opcion3>3:
-                                        print('\nLa opción seleccionada no está disponible')
-                                        
+                                        print('\nLa opción seleccionada no está disponible')  
                                 except ValueError: #cuando al introducir la opcion introduzca algo que no sea un entero
                                     print('La opción seleccionada no es válida, por favor, seleccione otra opción')
                             
@@ -452,22 +446,52 @@ def main():
                     except ValueError:
                         print('opcion seleccionada no es valida')
                         
-                elif opcion==3:
+            elif opcion==3: #Menu revisiones
                     opcion4=0
                     while opcion4!=3:
                         try:
                             print('\nMenú revisiones\n 1) Altas revisiones\n 2) Realiza revisión\n 3) Regresa menú de opciones')
                             opcion4=int(input('Selecciones una opción: '))
                             if opcion4==1: #ALTAS REVISIONES
-                                inicio_sesion_enfermera(util,dic_medicas):
-                                nom=input('Nombre paciente: ')
-                                    
+#                                inicio_sesion_enfermera(util,dic_medicas)
+                                nom=input("Introduzca el nombre y apellido de la paciente: ").title()
+                                if nom.replace(' ','').isalpha()==True:
+                                    while True:
+                                        try:
+                                            a=0
+                                            fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd-mm-aaaa": ')
+                                            fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
+                                            #print(fecha)
+                                            for i in dic_pacientes:
+                                                if nom in dic_pacientes[i].regresa_nombre():
+                                                    pac=dic_pacientes[i]      
+                                                    a+=1
+                                            #print ('a')
+                                            if a==0:
+                                                print('No existe tal paciente')
+                                            elif a==1:
+                                                enf.asigna_revision(pac,fecha_str,dic_medicas)
+                                                print('Revisión asignada')
+                                            elif a!=1: #más de unx paciente con el nombre introducido
+                                                print('Hay',a,'pacientes con el nombre introducido:')
+                                                for i in dic_pacientes:
+                                                    if nom in dic_pacientes[i].regresa_nombre():
+                                                        print(dic_pacientes[i].muestra_datos())
+                                                id_p=int(input('Introduzca el número identificador de la paciente a asignar la revisión: '))
+                                                pac=dic_pacientes[id_p]
+                                                enf.asigna_revision(pac,fecha_str,dic_medicas)
+                                                print('Revisión a',pac.regresa_nombre(),'asignada')
+
+                                            break
+                                        
+                                        except ValueError:
+                                            print("\nNo ha introducido una fecha correcta")
                             elif opcion4==2: #REALIZAR REVISION
-                                inicio_sesion_medica(util,dic_medicas):
+                                inicio_sesion_medica(util,dic_medicas)
                                 nom=input('Nombre paciente: ')
                                 
                             elif opcion4<1 or opcion4>3:#SALIDA
-                            print('la opcion seleccionada no está disponible')
+                                print('la opcion seleccionada no está disponible')
                                 
                             
                         except ValueError:
