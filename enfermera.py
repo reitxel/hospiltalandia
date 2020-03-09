@@ -59,8 +59,8 @@ class Enfermera(Datos):
             if especialidad in dic_medicas[i].muestra_datos():
                 lista_meds.append(dic_medicas[i].regresa_nombre())
         for i in lista_meds:#recorro la lista por ordeny si el medico tiene menos de 10 pacientes ese sera el medico asinado
-            if len(lista_meds[i])<=10:
-                med=lista_meds[i]
+            if len(lista_meds)<=10:
+                med=lista_meds[int(i)]
         revmed=p.tiene_revision(len(revmed)+1,fecha,med,especialidad)  #codigo se forma secuencial, uno mas que el anterior   
         return revmed
     
