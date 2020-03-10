@@ -29,6 +29,3 @@ class DerivaPaciente():
     nommed=property(get_nommed,set_nommed)
     fecha=property(get_fecha,set_fecha)
     especialidad=property(get_especialidad,set_especialidad)
-    
-    def muestra_espe(self):
-        return self.especialidad

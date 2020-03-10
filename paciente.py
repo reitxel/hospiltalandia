@@ -37,16 +37,13 @@ class Paciente(Datos):
     
     def muestra_datos(self):
         nombre,direccion,ciudad,cp,telefono,email=self.obtener_datos()
-        return [self.id_num,nombre,direccion,ciudad,cp,telefono,email,self.grupo_sanguineo,self.muestra_revisiones()]
+        return [self.id_num,nombre,direccion,ciudad,cp,telefono,email,self.grupo_sanguineo,self.revmed]
     
     def muestra_revisiones(self):
-        llista_rev=[]
-        for i in self.revmed:
-           llista_rev.append(i.muestra_datos())
-        return llista_rev
+        return self.revmed
     
     def tiene_revision(self,cod,fecha,espec,med):
         fr=FichaRevision(cod,fecha) #creo objeto de la clase fichas
         f=fr.tiene_diagnostico(espec,med)
-        self.revmed.append(fr) #añado en la lista revmed el objeto con todos sus atributos
+        self.revmed.append(fr.muestra_datos()) #añado en la lista revmed el objeto con todos sus atributos
         return self.revmed
