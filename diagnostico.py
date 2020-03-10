@@ -62,7 +62,8 @@ class Diagnostico():
     def DerivaP(self,nommed,fecha,espe):#creo el objeto de derivacion del paciente
         deriv=DerivaPaciente(nommed,fecha,espe)
         self.deriva.append(deriv.muestra_datos())
-    
+        self.derivado=True
+        
     def gen_recet(self,medic,dosis):
         recet=RecetaMedica(medic,dosis)
         self.receta.append(recet.muestra_datos())
