@@ -42,7 +42,6 @@ class Enfermera(Datos):
     def asigna_revision(self,p,fecha,dic_medicas):
         revmed=p.muestra_revisiones()
         #revmed=p.revmed()
-        lista_meds=[]
         if len(revmed)==0: #si la lista esta vacia quiere decir que no hay revisiones para ese paciente
             especialidad='Médico de familia'
         else:
@@ -55,12 +54,12 @@ class Enfermera(Datos):
             elif diag.derivado==False:
                 especialidad=diag[0]
                 
+        
         for i in dic_medicas:#recorro el dic de medicos y guardo en una lista los medicos con la especialidad deseada
             if especialidad in dic_medicas[i].muestra_datos():
-                lista_meds.append(dic_medicas[i].regresa_nombre())
-        for i in lista_meds:#recorro la lista por ordeny si el medico tiene menos de 10 pacientes ese sera el medico asinado
-            if len(lista_meds)<=10:
-                med=lista_meds[int(i)]
+                if len(dic_medicas[i].pacrev())<=10:
+                    med=dic_medicas[i].regresa_nombre()
+                    break
         revmed=p.tiene_revision(len(revmed)+1,fecha,med,especialidad)  #codigo se forma secuencial, uno mas que el anterior   
         return revmed
     
