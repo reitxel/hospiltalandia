@@ -5,7 +5,7 @@ Created on Thu Feb 13 16:50:28 2020
 
 @author: raquel
 """
-from derivadaciente import DerivaPaciente
+from derivapaciente import DerivaPaciente
 from recetas import RecetaMedica
 
 class Diagnostico():
@@ -57,15 +57,16 @@ class Diagnostico():
     derivado=property(get_derivado,set_derivado)
     
     def muestra_datos(self):
-        return [self.especialidad,self.enfermedad,self.observaciones,self.nommed]
+        return [self.especialidad,self.enfermedad,self.observaciones,self.receta,self.nommed,self.deriva,self.derivado]
     
     def DerivaP(self,nommed,fecha,espe):#creo el objeto de derivacion del paciente
-        deriv=DerivaPaciente[nommed,fecha,espe]
-        return deriv
+        deriv=DerivaPaciente(nommed,fecha,espe)
+        self.deriva.append(deriv.muestra_datos())
+    
     def gen_recep(self,medic,dosis):
-        recet=RecetaMedica[medic,dosis]
-        return recet
-    def consulta_med:# mirar si existeix especialidat aixo no crec que serveixi la veritat
-        
-    def consulta_espe#aixo igual que 
+        recet=RecetaMedica(medic,dosis)
+        self.receta.append(recet.muestra_datos())
+#    def consulta_med:# mirar si existeix especialidat aixo no crec que serveixi la veritat
+#        
+#    def consulta_espe#aixo igual que 
         

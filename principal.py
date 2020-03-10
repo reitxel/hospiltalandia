@@ -41,12 +41,11 @@ def login(util,dic,entrada):
                 password_verdadera=util.crea_password(nombre,apellido,telf)
                 while True:
                     if password==password_verdadera:
+                        print('Constraseña acertada')
                         med=Medica(id_r,nom,direccion,ciudad,cp,telf,email,password)
                         return med
                     else:
                         print('Contraseña incorrecta')
-            else:
-                print('No existe tal médica')
                 
     elif entrada=='enf':
         for i in dic:
@@ -56,21 +55,22 @@ def login(util,dic,entrada):
                 password_verdadera=util.crea_password(nombre,apellido,telf)
                 while True:
                     if password==password_verdadera:
+                        print('Constraseña acertada')
                         enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,categoria,password)
                         return enf
                     else:
                         print('Contraseña incorrecta')
-            else:
-                print('No existe tal enfermera')
+                        
         
     elif entrada=='recep':
         for i in dic:
             if nom in dic[i].regresa_nombre():
                 password=input('-> Contraseña: ')
-                id_r,nom,direccion,ciudad,cp,telf,email,turno=dic_recepcionistas[i].muestra_datos()
+                id_r,nom,direccion,ciudad,cp,telf,email,turno=dic[i].muestra_datos()
                 password_verdadera=util.crea_password(nombre,apellido,telf)
                 while True:
                     if password==password_verdadera:
+                        print('Constraseña acertada')
                         recep=Recepcionista(id_r,nom,direccion,ciudad,cp,telf,email,turno,password)
                         return recep
                     else:
@@ -86,7 +86,7 @@ def comprobar_fecha():
             hoy = datetime.now().date()
             print(hoy,fecha)
             if str(fecha)>=str(hoy):
-                return fecha
+                return fecha,fecha_str
                 break
             elif str(fecha) < str(hoy):
                 print('La fecha es anterior a la actual')
@@ -429,7 +429,10 @@ def main():
                             except ValueError: #cuando al introducir la opcion introduzca algo que no sea un entero
                                     print('La opción seleccionada no es válida, por favor, seleccione otra opción')
                             
-#                        elif opcion2==7: #BUSQUEDA RECETAS               
+                        elif opcion2==7: #BUSQUEDA RECETAS  
+                            nom=input('Nombre y apellido del paciente: ')
+                            revmed=hosp.consulta_revmed(nom)
+                            print(revmed)
 #                        elif opcion2==8: #BUSQUEDA DERIVACIONES
 #                            nombre=input('Nombre: ')
                             
@@ -463,8 +466,7 @@ def main():
                                     while True:
                                         try:
                                             a=0
-                                            casa=comprobar_fecha()
-                                            print (casa)
+                                            fecha,fecha_str=comprobar_fecha()
                                             for i in dic_pacientes:
                                                 if nom in dic_pacientes[i].regresa_nombre():
                                                     pac=dic_pacientes[i]      
@@ -473,7 +475,7 @@ def main():
                                             if a==0:
                                                 print('No existe tal paciente')
                                             elif a==1:
-                                                enf.asigna_revision(pac,fecha,dic_medicas)
+                                                enf.asigna_revision(pac,fecha_str,dic_medicas)
                                                 print('Revisión asignada')
                                             elif a!=1: #más de unx paciente con el nombre introducido
                                                 print('Hay',a,'pacientes con el nombre introducido:')
@@ -482,7 +484,7 @@ def main():
                                                         print(dic_pacientes[i].muestra_datos())
                                                 id_p=int(input('Introduzca el número identificador de la paciente a asignar la revisión: '))
                                                 pac=dic_pacientes[id_p]
-                                                enf.asigna_revision(pac,fecha,dic_medicas)
+                                                enf.asigna_revision(pac,fecha_str,dic_medicas)
                                                 print('Revisión a',pac.regresa_nombre(),'asignada')
 
                                             break
