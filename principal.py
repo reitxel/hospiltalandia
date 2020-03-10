@@ -84,7 +84,6 @@ def comprobar_fecha():
             fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd-mm-aaaa": ')#criterio para que la fecha que me introduzca por pantalla mantenga este formato
             fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
             hoy = datetime.now().date()
-            print(hoy,fecha)
             if str(fecha)>=str(hoy):
                 return fecha,fecha_str
                 break
@@ -493,7 +492,11 @@ def main():
                                             print("\nNo ha introducido una fecha correcta")
                             elif opcion4==2: #REALIZAR REVISION
                                 login(util,dic_medicas,'med')
-                                nom=input('Nombre paciente: ')
+                                #nom=input('Nombre paciente: ')
+                                for i in dic_pacientes:
+                                    for a in dic_pacientes[i].revmed:
+                                        if revmed[a].fecha()==datetime.now.date():
+                                            print(dic_pacientes[a].muestra_datos())#mostramos el paciente con visita programada hoy
                                 
                             elif opcion4<1 or opcion4>3:#SALIDA
                                 print('la opcion seleccionada no está disponible')

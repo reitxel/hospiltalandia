@@ -13,7 +13,7 @@ class Medica(Datos):
         self.set_id_num(_id_num)
         self.set_especialidad(_especialidad)
         self.set_password(_password)
-        self.__pacrev=[]#no atendidos
+        self.__pacrev=[]#ya atendidos
         self.__pacnorev=[]#revision pendiente
     
     def set_id_num(self,_id_num):
@@ -49,4 +49,12 @@ class Medica(Datos):
         return [self.id_num,nombre,direccion,ciudad,cp,telefono,self.especialidad] 
     
     def regresa_numpac(self):
-        return (len(self.pacrev)+len(self.pacnorev))
+        return len(self.pacnorev)
+    
+    def tiene_pacrev(self,pac):
+        self.pacrev.append(pac)
+        return self.pacrev
+    
+    def tiene_pacnorev(self,pac):
+        self.pacnorev.append(pac)
+        return self.pacnorev

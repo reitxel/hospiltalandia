@@ -7,7 +7,6 @@ Created on Thu Feb 13 16:48:00 2020
 """
 from datos import Datos
 from fichas import FichaRevision
-import random
 #relacion con paciente
 
 class Enfermera(Datos):
@@ -46,20 +45,24 @@ class Enfermera(Datos):
             especialidad='Médico de familia'
         else:
             ultima_rev=revmed[-1] #revision anterior? pero tener en cuanta entre listas co cosas y una lista de objetos
-            diagnosticos=ultima_rev[-1]# llista con todos los diagnosticos
+            diagnosticos=ultima_rev.diag# llista con todos los diagnosticos
             diag=diagnosticos[-1]#ultimo diagnostico de todos
+            print(diag)
             if diag.derivado==True:
-                diag=diag[5]#accedo al objeto DerivaPaciente 
-                especialidad=diag[-1].muestra_datos()  #en la ultima poscion de ese hay la especialidad     
+                deriva=diag.derivado#accedo al objeto DerivaPaciente 
+                especialidad=deriva.muestra_espe()  #muestro la especialidad de la derivacion     
             elif diag.derivado==False:
-                especialidad=diag[0]
+                especialidad=diag.especialidad
                 
-        
         for i in dic_medicas:#recorro el dic de medicos y guardo en una lista los medicos con la especialidad deseada
             if especialidad in dic_medicas[i].muestra_datos():
-                if len(dic_medicas[i].pacrev())<=10:
+                #print (dic_medicas[i].pacrev())
+                if dic_medicas[i].regresa_numpac()<=10:
                     med=dic_medicas[i].regresa_nombre()
+                    medico=dic_medicas[i]
                     break
         revmed=p.tiene_revision(len(revmed)+1,fecha,med,especialidad)  #codigo se forma secuencial, uno mas que el anterior   
+        medico.tiene_pacnorev(p)
         return revmed
-    
+ 
+

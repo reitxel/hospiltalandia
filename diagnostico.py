@@ -9,14 +9,14 @@ from derivapaciente import DerivaPaciente
 from recetas import RecetaMedica
 
 class Diagnostico():
-    def __init__(self,_especialidad,_enfermedad,_observaciones,_nommed,_derivado=False):#defino aqui el boleano como false para que asi lo pueda modificar luego
+    def __init__(self,_especialidad,_enfermedad,_observaciones,_nommed):#defino aqui el boleano como false para que asi lo pueda modificar luego
         self.set_especialidad(_especialidad)
         self.set_enfermedad(_enfermedad)
         self.set_observaciones(_observaciones)
-        self.__receta=[] #lista con recetas medicas
+        self._receta=[] #lista con recetas medicas
         self.set_nommed(_nommed)
         self.set_deriva=[]
-        self.set_derivado(_derivado)
+        self.set_derivado(False)
         
     def set_especialidad(self,_especialidad):
         self.__especialidad=_especialidad
@@ -57,11 +57,12 @@ class Diagnostico():
     derivado=property(get_derivado,set_derivado)
     
     def muestra_datos(self):
-        return [self.especialidad,self.enfermedad,self.observaciones,self.receta,self.nommed,self.deriva,self.derivado]
+        return [self.especialidad,self.enfermedad,self.observaciones,self.receta,self.nommed,self.deriva]
     
     def DerivaP(self,nommed,fecha,espe):#creo el objeto de derivacion del paciente
         deriv=DerivaPaciente(nommed,fecha,espe)
         self.deriva.append(deriv.muestra_datos())
+        self.derivado = True
     
     def gen_recep(self,medic,dosis):
         recet=RecetaMedica(medic,dosis)
