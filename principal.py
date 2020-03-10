@@ -78,19 +78,23 @@ def inicio_sesion_recepcionista(util,dic_recepcionistas):
     return recep
 #
 def comprobar_fecha():
-    fecha=input('fecha')
-    while True:
+    d=True
+    while d==True:
         try:
             fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd-mm-aaaa": ')#criterio para que la fecha que me introduzca por pantalla mantenga este formato
             fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
+            hoy=datetime.now().date()
+            print(hoy,fecha)
+            if str(fecha)>=str(hoy):
+                d=False
+                return fecha
+            elif str(fecha) < str(hoy):
+                d=True
+                print('La fecha es anterior a la actual')
         except ValueError:
             print("\nNo ha introducido una fecha correcta")
-        if fecha>=datetime.now() 
-            False
-        elif fecha < datetime.now():
-            True
-    fechas = now.strftime('Día :%d, Mes: %m, Año: %Y, Hora: %H, Minutos: %M, Segundos: %S')
-    print(fechas)
+   
+    
     
 #def comprobar(nombre,apellido,direccion,ciudad,cp,telf,email,espe_gruposang):
 #    if len(nombre)!=0 and len(apellido)!=0 and len(direccion)!=0 and len(ciudad)!=0 and len(cp)!=0 and len(telf)!=0 and len(email)!=0 and len(espe_gruposang)!=0:
@@ -459,9 +463,8 @@ def main():
                                     while True:
                                         try:
                                             a=0
-                                            fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd-mm-aaaa": ')
-                                            fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
-                                            #print(fecha)
+                                            casa=comprobar_fecha()
+                                            print (casa)
                                             for i in dic_pacientes:
                                                 if nom in dic_pacientes[i].regresa_nombre():
                                                     pac=dic_pacientes[i]      
@@ -470,7 +473,7 @@ def main():
                                             if a==0:
                                                 print('No existe tal paciente')
                                             elif a==1:
-                                                enf.asigna_revision(pac,fecha_str,dic_medicas)
+                                                enf.asigna_revision(pac,fecha,dic_medicas)
                                                 print('Revisión asignada')
                                             elif a!=1: #más de unx paciente con el nombre introducido
                                                 print('Hay',a,'pacientes con el nombre introducido:')
@@ -479,7 +482,7 @@ def main():
                                                         print(dic_pacientes[i].muestra_datos())
                                                 id_p=int(input('Introduzca el número identificador de la paciente a asignar la revisión: '))
                                                 pac=dic_pacientes[id_p]
-                                                enf.asigna_revision(pac,fecha_str,dic_medicas)
+                                                enf.asigna_revision(pac,fecha,dic_medicas)
                                                 print('Revisión a',pac.regresa_nombre(),'asignada')
 
                                             break
