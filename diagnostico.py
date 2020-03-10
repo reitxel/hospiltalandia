@@ -13,10 +13,10 @@ class Diagnostico():
         self.set_especialidad(_especialidad)
         self.set_enfermedad(_enfermedad)
         self.set_observaciones(_observaciones)
-        self.__receta=[] #lista con recetas medicas
+        self.set_receta() #lista con recetas medicas
         self.set_nommed(_nommed)
-        self.set_deriva=[]
-        self.set_derivado=False
+        self.set_deriva()
+        self.set_derivado(False)
         
     def set_especialidad(self,_especialidad):
         self.__especialidad=_especialidad
@@ -24,12 +24,12 @@ class Diagnostico():
         self.__enfermedad=_enfermedad
     def set_observaciones(self,_observaciones):
         self.__observaciones=_observaciones
-    def set_receta(self,_receta):
-        self.__receta=_receta
+    def set_receta(self):
+        self.__receta=[]
     def set_nommed(self,_nommed):
         self.__nommed=_nommed
-    def set_deriva(self,_deriva):
-        self.__deriva=_deriva
+    def set_deriva(self):
+        self.__deriva=[]
     def set_derivado(self,_derivado):
         self.__derivado=_derivado
     
@@ -57,14 +57,19 @@ class Diagnostico():
     derivado=property(get_derivado,set_derivado)
     
     def muestra_datos(self):
-        return [self.especialidad,self.enfermedad,self.observaciones,self.receta,self.nommed,self.deriva,self.derivado]
+        return [self.especialidad,self.enfermedad,self.observaciones,self.muestra_recep(),self.nommed,self.get_deriva()]
     
     def DerivaP(self,nommed,fecha,espe):#creo el objeto de derivacion del paciente
         deriv=DerivaPaciente(nommed,fecha,espe)
         self.deriva.append(deriv.muestra_datos())
-        self.derivado=True
-        
-    def gen_recet(self,medic,dosis):
+        self.derivado = True
+    def muestra_recep(self):
+        llista_recep=[]
+        for i in self.receta:
+            llista_recep.append(i.muestra_datos())
+        return llista_recep
+    
+    def gen_recep(self,medic,dosis):
         recet=RecetaMedica(medic,dosis)
         self.receta.append(recet.muestra_datos())
 #    def consulta_med:# mirar si existeix especialidat aixo no crec que serveixi la veritat

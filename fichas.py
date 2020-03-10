@@ -32,12 +32,18 @@ class FichaRevision():
     diag=property(get_diag,set_diag)
     
     def muestra_datos(self):
-        return [self.codigo,self.fecha,self.diag]
+        return [self.codigo,self.fecha,self.muestra_diag()]
+    def muestra_diag(self):
+        llista_diag=[]
+        for i in self.diag:
+            llista_diag.append(i.muestra_datos())
+        return llista_diag
     
-    def tiene_diagnostico(self,med,espec):  #me crea un objeto del tipo diagnostico y me lo añade a la lista diag con todos us atributos
+    def tiene_diagnostico(self,espec,med):  #me crea un objeto del tipo diagnostico y me lo añade a la lista diag con todos us atributos
         d=Diagnostico(espec,None,None,med)
-        self.diag.append(d.muestra_datos())
+        self.diag.append(d)
     
     
+       
     
     
