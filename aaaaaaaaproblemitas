@@ -1,4 +1,6 @@
 - contraseña incorrecta ne login y mal nombre de empleada
+
+    contraseña=='salir' que me salga del bucle 
 - true i false de diagnostico
 - los pacientes no atendidos son la suma o simplemente los sin atender
 
