@@ -427,12 +427,12 @@ def main():
                             
                         elif opcion2==7: #BUSQUEDA RECETAS  
                             nom=input('Nombre y apellido del paciente: ').title()
-                            revmed=hosp.consulta_revmed(nom)
-                            
+                            receta=hosp.consulta_recetas(nom)
+                            print(receta)
                             #ordenar por diagnostico y especialidades
                             
                             #recetas esta dentro de diagnostico, y -> diagnostio tiene espe,obs,enfe,nommed
-                            for i in revmed: #recorro todas las revisiones que tengo
+                            #for i in revmed: #recorro todas las revisiones que tengo
                                 
                                 
                             #- fichas tiene una lista con codigo,fecha y diag

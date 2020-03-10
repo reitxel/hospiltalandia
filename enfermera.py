@@ -7,6 +7,7 @@ Created on Thu Feb 13 16:48:00 2020
 """
 from datos import Datos
 from fichas import FichaRevision
+import random
 #relacion con paciente
 
 class Enfermera(Datos):
@@ -39,35 +40,29 @@ class Enfermera(Datos):
         return [self.id_num,nombre,direccion,ciudad,cp,telefono,email,self.categoria]
     
     def asigna_revision(self,p,fecha,dic_medicas):
-        revmed=p.revmed
+        revmed=p.muestra_revisiones()
         #revmed=p.revmed()
         if len(revmed)==0: #si la lista esta vacia quiere decir que no hay revisiones para ese paciente
             especialidad='Médico de familia'
         else:
-            # porque tenemos una lista dentro de otra#la revison es el ultimo elemento
-            ultima_rev=revmed[-1]#sacamos la ultima revision
-            #print(ultima_rev)
-            diagnosticos=ultima_rev.diag# llista con todos los diagnosticos
-           # print(diagnosticos)
+            ultima_rev=revmed[-1] #revision anterior? pero tener en cuanta entre listas co cosas y una lista de objetos
+            diagnosticos=ultima_rev[-1]# llista con todos los diagnosticos
             diag=diagnosticos[-1]#ultimo diagnostico de todos
-           # print(diag)
-            if diag.derivado==True:
-                deriva=diag.derivado#accedo al objeto DerivaPaciente 
-                especialidad=deriva.muestra_espe()  #muestro la especialidad de la derivacion     
+            if diag.muestra_datos()[-1]==True:
+                diag=diag[5]#accedo al objeto DerivaPaciente 
+                especialidad=diag[-1].muestra_datos()  #en la ultima poscion de ese hay la especialidad     
             elif diag.derivado==False:
-                especialidad=diag.especialidad
+                especialidad=diag[0]
                 
         for i in dic_medicas:#recorro el dic de medicos y guardo en una lista los medicos con la especialidad deseada
             if especialidad in dic_medicas[i].muestra_datos():
-                #print (dic_medicas[i].pacrev())
                 if dic_medicas[i].regresa_numpac()<=10:
                     med=dic_medicas[i].regresa_nombre()
-                    medico=dic_medicas[i]
+                    medica=dic_medicas[i]
                     break
                 
-        #revmed.tiene_diagnostico(med,especialidad)  #me crea un objeto del tipo diagnostico y me lo añade a la lista diag con todos us atributos)
-        revisio=p.tiene_revision(len(revmed)+1,fecha,especialidad,med)  #codigo se forma secuencial, uno mas que el anterior   
-        medico.tiene_pacnorev(p)
-        return revisio
- 
-
+        revmed=p.tiene_revision(len(revmed)+1,fecha,med,especialidad)  #codigo se forma secuencial, uno mas que el anterior  
+        medica.tiene_pacrev.append(p) #añadir en la lista de paceintes que tienen revision pero que no esta acabada
+        
+        return revmed
+    
