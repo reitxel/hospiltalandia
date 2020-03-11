@@ -5,6 +5,7 @@ Created on Thu Feb 13 16:48:00 2020
 
 @author: raquel
 """
+
 from datos import Datos
 from fichas import FichaRevision
 #relacion con paciente
@@ -69,5 +70,3 @@ class Enfermera(Datos):
         revisio=p.tiene_revision(len(revmed)+1,fecha,especialidad,med)  #codigo se forma secuencial, uno mas que el anterior   
         medico.tiene_pacnorev(p)
         return revisio
- 
-
