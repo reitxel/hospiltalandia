@@ -5,7 +5,6 @@ Created on Thu Feb 13 16:50:28 2020
 
 @author: raquel
 """
-
 from derivapaciente import DerivaPaciente
 from recetas import RecetaMedica
 
@@ -76,3 +75,4 @@ class Diagnostico():
 #    def consulta_med:# mirar si existeix especialidat aixo no crec que serveixi la veritat
 #        
 #    def consulta_espe#aixo igual que 
+        

@@ -5,7 +5,6 @@ Created on Thu Feb 13 16:49:22 2020
 
 @author: raquel
 """
-
 from diagnostico import Diagnostico
 
 class FichaRevision():
@@ -43,5 +42,8 @@ class FichaRevision():
     def tiene_diagnostico(self,espec,med):  #me crea un objeto del tipo diagnostico y me lo añade a la lista diag con todos us atributos
         d=Diagnostico(espec,None,None,med)
         self.diag.append(d)
-        
-
+    
+    
+       
+    
+    

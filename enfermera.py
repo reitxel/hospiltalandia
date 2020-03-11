@@ -5,7 +5,6 @@ Created on Thu Feb 13 16:48:00 2020
 
 @author: raquel
 """
-
 from datos import Datos
 from fichas import FichaRevision
 #relacion con paciente
@@ -64,9 +63,12 @@ class Enfermera(Datos):
                 if dic_medicas[i].regresa_numpac()<=10:
                     med=dic_medicas[i].regresa_nombre()
                     medico=dic_medicas[i]
+                    print (medico)
                     break
                 
         #revmed.tiene_diagnostico(med,especialidad)  #me crea un objeto del tipo diagnostico y me lo añade a la lista diag con todos us atributos)
         revisio=p.tiene_revision(len(revmed)+1,fecha,especialidad,med)  #codigo se forma secuencial, uno mas que el anterior   
         medico.tiene_pacnorev(p)
         return revisio
+ 
+
