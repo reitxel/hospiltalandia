@@ -110,6 +110,12 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             lista.append(recep.informa(nom,self.pacientes)) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
         return lista
     
+    def consulta_recetas(self,nom):
+        for i in self.pacientes:
+            if nom in self.pacientes[i].regresa_nombre():
+                pac=self.pacientes[i]
+        return pac.muestra_datos()[-1] #me muestra el último componente de pacientes que se corresponde con la revisión médica
+    
 #    def consulta_derivacion(self):
         
     def consulta_med_espe(self,especialidad):
@@ -120,39 +126,11 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                 lista_medesp.append([self.medicas[i].regresa_nombre(),self.medicas[i].regresa_numpac()])#si la espeicalida coincide meto el nombre y el numero de pacientes del medico en una lista
         return lista_medesp
     
-    def consulta_recetas(self,nom): #nombre del paciente como parametro, pero tengo las recetas dentro de diagnostico
-        
-#        espe_orden=[]
-#        for i in self.especialidades:
-#            espe_orden.append(self.dic_especialidades[i].nombre)
-#        espe_orden.sort(key=str)
-        
+    def consulta_revmed(self,nom):
         for i in self.pacientes:
             if nom in self.pacientes[i].regresa_nombre():
                 pac=self.pacientes[i]
-                rev=pac.revmed #me muestra el último componente de pacientes que se corresponde con la revisión médica
-#                lista_fechas_rev=[]
-#                
-##                for i in rev:
-##                    lista_fechas_rev.append(rev.fecha)
-##                lista_fechas_rev.sort(key=str) 
-                if len(rev)==0:
-                    print('La paciente no tiene revisiones médicas aún')
-                    
-                else:
-                    dia=rev.diag
-                    recet=dia.receta
-                    recet.sort(key=rev.fecha.datatime)
-                    return recet
-                #pasar a data time
-                #mirar arc sort
-                #mirar funcionalidad arc_sort
-                #puedo llamar a atributos desde el sort
-                
-#        for i in range(len(lista_fechas_rev)):
-#            recet[i]
-                
-                    
+        return pac.muestra_datos()[-1] #me muestra el último componente de pacientes que se corresponde con la revisión médica
             
     #METODOS PARA LA BUSQUEDA DE MEDICAS/PACIENTES POR NUMERO IDENTIFICADOR: mismo prodedimiento para ambos 
     def consulta_ident(self,identificador,entrada): #parámetro de entrada por pantalla
