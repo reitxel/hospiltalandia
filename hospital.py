@@ -143,7 +143,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                     dia=rev.diag
                     recet=dia.receta
                     recet.sort(key=rev.fecha.datatime)
-                
+                    return recet
                 #pasar a data time
                 #mirar arc sort
                 #mirar funcionalidad arc_sort
@@ -152,7 +152,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
 #        for i in range(len(lista_fechas_rev)):
 #            recet[i]
                 
-                    return recet
+                    
             
     #METODOS PARA LA BUSQUEDA DE MEDICAS/PACIENTES POR NUMERO IDENTIFICADOR: mismo prodedimiento para ambos 
     def consulta_ident(self,identificador,entrada): #parámetro de entrada por pantalla
