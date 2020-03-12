@@ -69,6 +69,9 @@ class Diagnostico():
             llista_recep.append(i.muestra_datos())
         return llista_recep
     
+    def muestra_espe(self):
+        return self.especialidad
+
     def gen_recep(self,medic,dosis):
         recet=RecetaMedica(medic,dosis)
         self.receta.append(recet.muestra_datos())

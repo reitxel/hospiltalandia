@@ -63,7 +63,6 @@ class Enfermera(Datos):
                 if dic_medicas[i].regresa_numpac()<=10:
                     med=dic_medicas[i].regresa_nombre()
                     medico=dic_medicas[i]
-                    print (medico)
                     break
                 
         #revmed.tiene_diagnostico(med,especialidad)  #me crea un objeto del tipo diagnostico y me lo añade a la lista diag con todos us atributos)
