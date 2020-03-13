@@ -612,7 +612,7 @@ def main():
                             print('\nSe ha generado el archivo')
                         elif opcion5==2:
                             nom=input("Introduzca el nombre y apellido de la paciente: ").title()
-                            pac=hosp.consulta_paciente(nom,recep)
+                            pac=hosp.consulta_pacientes(nom,recep)
                             if pac==[]:
                                 print('No existe tal paciente')
                             elif len(pac)==1:
