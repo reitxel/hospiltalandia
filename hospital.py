@@ -183,6 +183,12 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         for i in self.especialidades:
             if cod in self.especialidades[i].muestra_datos():
                 return self.especialidades[i].muestra_datos()                
+
+    def consulta_revmed(self,nom):
+        for i in self.pacientes:
+            if nom in self.pacientes[i].regresa_nombre():
+                pac=self.pacientes[i]
+        return pac.muestra_datos()[-1]
         
     def consulta_revmed_ident(self,identificador):
         if identificador in self.pacientes.keys():

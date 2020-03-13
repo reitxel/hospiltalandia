@@ -57,7 +57,7 @@ class Diagnostico():
     derivado=property(get_derivado,set_derivado)
     
     def muestra_datos(self):
-        return [self.especialidad,self.enfermedad,self.observaciones,self.muestra_recep(),self.nommed,self.get_deriva()]
+        return [self.especialidad,self.enfermedad,self.observaciones,self.muestra_receta(),self.nommed,self.get_deriva()]
     
     def DerivaP(self,nommed,fecha,espe):#creo el objeto de derivacion del paciente
         deriv=DerivaPaciente(nommed,fecha,espe)

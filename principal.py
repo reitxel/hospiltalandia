@@ -504,32 +504,39 @@ def main():
                                 lista_pacrev=med.pacrev #atendidos
                                 lista_pacnorev=med.pacnorev #lista no atendidos
                                 lista_atender_hoy=[]
-                                for i in range(len(lista_pacnorev)):
-                                    revision=lista_pacnorev[i].revmed
-                                    print (revision)
-                                    for j in len(revision):
-                                        if revision[a].fecha == hoy: #pasar fecha del formato str a datetime
-                                            lista_atender_hoy.append(lista_pacnorev[i])
-                                        
-                                #IMPRIMIR TODA LA INFO DEL PACIENTE      
-                                
+                                for i in lista_pacnorev:
+                                    revision=i.revmed
+                                    for j in revision:
+                                        if j.fecha == hoy: #pasar fecha del formato str a datetime
+                                            lista_atender_hoy.append(i)                                        
+                                #IMPRIMIR TODA LA INFO DEL PACIENTE                                  
                                 #mostrar toda la información del paciente, que pasa si tengo varias?
                                 if len(lista_atender_hoy)==0:
                                     print('La médica no tiene ninguna paciente con visita programada para hoy')
+                                elif len(lista_atender_hoy)==1:
+                                    pac=lista_atender_hoy[0]
                                     
                                 elif len(lista_atender_hoy)!=1:
                                     print('Hay',len(lista_atender_hoy),'pacientes con el nombre introducido: ')
-                                    for i in range(len(lista_atender_hoy)):
-                                        print(lista_atender_hoy[i][0],lista_atender_hoy[i]) #imprimo el id y los datos?
-                                        id_p=int(input('Introduzca el número identificador de la paciente a realizar la revisión: '))
-                                        pac=lista_atender_hoy[i][id_p] #me crea el objeto paciente con el que haya seleccionado
-                                        print(pac.muestra_datos())
-                                        print('Paciente escogido')
+                                    for i in lista_atender_hoy:
+                                        print(i[0],i) #imprimo el id y los datos?
+                                    id_p=int(input('Introduzca el número identificador de la paciente a realizar la revisión: '))
+                                    for i in lista_atender_hoy:
+                                        if id_p==i.id_num:
+                                            pac=i #me crea el objeto paciente con el que haya seleccionado
+                    #FALTARI PONER LA EXEPCION DE QUE NO EXISTE EL ID
+                                print(pac.muestra_datos())
+                                print('\nPaciente escogido')
                                         #escojo un paciente y ahora prodedo a hacerle la revisión
-                                    rev=pac.revmed
-                                    dia=rev.diag
-                                    if dia.derivado==True: #el paciente es derivado
-                                        #MOSTRAR INFO DIAG ANTERIOR
+                                        
+                                        
+                                for i in pac.revmed:#recorro todas la revisiones del paciente y cojo solo de con fecha de hoy
+                                    if i.fecha==hoy:
+                                        rev=i
+                                print (rev)
+                                for i in rev.diag:#recorro todos los diagnosticos 
+                                    if i.derivado==False: #el paciente es derivado
+                                            #MOSTRAR INFO DIAG ANTERIOR
                                         ultima_rev=rev[-1] #revision anterior? pero tener en cuanta entre listas co cosas y una lista de objetos
                                         diagnosticos=ultima_rev[-1]# llista con todos los diagnosticos
                                         diag=diagnosticos[-1]#
@@ -538,52 +545,52 @@ def main():
                                         print('\nDatos a introducir diag: ')
                                         enfermedad=input('Enfermedad: ')
                                         observaciones=input('Observaciones: ')
-                                    
                                         diag=Diagnostico(especialidad,enfermedad,observaciones,nommed)
                                         
                                         #preguntamos si quiere expedir receta
-                                        expedir=input('Desea expedir receta? Responda si/no').lower()
-                                        while expedir=='si':
-                                            print('Introduza los daros para expedir receta: ')
-                                            codigo=input('Codigo del medicamento: ') #ponemos el codigo porque es mas facil de buscar al haber varios con el mismo nombre
-                                            medicamento=hosp.consulta_ident(codigo,'medicamento')
-                                            if medicamento==None: #no ha encontrado ninguna coincidencia
-                                                print('\nNo figura una medicamento con ese código')
-                                            else: #lo ha encontrado
-                                                dosis=input('Dosis del medicamento: ')
-                                                receta=diag.gen_recet(dosis,medicamento)
-                                                expedir=input('Desea expedir otra receta? Responda si/no').lower()
-                                        
+                                    expedir=input('Desea expedir receta? Responda si/no').lower()
+                                    while expedir=='si':
+                                        print('Introduza los daros para expedir receta: ')
+                                        codigo=input('Codigo del medicamento: ') #ponemos el codigo porque es mas facil de buscar al haber varios con el mismo nombre
+                                        medicamento=hosp.consulta_ident(codigo,'medicamento')
+                                        if medicamento==None: #no ha encontrado ninguna coincidencia
+                                            print('\nNo figura una medicamento con ese código')
+                                        else: #lo ha encontrado
+                                            dosis=input('Dosis del medicamento: ')
+                                            receta=diag.gen_recet(dosis,medicamento)
+                                            expedir=input('Desea expedir otra receta? Responda si/no').lower()
+                            
                                         #preguntamos si quiere derivar al paciente
-                                        derivar=input('Desea derivar a la paciente? Responda si/no').lower()
-                                        if derivar=='si':
-                                            print('Intoduzca los datos necesarios para la derivación: ')
+                                    derivar=input('Desea derivar a la paciente? Responda si/no').lower()
+                                    if derivar=='si':
+                                        print('Intoduzca los datos necesarios para la derivación: ')
                                             #fecha será la actual, nommed es uno nuevo no?
-                                            nommed=input('Nombre de la médica a la cual derivamos: ')
-                                            while True:
-                                                especialidad=input('Nombre de la especialidad')
-                                                if especialidad in dic_especialidades:
-                                                    derivacion=DerivaPaciente(nommed,hoy,especialidad)
+                                        nommed=input('Nombre de la médica a la cual derivamos: ')
+                                        while True:
+                                            especialidad=input('Nombre de la especialidad')
+                                            if especialidad in dic_especialidades:
+                                                derivacion=DerivaPaciente(nommed,hoy,especialidad)
+                                                dia.derivado=True
+                                                break
+                                            else:
+                                                print('No existe tal especialidad')
+                                                no_derivacion=input('Desea continuar con la derivación? Responda si/no').lower()
+                                                if no_derivacion=='no':
                                                     break
                                                 else:
-                                                    print('No existe tal especialidad')
-                                                    no_derivacion=input('Desea continuar con la derivación? Responda si/no').lower()
-                                                    if no_derivacion=='no':
-                                                        break
-                                                    else:
-                                                        pass
+                                                    pass
                                     
-                                        lista_pacnorev.remove(pac)
-                                        lista_pacrev.append(pac)
+                                    lista_pacnorev.remove(pac)
+                                    lista_pacrev.append(pac)
                                         
                                         #NO SE SI FALTARÍA HACERLO CUANDO SOLO TENEMOS UN PACIENTE PARA ATENDER HOY
                                     
                                 
-                                else: #si simplemente hay una paciente
-                                    if hosp.consulta_revmed(nom)==[]:
-                                        print('\nEsta paciente no tiene revisiones médicas')
-                                    else:
-                                        print('\nLas revisiones médicas de la paciente',nom,'son:\n',hosp.consulta_revmed(nom))
+#                                else: #si simplemente hay una paciente
+#                                    if hosp.consulta_revmed(nom)==[]:
+#                                        print('\nEsta paciente no tiene revisiones médicas')
+#                                    else:
+#                                        print('\nLas revisiones médicas de la paciente',nom,'son:\n',hosp.consulta_revmed(nom))
                                             
                             elif opcion4<1 or opcion4>3:#SALIDA
                                print('la opcion seleccionada no está disponible')
@@ -620,7 +627,7 @@ def main():
                             espe=hosp.archivo_paciente(pac)
                             print(espe)
                         elif opcion5==3:
-                            estad=hosp.arxichio_enf_recep('enf')
+                            estad=hosp.archivo_enf_recep('enf')
                             print('\nSe ha generado el archivo')
                             print(estad)
                         elif opcion5==4:
