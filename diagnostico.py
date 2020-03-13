@@ -59,7 +59,7 @@ class Diagnostico():
     def muestra_datos(self):
         return [self.especialidad,self.enfermedad,self.observaciones,self.muestra_receta(),self.nommed,self.get_deriva()]
     
-    def DerivaP(self,nommed,fecha,espe):#creo el objeto de derivacion del paciente
+    def derivap(self,nommed,fecha,espe):#creo el objeto de derivacion del paciente
         deriv=DerivaPaciente(nommed,fecha,espe)
         self.deriva.append(deriv.muestra_datos())
         self.derivado = True

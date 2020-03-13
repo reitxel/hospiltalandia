@@ -15,6 +15,8 @@ from especialidad import Especialidad
 from enfermera import Enfermera
 from recepcionista import Recepcionista
 from medicamento import Medicamento
+from diagnostico import Diagnostico
+from derivapaciente import DerivaPaciente
 
 from datetime import datetime
 
@@ -77,7 +79,6 @@ def comprobar_fecha():
             fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd-mm-aaaa": ')#criterio para que la fecha que me introduzca por pantalla mantenga este formato
             fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
             hoy = datetime.now().date()
-            print(hoy,fecha)
             if str(fecha)>=str(hoy):
                 return fecha
             elif str(fecha) < str(hoy):
@@ -435,8 +436,10 @@ def main():
                             #- fichas tiene una lista con codigo,fecha y diag
                             
                             
-#                        elif opcion2==8: #BUSQUEDA DERIVACIONES
-#                            nombre=input('Nombre: ')
+                        elif opcion2==8: #BUSQUEDA DERIVACIONES
+                            nombre=input('Nombre: ')
+                            deriva=hosp.consulta_derivacion(nombre)
+                            print(deriva)
                             
                                     
                                     
@@ -533,44 +536,43 @@ def main():
                                 for i in pac.revmed:#recorro todas la revisiones del paciente y cojo solo de con fecha de hoy
                                     if i.fecha==hoy:
                                         rev=i
-                                print (rev)
-                                for i in rev.diag:#recorro todos los diagnosticos 
-                                    if i.derivado==False: #el paciente es derivado
+                                #revision anterior? pero tener en cuanta entre listas co cosas y una lista de objetos
+                                diag=rev.diag[-1]# cojo el ultimo diagnostico
+                                if diag.derivado==True: #el paciente ya  esta derivado
                                             #MOSTRAR INFO DIAG ANTERIOR
-                                        ultima_rev=rev[-1] #revision anterior? pero tener en cuanta entre listas co cosas y una lista de objetos
-                                        diagnosticos=ultima_rev[-1]# llista con todos los diagnosticos
-                                        diag=diagnosticos[-1]#
-                                        print('\nUltimo diágnostico: ', diag)
+                                    print('\nUltimo diágnostico: ', diag)
                                         #pedimos a la maedica que rellene ls datos de diagnostico
-                                        print('\nDatos a introducir diag: ')
-                                        enfermedad=input('Enfermedad: ')
-                                        observaciones=input('Observaciones: ')
-                                        diag=Diagnostico(especialidad,enfermedad,observaciones,nommed)
-                                        
+                                elif diag.derivado==False:#si no esta derivado aun
+                                    print('\nDatos a introducir diag: ')
+                                    enf=input('Enfermedad: ')
+                                    obs=input('Observaciones: ')
+                                    diag.observaciones=obs
+                                    diag.enfermedad=enf#completo el diagnostico que tenia
+                                    print (pac.muestra_datos())   
                                         #preguntamos si quiere expedir receta
-                                    expedir=input('Desea expedir receta? Responda si/no').lower()
+                                    expedir=input('Desea expedir receta? Responda si/no: ').lower()
                                     while expedir=='si':
-                                        print('Introduza los daros para expedir receta: ')
-                                        codigo=input('Codigo del medicamento: ') #ponemos el codigo porque es mas facil de buscar al haber varios con el mismo nombre
+                                        print('Introduza los datos para expedir receta: ')
+                                        codigo=str(input('Codigo del medicamento: '))#ponemos el codigo porque es mas facil de buscar al haber varios con el mismo nombre
                                         medicamento=hosp.consulta_ident(codigo,'medicamento')
+                                        print (medicamento)
                                         if medicamento==None: #no ha encontrado ninguna coincidencia
                                             print('\nNo figura una medicamento con ese código')
                                         else: #lo ha encontrado
                                             dosis=input('Dosis del medicamento: ')
                                             receta=diag.gen_recet(dosis,medicamento)
-                                            expedir=input('Desea expedir otra receta? Responda si/no').lower()
+                                            expedir=input('Desea expedir otra receta? Responda si/no: ').lower()
                             
                                         #preguntamos si quiere derivar al paciente
-                                    derivar=input('Desea derivar a la paciente? Responda si/no').lower()
+                                    derivar=input('Desea derivar a la paciente? Responda si/no: ').lower()
                                     if derivar=='si':
                                         print('Intoduzca los datos necesarios para la derivación: ')
                                             #fecha será la actual, nommed es uno nuevo no?
-                                        nommed=input('Nombre de la médica a la cual derivamos: ')
+                                        nommed=input('Nombre y apellido de la médica a la cual derivamos: ').title()
                                         while True:
-                                            especialidad=input('Nombre de la especialidad')
+                                            especialidad=input('Nombre de la especialidad: ')
                                             if especialidad in dic_especialidades:
-                                                derivacion=DerivaPaciente(nommed,hoy,especialidad)
-                                                dia.derivado=True
+                                                diag.derivap(nommed,hoy,especialidad)#guardo la derivacio en el diagnotico
                                                 break
                                             else:
                                                 print('No existe tal especialidad')

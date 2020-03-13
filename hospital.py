@@ -123,11 +123,11 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     def consulta_recetas(self,nom): #nombre del paciente como parametro, pero tengo las recetas dentro de diagnostico
         lista_recetas=[]
         for i in self.pacientes:
-            if nom in self.pacientes[i].regresa_nombre():
-                pac=self.pacientes[i].muestra_datos()
+            if nom in i.regresa_nombre():
+                pac=i.muestra_datos()
                 revisiones=pac.revmed
                 for a in revisiones:
-                    diag=revisiones[a].diag
+                    diag=a.diag
                     for j in diag:
                         if len(diag.receta)!=0:
                             lista_recetas.append(diag.receta)#encara que cada diag tingui mes dunar recepta, com que tindran les mateixes fechas i espes no 'desmonto' la llista
