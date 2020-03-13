@@ -63,11 +63,12 @@ class Diagnostico():
         deriv=DerivaPaciente(nommed,fecha,espe)
         self.deriva.append(deriv.muestra_datos())
         self.derivado = True
-    def muestra_recep(self):
-        llista_recep=[]
+        
+    def muestra_receta(self):
+        llista_receta=[]
         for i in self.receta:
-            llista_recep.append(i.muestra_datos())
-        return llista_recep
+            llista_receta.append(i.muestra_datos())
+        return llista_receta
     
     def muestra_espe(self):
         return self.especialidad
@@ -75,6 +76,7 @@ class Diagnostico():
     def gen_recep(self,medic,dosis):
         recet=RecetaMedica(medic,dosis)
         self.receta.append(recet.muestra_datos())
+        
 #    def consulta_med:# mirar si existeix especialidat aixo no crec que serveixi la veritat
 #        
 #    def consulta_espe#aixo igual que 

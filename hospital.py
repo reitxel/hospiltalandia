@@ -201,7 +201,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                             lista_deriv.append(diag.deriva)
         return lista_deriv# falta ordenarla por fehcas
     
-    def arxivo_medicos(self):
+    def archivo_medicas(self):
         dic_med_orden={}
         for a in self.especialidades:
             for i in self.medicas:#recorro dic medicas
@@ -214,13 +214,13 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         
 
             
-    def arxivo_paciente(self,pac):#fem un consulta i triem el pacient
+    def archivo_pacientes(self,pac):#fem un consulta i triem el pacient
         nombre=pac.nombre
         nombre=nombre.replace(' ','')
         paciente=pac.muestra_datos()
         arx_pac=open(nombre+'.txt','w')
         for i in paciente:
-            arx_pac.write(str(i ))
+            arx_pac.write(str(i))
         arx_pac.close
         #estadisitcas
         rev=pac.revmed#llamo en el main el consulta_paciente i me elegira uno si hay mas de uno
@@ -233,54 +233,55 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                     list_espe.append(derivacion.muestra_espe())#muestro la especialidad de la derivacion i la meto en la lista
                 elif a.derivado==False:
                     list_espe.append(a.muestra_espe())
-        lista_estadi=[]  #LISTA VAcia donde metere las estadisticas              
+        lista_estadisticas=[]  #LISTA VAcia donde metere las estadisticas              
         list_una_espe=[]
         for i in list_espe:#creo una llista amb UNA vegada cada especialitat
             if i not in list_una_espe:
                 list_una_espe.append(i)
-                lista_estadi=[]
+                lista_estadisticas=[]
         for i in list_una_espe:
             n=list_espe.count(i)#me cuenta cuantas veces aparece en la lista
-            lista_estadi.append([i,n])# me pone dentro de la lista el nombre de la especialidad i cuantas veces aparece esta        
-        return lista_estadi
+            lista_estadisticas.append([i,n])# me pone dentro de la lista el nombre de la especialidad i cuantas veces aparece esta        
+        return lista_estadisticas
     
-    def arxivo_enf(self):
+    def archivo_enf_recep(self,entrada):
         categorias=['P:practicante','J:enfermera junior','M:enfermera senior','JE:jefa de enfermeras']
-        dic_enf_orden={}
-        for a in categorias:
-            for i in self.enfermeras:#recorro dic enf
-                if self.enfermeras[i].categoria==a:#recorro especialitats en ordre(alfabetis), si coincideixem amb la especialitat de un metge ho guardo al nou diccionari
-                    dic_enf_orden[self.enfermeras[i].id_num]=self.enfermeras[i]
-        arx_enf=open('Enfermeras.txt','w')
-        for i in dic_enf_orden:#recorro el dic i vaig 'escribint-lo' al fitxer
-            arx_enf.write(str(dic_enf_orden[i].muestra_datos()))
-        arx_enf.close
-        cat=[]#lista con todas la categroias de todas las enfermenra
-        for i in self.enfermeras:
-           cat.append( self.enfermeras[i].categoria)
-        estadist=[]
-        for i in categorias:
-            estadist.append([i,cat.count(i)])
-        return estadist
-    
-    def arxivo_recep(self):
         turnos=['1:matutino','2:verspertino','3:nocturno','4:rotatorio'] 
-        dic_recep_orden={}
-        for a in turnos:
-            for i in self.recepcionistas:#recorro dic recep
-                if self.recepcionistas[i].turno==a:#recorro especialitats en ordre(alfabetis), si coincideixem amb la especialitat de un metge ho guardo al nou diccionari
-                    dic_recep_orden[self.recepcionistas[i].id_num]=self.recepcionistas[i]
-        arx_enf=open('Recepcionistas.txt','w')
-        for i in dic_recep_orden:#recorro el dic i vaig 'escribint-lo' al fitxer
-            arx_enf.write(str(dic_recep_orden[i].muestra_datos()))
-        arx_enf.close
-        turn=[]#lista con todas la categroias de todas las enfermenra
-        for i in self.recepcionistas:
-           turn.append( self.recepcionistas[i].turno)
-        estadist=[]
-        for i in turnos:
-            estadist.append([i,turn.count(i)])
-        return estadist
+        dic_orden={}
+        
+        if entrada=='enf':
+            atributo=categorias
+            dic=self.enfermeras
+            nombre_archivo='Enfermeras.txt'
+        elif entrada=='recep':
+            atributo=turnos
+            dic=self.recepcionistas
+            nombre_archivo='Recepcionistas.txt'
+            
+        for i in atributo:
+            for j in dic:
+                if dic[i].atributo==i:
+                    dic_orden[dic[i].id_num]=dic[i]
+        
+        archivo=open(nombre_archivo,'w')
+        
+        for i in dic_orden:
+            archivo.write(str(dic_orden[i].muestra_datos()))
+            
+        archivo.close
+        
+        atr=[]
+        
+        for i in dic:
+            atr.append(dic[i].atributo)
+            
+        lista_estadisticas=[]
+        
+        for i in atributo:
+            lista_estadisticas.append([i,atr.count(i)])
+        
+        return lista_estadisticas
+        
         
     
                     

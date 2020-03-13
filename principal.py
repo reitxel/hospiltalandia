@@ -79,8 +79,7 @@ def comprobar_fecha():
             hoy = datetime.now().date()
             print(hoy,fecha)
             if str(fecha)>=str(hoy):
-                return fecha,fecha_str
-                break
+                return fecha
             elif str(fecha) < str(hoy):
                 print('\nLa fecha es anterior a la actual')
         except ValueError:
@@ -115,7 +114,7 @@ def main():
                 #MENU ALTAS
                 opcion1=0
                 print('Inicie sesión recepcionista')
-                login(util,dic_recepcionistas,'recep')
+                login(util,dic_recepcionistas,'recep') #tendria que ser a cada opcion
                 
                 while opcion1!=7:
                     try:
@@ -470,7 +469,7 @@ def main():
                                     while True:
                                         try:
                                             a=0
-                                            fecha,fecha_str=comprobar_fecha()
+                                            fecha=comprobar_fecha()
                                             for i in dic_pacientes:
                                                 if nom in dic_pacientes[i].regresa_nombre():
                                                     pac=dic_pacientes[i]      
@@ -479,7 +478,7 @@ def main():
                                             if a==0:
                                                 print('No existe tal paciente')
                                             elif a==1:
-                                                enf.asigna_revision(pac,fecha_str,dic_medicas)
+                                                enf.asigna_revision(pac,fecha,dic_medicas)
                                                 print('Revisión asignada')
                                             elif a!=1: #más de unx paciente con el nombre introducido
                                                 print('Hay',a,'pacientes con el nombre introducido:')
@@ -488,7 +487,7 @@ def main():
                                                         print(dic_pacientes[i].muestra_datos())
                                                 id_p=int(input('Introduzca el número identificador de la paciente a asignar la revisión: '))
                                                 pac=dic_pacientes[id_p]
-                                                enf.asigna_revision(pac,fecha_str,dic_medicas)
+                                                enf.asigna_revision(pac,fecha,dic_medicas)
                                                 print('Revisión a',pac.regresa_nombre(),'asignada')
 
                                             break
@@ -509,7 +508,7 @@ def main():
                                     revision=lista_pacnorev[i].revmed
                                     print (revision)
                                     for j in len(revision):
-                                        if revision[a].fecha.datetime.date() == hoy: #pasar fecha del formato str a datetime
+                                        if revision[a].fecha == hoy: #pasar fecha del formato str a datetime
                                             lista_atender_hoy.append(lista_pacnorev[i])
                                         
                                 #IMPRIMIR TODA LA INFO DEL PACIENTE      
@@ -600,7 +599,7 @@ def main():
                         print('\nMenú revisiones\n 1) Medicos\n 2) Historial de un paciente\n 3) Enfermeras\n 4) Recepcionistas\n 5) Regresa menú de opciones')
                         opcion5=int(input('Selecciones una opción: '))
                         if opcion5==1:
-                            hosp.arxivo_medicos()
+                            hosp.archivo_medicas()
                             print('\nSe ha generado el archivo')
                         elif opcion5==2:
                             nom=input("Introduzca el nombre y apellido de la paciente: ").title()
@@ -610,6 +609,7 @@ def main():
                             elif len(pac)==1:
                                 pac=pac[0]#primer elemento de la lista
                                 pac=pac[0]#saco el objeto paciente de su lista
+                                #ESTAMOS RENOMBRANDO LA MISMA VARIABLE, NO SE SI TIENE SENTIDO
                             elif len(pac)!=1: #más de unx paciente con el nombre introducido
                                 print('\nHay',len(pac),'pacientes con el nombre introducido:')
                                 for i in dic_pacientes:
@@ -617,14 +617,14 @@ def main():
                                         print(dic_pacientes[i].muestra_datos())
                                     id_p=int(input('Introduzca el número identificador de la paciente a la que quieras el historial: '))
                                     pac=dic_pacientes[id_p]
-                            espe=hosp.arxivo_paciente(pac)
+                            espe=hosp.archivo_paciente(pac)
                             print(espe)
                         elif opcion5==3:
-                            estad=hosp.arxivo_enf()
+                            estad=hosp.arxichio_enf_recep('enf')
                             print('\nSe ha generado el archivo')
                             print(estad)
                         elif opcion5==4:
-                            estad=hosp.arxivo_recep()
+                            estad=hosp.archivo_enf_recep('recep')
                             print('\nSe ha generado el archivo')
                             print(estad)
                     except ValueError:
