@@ -553,14 +553,14 @@ def main():
                                     expedir=input('Desea expedir receta? Responda si/no: ').lower()
                                     while expedir=='si':
                                         print('Introduza los datos para expedir receta: ')
-                                        codigo=str(input('Codigo del medicamento: '))#ponemos el codigo porque es mas facil de buscar al haber varios con el mismo nombre
+                                        codigo=int(input('Codigo del medicamento: '))#ponemos el codigo porque es mas facil de buscar al haber varios con el mismo nombre
                                         medicamento=hosp.consulta_ident(codigo,'medicamento')
                                         print (medicamento)
                                         if medicamento==None: #no ha encontrado ninguna coincidencia
                                             print('\nNo figura una medicamento con ese código')
                                         else: #lo ha encontrado
                                             dosis=input('Dosis del medicamento: ')
-                                            receta=diag.gen_recet(dosis,medicamento)
+                                            receta=diag.gen_recet(medicamento,dosis)
                                             expedir=input('Desea expedir otra receta? Responda si/no: ').lower()
                             
                                         #preguntamos si quiere derivar al paciente

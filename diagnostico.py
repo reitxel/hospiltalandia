@@ -73,7 +73,7 @@ class Diagnostico():
     def muestra_espe(self):
         return self.especialidad
 
-    def gen_recep(self,medic,dosis):
+    def gen_recet(self,medic,dosis):
         recet=RecetaMedica(medic,dosis)
         self.receta.append(recet.muestra_datos())
         
