@@ -489,7 +489,7 @@ class Interface():
         # Wait for the window to end
         self.v.wait_window(v_ingreso)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
         
-    def alta_med_aux(self, nom, dire, ciudad, cp, tlf, email, turn, v_ingreso):
+    def alta_recep_aux(self, nom, dire, ciudad, cp, tlf, email, turn, v_ingreso):
         """
         Auxiliar function to be able to send messageboxes
         """ 
