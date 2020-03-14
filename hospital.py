@@ -133,32 +133,32 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                         return med        
                     
     #METODOS DE ALTA: medica, paciente, enfermera, recepcionista, especialidad, medicamento
-    def alta_pac(self,nom,dire,ciutat,cp,tlf,email,sang):
+    def alta_pac(self,nom,dire,ciudad,cp,tlf,email,sang):
         id_p=len(self.pacientes.keys())+1
-        pac=Paciente(id_p,nom,dire,ciutat,cp,tlf,email,sang)
+        pac=Paciente(id_p,nom,dire,ciudad,cp,tlf,email,sang)
         recep.altas(self.pacientes,pac,id_p)
         
-    def alta_med(self,nom,dire,ciutat,cp,tlf,email,espe):
+    def alta_med(self,nom,dire,ciudad,cp,tlf,email,espe):
         id_m=len(self.medicas.keys())+1
-        med=Medica(id_m,nom,dire,ciutat,cp,tlf,email,espe)
+        med=Medica(id_m,nom,dire,ciudad,cp,tlf,email,espe)
         recep.altas(self.medicas,med,id_m)
         
-    def alta_enf(self,nom,dire,ciutat,cp,tlf,email,cat):
+    def alta_enf(self,nom,dire,ciudad,cp,tlf,email,cat):
         id_e=len(self.enfermeras.keys())+1
-        enf=Enfermera(id_e,nom,dire,ciutat,cp,tlf,email,cat)
+        enf=Enfermera(id_e,nom,dire,ciudad,cp,tlf,email,cat)
         recep.altas(self.enfermeras,enf,id_e)
         
-    def alta_recep(self,nom,dire,ciutat,cp,tlf,email,turno):
+    def alta_recep(self,nom,dire,ciudad,cp,tlf,email,turno):
         id_r=len(self.recepcionistas.keys())+1
-        rec=Recepcionista(id_r,nom,dire,ciutat,cp,tlf,email,turno)
+        rec=Recepcionista(id_r,nom,dire,ciudad,cp,tlf,email,turno)
         recep.altas(self.recepcionistas,rec,id_r)
         
-    def alta_espe(self,nom,dire,ciutat,cp,tlf,email,cat):
+    def alta_espe(self,nom):
         cod=len(self.especialidades.keys())+1
         espe=Especialidad(cod,nom)
         recep.altas(self.especialidades,espe,cod)
         
-    def alta_medi(self,cod,princ_activ,marca,lab):
+    def alta_medi(self,princ_activ,marca,lab):
         cod=len(self.medicamentos.keys())+1
         medi=Medicamento(cod,princ_activ,marca,lab)
         recep.altas(self.medicamentos,medi,cod)
