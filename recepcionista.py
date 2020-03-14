@@ -30,7 +30,7 @@ class Recepcionista(Datos):
     
     id_num=property(get_id_num,set_id_num)
     turno=property(get_turno,set_turno)
-    rpassword=property(get_password,set_password)
+    password=property(get_password,set_password)
     
     def muestra_datos(self):
         nombre,direccion,ciudad,cp,telefono,email=self.obtener_datos()
