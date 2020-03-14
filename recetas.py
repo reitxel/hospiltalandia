@@ -18,8 +18,8 @@ class RecetaMedica():
     
     def get_dosis(self):
         return self.__dosis
-    def get_medicamento(self):
-        self.__medicamento
+    def set_medicamento(self,_medicamento):
+        self.__medicamento=_medicamento
     
     dosis=property(get_dosis,set_dosis)
     medicamento=property(get_medicamento,set_medicamento)
