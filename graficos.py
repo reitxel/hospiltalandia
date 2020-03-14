@@ -474,7 +474,7 @@ class Interface():
 
         # de la llibreria functools
         # assignar parcial per a funció, per a poder assignar directament command amb variables
-        alta_recep_params=partial(self.alta_enf_aux, v_nom, v_dir, v_ciudad, v_cp, v_tlf, v_email, spin_turn, v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+        alta_recep_params=partial(self.alta_recep_aux, v_nom, v_dir, v_ciudad, v_cp, v_tlf, v_email, spin_turn, v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
 
         # Programar botó
         btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_recep_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
@@ -502,6 +502,115 @@ class Interface():
             messagebox.showinfo(title='Añadida', message='La recepcionista ha sido añadida!')
             v_ingreso.destroy() 
     
+    
+    def alta_especialidad(self):
+        v_ingreso = tk.Toplevel(self.v)#creo la finestra
+        v_ingreso.geometry("350x350")
+        v_ingreso.title("Alta de especialidad")    
+    
+        etiq_0= tk.Label(v_ingreso, text= "Insertar datos de la nueva especialidad:")#etiqueta 0 es letiqueta de dalt de tot
+        etiq_0.grid(column=0, row=0)#posicio
+
+        # Nom
+        etiq_nom = tk.Label(v_ingreso, text= "Nombre:")
+        etiq_nom.grid(column=0, row=1)#posicio
+        v_nom = tk.StringVar()
+        v_nom.set("")
+        e_nom = tk.Entry(v_ingreso, textvariable=v_nom)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_nom.grid(column=1, row=1)
+
+        # de la llibreria functools
+        # assignar parcial per a funció, per a poder assignar directament command amb variables
+        alta_espe_params=partial(self.alta_espe_aux, v_nom, v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+
+        # Programar botó
+        btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_espe_params).grid(column=0,row=2)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+        btnSortir=tk.Button(v_ingreso,text="Salida", command = v_ingreso.destroy).grid(column=1,row=2)#destrueixo la finestra per tant surto
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_ingreso.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_ingreso.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_ingreso)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
+        
+    def alta_espe_aux(self, nom, v_ingreso):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si algun esta empty
+        if not all([nom.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
+            messagebox.showinfo(title='Error', message='El campo está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
+        else:
+            # Cridar a alta d'hospital
+            self.Hospital.alta_espe(nom.get())
+            messagebox.showinfo(title='Añadida', message='La especialidad ha sido añadida!')
+            v_ingreso.destroy() 
+       
+        
+    def alta_medicamento(self):
+        v_ingreso = tk.Toplevel(self.v)#creo la finestra
+        v_ingreso.geometry("350x350")
+        v_ingreso.title("Alta de medicamento")    
+    
+        etiq_0= tk.Label(v_ingreso, text= "Insertar datos del nuevo  medicamento:")#etiqueta 0 es letiqueta de dalt de tot
+        etiq_0.grid(column=0, row=0)#posicio
+
+        # Nom
+        etiq_princ_activ = tk.Label(v_ingreso, text= "Principio activo:")
+        etiq_princ_activ.grid(column=0, row=1)#posicio
+        v_princ_activ = tk.StringVar()
+        v_princ_activ.set("")
+        e_princ_activ = tk.Entry(v_ingreso, textvariable=v_princ_activ)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_princ_activ.grid(column=1, row=1)
+        
+        etiq_marca = tk.Label(v_ingreso, text= "Marca:")
+        etiq_marca.grid(column=0, row=2)#posicio
+        v_marca = tk.StringVar()
+        v_marca.set("")
+        e_marca = tk.Entry(v_ingreso, textvariable=v_marca)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_marca.grid(column=1, row=2)
+        
+        etiq_lab = tk.Label(v_ingreso, text= "Laboratorio:")
+        etiq_lab.grid(column=0, row=1)#posicio
+        v_lab = tk.StringVar()
+        v_lab.set("")
+        e_lab = tk.Entry(v_ingreso, textvariable=v_lab)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_lab.grid(column=1, row=1)
+
+        # de la llibreria functools
+        # assignar parcial per a funció, per a poder assignar directament command amb variables
+        alta_medi_params=partial(self.alta_medi_aux, v_princ_activ, v_marca, v_lab, v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+
+        # Programar botó
+        btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_medi_params).grid(column=0,row=2)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+        btnSortir=tk.Button(v_ingreso,text="Salida", command = v_ingreso.destroy).grid(column=1,row=2)#destrueixo la finestra per tant surto
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_ingreso.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_ingreso.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_ingreso)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
+        
+    def alta_medi_aux(self, princ_activ, marca, lab, v_ingreso):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si algun esta empty
+        if not all([princ_activ.get(), marca.get(), lab.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
+            messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')
+        else:
+            # Cridar a alta d'hospital
+            self.Hospital.alta_medi(princ_activ.get(), marca.get(), lab.get())
+            messagebox.showinfo(title='Añadido', message='El medicamento ha sido añadido!')
+            v_ingreso.destroy() 
+            
+            
     def consulta_paciente(self):
         """
         Funció que implementa una finestra amb la consulta de pacient.
