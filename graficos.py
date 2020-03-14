@@ -106,11 +106,8 @@ class Interface():
         v_comprobar.grab_set()
         self.v.wait_window(v_comprobar)
         
-#        nom=self.nom.get()
-#        contra=self.contra.get()
-#        recep=self.Hospital.login_recep(nom,contra)
-#        if recep==log:
-#            return recep
+        log=self.comprobar_recep_aux(v_nom,v_contra,v_comprobar)
+        return log
 
     def comprobar_recep_aux(self,nom,contra,v_comprobar):
         if not all([nom.get(), contra.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
@@ -122,91 +119,94 @@ class Interface():
             else:
                 messagebox.showinfo(title='Correcto', message='Bienvenido!') 
             v_comprobar.destroy()
-            
+            return log
     
     def alta_paciente(self):
         """
         Función que implementa una ventana para hacer el alta de una paciente. 
         """
+        login=self.comprobar_recep()
+        print (login)
+        if login!=False:
         #Prepara la finestra
-        v_ingreso = tk.Toplevel(self.v)#creo la finestra
-        v_ingreso.geometry("350x350")
-        v_ingreso.title("Alta de paciente")    
-    
-        etiq_0= tk.Label(v_ingreso, text= "Insertar datos de la paciente nueva")#etiqueta 0 es letiqueta de dalt de tot
-        etiq_0.grid(column=0, row=0)#posicio
+            v_ingreso = tk.Toplevel(self.v)#creo la finestra
+            v_ingreso.geometry("350x350")
+            v_ingreso.title("Alta de paciente")    
 
-        # Nom
-        etiq_nom = tk.Label(v_ingreso, text= "Nombre:")
-        etiq_nom.grid(column=0, row=1)#posicio
-        v_nom = tk.StringVar()
-        v_nom.set("")
-        e_nom = tk.Entry(v_ingreso, textvariable=v_nom)#li pos la finestre i el lligo amb una variavbel 'v_nom'
-        e_nom.grid(column=1, row=1)
-        
-        # Dirección
-        etiq_dir = tk.Label(v_ingreso, text= "Dirección:")
-        etiq_dir.grid(column=0, row=2)
-        v_dir = tk.StringVar()
-        v_dir.set("")
-        e_dir = tk.Entry(v_ingreso, textvariable=v_dir)
-        e_dir.grid(column=1, row=2)
+            etiq_0= tk.Label(v_ingreso, text= "Insertar datos de la paciente nueva")#etiqueta 0 es letiqueta de dalt de tot
+            etiq_0.grid(column=0, row=0)#posicio
 
-        # Ciutat
-        etiq_ciudad = tk.Label(v_ingreso, text= "Ciutad:")
-        etiq_ciudad.grid(column=0, row=3)
-        v_ciudad = tk.StringVar()
-        v_ciudad.set("")
-        e_ciudad = tk.Entry(v_ingreso, textvariable=v_ciudad)
-        e_ciudad.grid(column=1, row=3)
+            # Nom
+            etiq_nom = tk.Label(v_ingreso, text= "Nombre:")
+            etiq_nom.grid(column=0, row=1)#posicio
+            v_nom = tk.StringVar()
+            v_nom.set("")
+            e_nom = tk.Entry(v_ingreso, textvariable=v_nom)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+            e_nom.grid(column=1, row=1)
 
-        # Codi postal
-        etiq_cp = tk.Label(v_ingreso, text= "Código Postal:")
-        etiq_cp.grid(column=0, row=4)
-        v_cp = tk.StringVar()
-        v_cp.set("")
-        e_cp = tk.Entry(v_ingreso, textvariable=v_cp)
-        e_cp.grid(column=1, row=4)
+            # Dirección
+            etiq_dir = tk.Label(v_ingreso, text= "Dirección:")
+            etiq_dir.grid(column=0, row=2)
+            v_dir = tk.StringVar()
+            v_dir.set("")
+            e_dir = tk.Entry(v_ingreso, textvariable=v_dir)
+            e_dir.grid(column=1, row=2)
 
-        # Telefon
-        etiq_tlf = tk.Label(v_ingreso, text= "Teléfono:")
-        etiq_tlf.grid(column=0, row=5)
-        v_tlf = tk.StringVar()
-        v_tlf.set("")
-        e_tlf = tk.Entry(v_ingreso, textvariable=v_tlf)
-        e_tlf.grid(column=1, row=5)
-               
-        # email
-        etiq_email = tk.Label(v_ingreso, text= "Email:")
-        etiq_email.grid(column=0, row=6)
-        v_email = tk.StringVar()
-        v_email.set("")
-        e_email = tk.Entry(v_ingreso, textvariable=v_email)
-        e_email.grid(column=1, row=6)
-        
-        # Grup sanguini (desplegable)
-        etiq_sang = tk.Label(v_ingreso, text= "Grupo sanguíneo:")
-        etiq_sang.grid(column=0, row=7)
-        grupos_sanguineos = ['O+','A+','B+','O-','A-','AB+','B-','AB-']
-        spin_sang = ttk.Combobox(v_ingreso, values=grupos_sanguineos)#un desplegable a comobox no cal assignarli variable
-        spin_sang.grid(column=1, row=7)
+            # Ciutat
+            etiq_ciudad = tk.Label(v_ingreso, text= "Ciutad:")
+            etiq_ciudad.grid(column=0, row=3)
+            v_ciudad = tk.StringVar()
+            v_ciudad.set("")
+            e_ciudad = tk.Entry(v_ingreso, textvariable=v_ciudad)
+            e_ciudad.grid(column=1, row=3)
 
-        # de la llibreria functools
-        # assignar parcial per a funció, per a poder assignar directament command amb variables
-        alta_pac_params=partial(self.alta_pac_aux, v_nom, v_dir, v_ciudad, v_cp, v_tlf, v_email, spin_sang, v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+            # Codi postal
+            etiq_cp = tk.Label(v_ingreso, text= "Código Postal:")
+            etiq_cp.grid(column=0, row=4)
+            v_cp = tk.StringVar()
+            v_cp.set("")
+            e_cp = tk.Entry(v_ingreso, textvariable=v_cp)
+            e_cp.grid(column=1, row=4)
 
-        # Programar botó
-        btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_pac_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
-        btnSortir=tk.Button(v_ingreso,text="Salida", command = v_ingreso.destroy).grid(column=1,row=8)#destrueixo la finestra per tant surto
+            # Telefon
+            etiq_tlf = tk.Label(v_ingreso, text= "Teléfono:")
+            etiq_tlf.grid(column=0, row=5)
+            v_tlf = tk.StringVar()
+            v_tlf.set("")
+            e_tlf = tk.Entry(v_ingreso, textvariable=v_tlf)
+            e_tlf.grid(column=1, row=5)
 
-        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
-        v_ingreso.transient()
+            # email
+            etiq_email = tk.Label(v_ingreso, text= "Email:")
+            etiq_email.grid(column=0, row=6)
+            v_email = tk.StringVar()
+            v_email.set("")
+            e_email = tk.Entry(v_ingreso, textvariable=v_email)
+            e_email.grid(column=1, row=6)
 
-        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
-        v_ingreso.grab_set()
+            # Grup sanguini (desplegable)
+            etiq_sang = tk.Label(v_ingreso, text= "Grupo sanguíneo:")
+            etiq_sang.grid(column=0, row=7)
+            grupos_sanguineos = ['O+','A+','B+','O-','A-','AB+','B-','AB-']
+            spin_sang = ttk.Combobox(v_ingreso, values=grupos_sanguineos)#un desplegable a comobox no cal assignarli variable
+            spin_sang.grid(column=1, row=7)
 
-        # Wait for the window to end
-        self.v.wait_window(v_ingreso)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
+            # de la llibreria functools
+            # assignar parcial per a funció, per a poder assignar directament command amb variables
+            alta_pac_params=partial(self.alta_pac_aux, v_nom, v_dir, v_ciudad, v_cp, v_tlf, v_email, spin_sang, v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+
+            # Programar botó
+            btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_pac_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+            btnSortir=tk.Button(v_ingreso,text="Salida", command = v_ingreso.destroy).grid(column=1,row=8)#destrueixo la finestra per tant surto
+
+            # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+            v_ingreso.transient()
+
+            #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+            v_ingreso.grab_set()
+
+            # Wait for the window to end
+            self.v.wait_window(v_ingreso)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
 
     def alta_pac_aux(self, nom, dire, ciudad, cp, tlf, email, sang, v_ingreso):
         """
