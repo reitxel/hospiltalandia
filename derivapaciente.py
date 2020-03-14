@@ -32,5 +32,3 @@ class DerivaPaciente():
     
     def muestra_espe(self):
         return self.especialidad
-    def muestra_datos(self):
-        return [self.nommed,self.fecha,self.especialidad]

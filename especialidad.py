@@ -26,6 +26,5 @@ class Especialidad():
     
     def regresa_nombre(self): #unico método que devuelve ambos atributos
         return self.nombre
-    
     def muestra_datos(self):
         return [self.nombre,self.codigo]

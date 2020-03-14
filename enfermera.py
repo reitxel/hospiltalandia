@@ -6,6 +6,7 @@ Created on Thu Feb 13 16:48:00 2020
 @author: raquel
 """
 from datos import Datos
+from fichas import FichaRevision
 #relacion con paciente
 
 class Enfermera(Datos):
