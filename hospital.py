@@ -60,13 +60,12 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                 for i in self.medicas:
                     if nom == self.medicas[i].regresa_nombre():
                         lista_med.append(self.medicas[i].regresa_nombre())
-                    
+                if lista_med==[]:
+                    return 2    
                 password=input('-> Contraseña (puede introducir ''salir'' para volver al menú principal): ')
                 for i in lista_med:
                     for j in self.medicas:
-                        if lista_med==[]:
-                            return 2
-                        elif lista_med!=[]:
+                        if lista_med!=[]:
                             if password==self.medicas[j].password:
                                 print('Constraseña acertada')
                                 med=self.medicas[j]
@@ -80,12 +79,12 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                 for i in self.enfermeras:
                     if nom == self.enfermeras[i].regresa_nombre():
                         lista_enf.append(self.enfermeras[i].regresa_nombre())
+                if lista_enf==[]:
+                    return 2
                 password=input('-> Contraseña (puede introducir ''salir'' para volver al menú principal): ')
                 for i in lista_enf:
                     for j in self.enfermeras:
-                        if lista_enf==[]:
-                            return 2
-                        elif lista_enf!=[]:
+                        if lista_enf!=[]:
                             if password==self.enfermeras[j].password:
                                 print('Constraseña acertada')
                                 enf=self.enfermeras[j]
@@ -98,12 +97,12 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                 for i in self.recepcionistas:
                     if nom == self.recepcionistas[i].regresa_nombre():
                         lista_recep.append(self.recepcionistas[i].regresa_nombre())
+                if lista_recep==[]:
+                    return 2
                 password=input('-> Contraseña (puede introducir ''salir'' para volver al menú principal): ')
                 for i in lista_recep:
                     for j in self.recepcionistas:
-                        if lista_recep==[]:
-                            return 2
-                        elif lista_recep!=[]:
+                        if lista_recep!=[]:
                             if password==self.recepcionsitas[j].password:
                                 print('Constraseña acertada')
                                 recep=self.recepcionistas[j]
