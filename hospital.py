@@ -7,6 +7,17 @@ Created on Thu Jan 30 14:49:33 2020
 """
 from datos import Datos #hereda de la clase Datos
 
+from utilidades import Utilidades
+
+from medica import Medica
+from paciente import Paciente
+from especialidad import Especialidad
+from enfermera import Enfermera
+from recepcionista import Recepcionista
+from medicamento import Medicamento
+from diagnostico import Diagnostico
+from derivapaciente import DerivaPaciente
+
 class Hospital(Datos): #relación de herencia con Datos por ello la hereda como parametro
     def __init__(self,_nombre,_direccion,_ciudad,_cp,_telefono,_email,_dic_pacientes,_dic_medicas,_dic_especialidades,_dic_enfermeras,_dic_recepcionistas,_dic_medicamentos): #tiene como atributos los de Datos y los suyos propios
         super().__init__(_nombre,_direccion,_ciudad,_cp,_telefono,_email) #llamada al constructor de Datos
@@ -50,9 +61,8 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     recepcionistas=property(get_recepcionistas,set_recepcionistas)
     medicamentos=property(get_medicamentos,set_medicamentos)
     
-
     #MÉTODO DE INICIAR SESIÓN: tanto medicas, enfermeras como recepcionitas
-    def login_medico(nom,contra):#la entrada es el nombre de
+    def login_medico(self,nom,contra):#la entrada es el nombre de
         while True:
                 lista_med=[]
                 for i in self.medicas:
@@ -68,7 +78,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                                 return med#si es troba un recep
                 return 1#si no es troba la contrasenya
             
-    def login_enf(entrada):
+    def login_enf(self,entrada):
                 lista_enf=[]
                 for i in self.enfermeras:
                     if entrada == self.enfermeras[i].regresa_nombre():
@@ -99,10 +109,60 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                             recep=self.recepcionistas[j]
                             return recep 
             return False#si no hi ha contra  ben posada
-            
-
+        
+        
+    def comprobar_especialidad(self):
+        lista_espes=[]
+        for i in self.especialidades:
+            lista_espes.append(self.especialidades[i].regresa_nombre())
+        return lista_espes
+    
+    #MÉTODO DE INICIAR SESIÓN: tanto medicas, enfermeras como recepcionitas
+    def login_recep_nom(self,entrada):#la entrada es el nombre de la recepcionista
+        lista_med=[]
+        for i in self.medicas:
+            if entrada == self.medicas[i].regresa_nombre():
+                lista_med.append(self.medicas[i].regresa_nombre())
+                
+    def login_recep_contra(self,entrada,lista_med): #compruebo si la contraseña es valida           
+        for i in lista_med:
+            for j in self.medicas:
+                if lista_med!=[]:
+                    if entrada==self.medicas[j].password:
+                        med=self.medicas[j]
+                        return med        
                     
     #METODOS DE ALTA: medica, paciente, enfermera, recepcionista, especialidad, medicamento
+    def alta_pac(self,nom,dire,ciutat,cp,tlf,email,sang):
+        id_p=len(self.pacientes.keys())+1
+        pac=Paciente(id_p,nom,dire,ciutat,cp,tlf,email,sang)
+        recep.altas(self.pacientes,pac,id_p)
+        
+    def alta_med(self,nom,dire,ciutat,cp,tlf,email,espe):
+        id_m=len(self.medicas.keys())+1
+        med=Medica(id_m,nom,dire,ciutat,cp,tlf,email,espe)
+        recep.altas(self.medicas,med,id_m)
+        
+    def alta_enf(self,nom,dire,ciutat,cp,tlf,email,cat):
+        id_e=len(self.enfermeras.keys())+1
+        enf=Enfermera(id_e,nom,dire,ciutat,cp,tlf,email,cat)
+        recep.altas(self.enfermeras,enf,id_e)
+        
+    def alta_recep(self,nom,dire,ciutat,cp,tlf,email,turno):
+        id_r=len(self.recepcionistas.keys())+1
+        rec=Recepcionista(id_r,nom,dire,ciutat,cp,tlf,email,turno)
+        recep.altas(self.recepcionistas,rec,id_r)
+        
+    def alta_espe(self,nom,dire,ciutat,cp,tlf,email,cat):
+        cod=len(self.especialidades.keys())+1
+        espe=Especialidad(cod,nom)
+        recep.altas(self.especialidades,espe,cod)
+        
+    def alta_medi(self,cod,princ_activ,marca,lab):
+        cod=len(self.medicamentos.keys())+1
+        medi=Medicamento(cod,princ_activ,marca,lab)
+        recep.altas(self.medicamentos,medi,cod)
+    
     def metodo_alta(self,obj,ident,recep,entrada): #metodo unico que abarca todas las altas dependiendo del parametro de entrada
         if entrada=='med':
             dic=self.medicas
