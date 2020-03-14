@@ -56,51 +56,60 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         nom=input('-> Nombre y apellido: ').title()
         while True:
             if entrada=='med':
+                lista_med=[]
                 for i in self.medicas:
                     if nom == self.medicas[i].regresa_nombre():
-                        while True:
-                            password=input('-> Contraseña (puede introducir ''salir'' para volver al menú principal): ')
-                            if password==self.medicas[i].password:
+                        lista_med.append(self.medicas[i].regresa_nombre())
+                    
+                password=input('-> Contraseña (puede introducir ''salir'' para volver al menú principal): ')
+                for i in lista_med:
+                    for j in self.medicas:
+                        if lista_med==[]:
+                            return 2
+                        elif lista_med!=[]:
+                            if password==self.medicas[j].password:
                                 print('Constraseña acertada')
-                                med=self.medicas[i]
+                                med=self.medicas[j]
                                 return med
                             elif password=='salir':
                                 return 1
-                            else:
-                                print('Contraseña incorrecta')
-                    return 2
+
                 
             elif entrada=='enf':
+                lista_enf=[]
                 for i in self.enfermeras:
                     if nom == self.enfermeras[i].regresa_nombre():
-                        while True:
-                            password=input('-> Contraseña (puede introducir ''salir'' para volver al menú principal): ')
-                            if password==self.enfermeras[i].password:
+                        lista_enf.append(self.enfermeras[i].regresa_nombre())
+                password=input('-> Contraseña (puede introducir ''salir'' para volver al menú principal): ')
+                for i in lista_enf:
+                    for j in self.enfermeras:
+                        if lista_enf==[]:
+                            return 2
+                        elif lista_enf!=[]:
+                            if password==self.enfermeras[j].password:
                                 print('Constraseña acertada')
-                                enf=self.enfermeras[i]
+                                enf=self.enfermeras[j]
                                 return enf
                             elif password=='salir':
                                 return 1
-                            else:
-                                print('Contraseña incorrecta')
-                    else:
-                        return 2
-                
+
             elif entrada=='recep':
+                lista_recep=[]
                 for i in self.recepcionistas:
                     if nom == self.recepcionistas[i].regresa_nombre():
-                        while True:
-                            password=input('-> Contraseña (puede introducir ''salir'' para volver al menú principal): ')
-                            if password==self.recepcionistas[i].password:
+                        lista_recep.append(self.recepcionistas[i].regresa_nombre())
+                password=input('-> Contraseña (puede introducir ''salir'' para volver al menú principal): ')
+                for i in lista_recep:
+                    for j in self.recepcionistas:
+                        if lista_recep==[]:
+                            return 2
+                        elif lista_recep!=[]:
+                            if password==self.recepcionsitas[j].password:
                                 print('Constraseña acertada')
-                                recep=self.recepcionistas[i]
+                                recep=self.recepcionistas[j]
                                 return recep
                             elif password=='salir':
-                                return 1
-                            else:
-                                print('Contraseña incorrecta')
-                    else:
-                        return 2                        
+                                return 1               
 
                     
     #METODOS DE ALTA: medica, paciente, enfermera, recepcionista, especialidad, medicamento

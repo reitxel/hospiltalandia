@@ -487,6 +487,7 @@ def main():
                                     #mostrar toda la información del paciente, que pasa si tengo varias?
                                     if len(lista_atender_hoy)==0:
                                         print('La médica no tiene ninguna paciente con visita programada para hoy')
+                                        break
                                     elif len(lista_atender_hoy)==1:
                                         pac=lista_atender_hoy[0]    
                                     elif len(lista_atender_hoy)!=1:
