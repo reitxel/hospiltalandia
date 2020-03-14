@@ -290,8 +290,8 @@ def main():
                                             if pac==[]: #si la lista esta vacía quiere decir que no ha encontrado ninguna paciente con ese nombre
                                                 print('\nNo figura una paciente con ese nombre')
                                             else: #la lista no está vacía, hay una o más pacientes con el nombre introducido
-                                                for i in range(len(pac)): #recorro la lista, puede que recorra más posiciones de las que necesito, pero solo me imprimirá las que encuentre en la lista
-                                                    print(' -> ',pac[i][i].muestra_datos(),'\n') #me imprime una flechita por cada paciente que haya
+                                                for i in pac: #recorro la lista, puede que recorra más posiciones de las que necesito, pero solo me imprimirá las que encuentre en la lista
+                                                    print(' -> ',i.muestra_datos(),'\n') #me imprime una flechita por cada paciente que haya
                                         else:
                                             print('Debe introducir letras') #cuando lo introducido no son letras y son números o símbolos
                                     elif opcion3==2: #busqueda paciente por identificador
@@ -482,7 +482,7 @@ def main():
                                                 print('No existe tal paciente')
                                             elif a==1:
                                                 enf.asigna_revision(pac,fecha,dic_medicas)
-                                                print('Revisión asignada')
+                                                print('Revisión a',pac.regresa_nombre(),'asignada')
                                             elif a!=1: #más de unx paciente con el nombre introducido
                                                 print('Hay',a,'pacientes con el nombre introducido:')
                                                 for i in dic_pacientes:
@@ -517,12 +517,11 @@ def main():
                                 if len(lista_atender_hoy)==0:
                                     print('La médica no tiene ninguna paciente con visita programada para hoy')
                                 elif len(lista_atender_hoy)==1:
-                                    pac=lista_atender_hoy[0]
-                                    
+                                    pac=lista_atender_hoy[0]    
                                 elif len(lista_atender_hoy)!=1:
                                     print('Hay',len(lista_atender_hoy),'pacientes con el nombre introducido: ')
                                     for i in lista_atender_hoy:
-                                        print(i[0],i) #imprimo el id y los datos?
+                                        print(i.muestra_datos()) #imprimo el id y los datos?
                                     id_p=int(input('Introduzca el número identificador de la paciente a realizar la revisión: '))
                                     for i in lista_atender_hoy:
                                         if id_p==i.id_num:
@@ -612,28 +611,26 @@ def main():
                             print('\nSe ha generado el archivo')
                         elif opcion5==2:
                             nom=input("Introduzca el nombre y apellido de la paciente: ").title()
-                            pac=hosp.consulta_pacientes(nom,recep)
+                            pac=hosp.consulta_paciente(nom,recep)
                             if pac==[]:
                                 print('No existe tal paciente')
                             elif len(pac)==1:
-                                pac=pac[0]#primer elemento de la lista
                                 pac=pac[0]#saco el objeto paciente de su lista
                                 #ESTAMOS RENOMBRANDO LA MISMA VARIABLE, NO SE SI TIENE SENTIDO
                             elif len(pac)!=1: #más de unx paciente con el nombre introducido
                                 print('\nHay',len(pac),'pacientes con el nombre introducido:')
-                                for i in dic_pacientes:
-                                    if nom in dic_pacientes[i].regresa_nombre():
-                                        print(dic_pacientes[i].muestra_datos())
-                                    id_p=int(input('Introduzca el número identificador de la paciente a la que quieras el historial: '))
-                                    pac=dic_pacientes[id_p]
-                            espe=hosp.archivo_paciente(pac)
+                                for i in pac:
+                                    print(i.muestra_datos())
+                                id_p=int(input('Introduzca el número identificador de la paciente a la que quieras el historial: '))
+                                pac=dic_pacientes[id_p]
+                            espe=hosp.archivo_pacientes(pac)
                             print(espe)
                         elif opcion5==3:
-                            estad=hosp.archivo_enf_recep('enf')
+                            estad=hosp.archivo_enf()
                             print('\nSe ha generado el archivo')
                             print(estad)
                         elif opcion5==4:
-                            estad=hosp.archivo_enf_recep('recep')
+                            estad=hosp.archivo_recep()
                             print('\nSe ha generado el archivo')
                             print(estad)
                     except ValueError:

@@ -107,7 +107,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     def consulta_paciente(self,nom,recep): #alusion a informa de recepcionista
         lista=[]
         for pac in recep.informa(nom,self.pacientes):
-            lista.append(recep.informa(nom,self.pacientes)) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
+            lista.append(pac) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
         return lista
     
 #    def consulta_derivacion(self):
@@ -250,43 +250,82 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             lista_estadisticas.append([i,n])# me pone dentro de la lista el nombre de la especialidad i cuantas veces aparece esta        
         return lista_estadisticas
     
-    def archivo_enf_recep(self,entrada):
+    
+    
+    def archivo_enf(self):
         categorias=['P:practicante','J:enfermera junior','M:enfermera senior','JE:jefa de enfermeras']
+        dic_enf_orden={}
+        for a in categorias:
+            for i in self.enfermeras:#recorro dic enf
+                if self.enfermeras[i].categoria==a:#recorro especialitats en ordre(alfabetis), si coincideixem amb la especialitat de un metge ho guardo al nou diccionari
+                    dic_enf_orden[self.enfermeras[i].id_num]=self.enfermeras[i]
+        arx_enf=open('Enfermeras.txt','w')
+        for i in dic_enf_orden:#recorro el dic i vaig 'escribint-lo' al fitxer
+            arx_enf.write(str(dic_enf_orden[i].muestra_datos()))
+        arx_enf.close
+        cat=[]#lista con todas la categroias de todas las enfermenra
+        for i in self.enfermeras:
+           cat.append( self.enfermeras[i].categoria)
+        estadist=[]
+        for i in categorias:
+            estadist.append([i,cat.count(i)])
+        return estadist
+
+    def archivo_recep(self):
         turnos=['1:matutino','2:verspertino','3:nocturno','4:rotatorio'] 
-        dic_orden={}
-        
-        if entrada=='enf':
-            atributo=categorias
-            dic=self.enfermeras
-            nombre_archivo='Enfermeras.txt'
-        elif entrada=='recep':
-            atributo=turnos
-            dic=self.recepcionistas
-            nombre_archivo='Recepcionistas.txt'
-            
-        for i in atributo:
-            for j in dic:
-                if dic[i].atributo==i:
-                    dic_orden[dic[i].id_num]=dic[i]
-        
-        archivo=open(nombre_archivo,'w')
-        
-        for i in dic_orden:
-            archivo.write(str(dic_orden[i].muestra_datos()))
-            
-        archivo.close
-        
-        atr=[]
-        
-        for i in dic:
-            atr.append(dic[i].atributo)
-            
-        lista_estadisticas=[]
-        
-        for i in atributo:
-            lista_estadisticas.append([i,atr.count(i)])
-        
-        return lista_estadisticas
+        dic_recep_orden={}
+        for a in turnos:
+            for i in self.recepcionistas:#recorro dic recep
+                if self.recepcionistas[i].turno==a:#recorro especialitats en ordre(alfabetis), si coincideixem amb la especialitat de un metge ho guardo al nou diccionari
+                    dic_recep_orden[self.recepcionistas[i].id_num]=self.recepcionistas[i]
+        arx_enf=open('Recepcionistas.txt','w')
+        for i in dic_recep_orden:#recorro el dic i vaig 'escribint-lo' al fitxer
+            arx_enf.write(str(dic_recep_orden[i].muestra_datos()))
+        arx_enf.close
+        turn=[]#lista con todas la categroias de todas las enfermenra
+        for i in self.recepcionistas:
+           turn.append( self.recepcionistas[i].turno)
+        estadist=[]
+        for i in turnos:
+            estadist.append([i,turn.count(i)])
+        return estadist
+    
+    
+#    def archivo_enf_recep(self,entrada):
+#        categorias=['P:practicante','J:enfermera junior','M:enfermera senior','JE:jefa de enfermeras']
+#        turnos=['1:matutino','2:verspertino','3:nocturno','4:rotatorio'] 
+#        dic_orden={}
+#        
+#        if entrada=='enf':
+#            lista=categorias
+#            atributo=categoria
+#            dic=self.enfermeras
+#            nombre_archivo='Enfermeras.txt'
+#        elif entrada=='recep':
+#            lista=turnos
+#            atributo=turno
+#            dic=self.recepcionistas
+#            nombre_archivo='Recepcionistas.txt'
+#            
+#        for i in lista:
+#            for j in dic:
+#                if dic[j].atributo==i:
+#                    dic_orden[dic[j].id_num]=dic[j]
+#        
+#        archivo=open(nombre_archivo,'w') 
+#        for i in dic_orden:
+#            archivo.write(str(i.muestra_datos()))  
+#        archivo.close
+#        
+#        atr=[]
+#        for i in dic:
+#            atr.append(i.atributo) 
+#            
+#        lista_estadisticas=[]
+#        for i in atributo:
+#            lista_estadisticas.append([i,atr.count(i)])
+#        
+#        return lista_estadisticas
         
         
     
