@@ -33,39 +33,39 @@ class Interface():
         self.mSalir = tk.Menu(self.barraMenu, tearoff=0)
 
         #Comandos
-        self.mAltas.add_command(label="Alta de pacient", command= self.alta_paciente)#per cada submenu creeem les difrerentes opcions
-        self.mAltas.add_command(label="Alta de metge")#el comand diu que cuan la cliclo pasara algo
-        self.mAltas.add_command(label="Alta de enfermera")
-        self.mAltas.add_command(label="Alta de recepcionista")
-        self.mAltas.add_command(label="Alta de especialitat")
-        self.mAltas.add_command(label="Alta de medicament")
+        self.mAltas.add_command(label="Alta de paciente", command= self.alta_paciente)#per cada submenu creeem les difrerentes opcions
+        self.mAltas.add_command(label="Alta de médica", command= self.alta_medica)#el comand diu que cuan la cliclo pasara algo
+        self.mAltas.add_command(label="Alta de enfermera", command= self.alta_enfermera)
+        self.mAltas.add_command(label="Alta de recepcionista", command= self.alta_recepcionista)
+        self.mAltas.add_command(label="Alta de especialidad", command= self.alta_especialidad)
+        self.mAltas.add_command(label="Alta de medicamento", command= self.alta_medicamento)
 
-        self.mConsultas.add_command(label="Consulta de pacient", command = self.consulta_paciente)
-        self.mConsultas.add_command(label="Consulta de metge")
-        self.mConsultas.add_command(label="Consulta de infermera")
-        self.mConsultas.add_command(label="Consulta de recepcionista")
-        self.mConsultas.add_command(label="Consulta de especialitat")
-        self.mConsultas.add_command(label="Consulta de medicament")
-        self.mConsultas.add_command(label="Consulta de receptes")
-        self.mConsultas.add_command(label="Consulta de derivacions")
-        self.mConsultas.add_command(label="Consulta de metge per especialitat")
+        self.mConsultas.add_command(label="Consulta de paciente", command = self.consulta_paciente)
+        self.mConsultas.add_command(label="Consulta de médica", command = self.consulta_medica)
+        self.mConsultas.add_command(label="Consulta de enfermera", command = self.consulta_enfermera)
+        self.mConsultas.add_command(label="Consulta de recepcionista", command = self.consulta_recepcionista)
+        self.mConsultas.add_command(label="Consulta de especialidad", command = self.consulta_especialidad)
+        self.mConsultas.add_command(label="Consulta de medicamento", command = self.consulta_medicamento)
+        self.mConsultas.add_command(label="Consulta de recetas", command = self.consulta_recetas)
+        self.mConsultas.add_command(label="Consulta de derivaciones", command = self.consulta_derivaciones)
+        self.mConsultas.add_command(label="Consulta de médica por especialidad", command = self.consulta_med_espe)
                 
-        self.mRevisiones.add_command(label= "Alta de revisions")
-        self.mRevisiones.add_command(label= "Realitzar revisió")
+        self.mRevisiones.add_command(label= "Alta de revisiones")
+        self.mRevisiones.add_command(label= "Realizar revisión")
 
-        self.mArchivos.add_command(label= "Informe de metges")
-        self.mArchivos.add_command(label= "Historial d'un pacient")
-        self.mArchivos.add_command(label= "Informe d'infermeres")
-        self.mArchivos.add_command(label= "Informe de recepcionistes")
+        self.mArchivos.add_command(label= "Informe de médicas")
+        self.mArchivos.add_command(label= "Historial de una paciente")
+        self.mArchivos.add_command(label= "Informe de enfermeras")
+        self.mArchivos.add_command(label= "Informe de recepcionistas")
         
-        self.mSalir.add_command(label= "Sortir", command= self.v.destroy)# per eleminar uan finestra
+        self.mSalir.add_command(label= "Salida", command= self.v.destroy)# per eleminar uan finestra
 
         #Agregar menus a la barra
-        self.barraMenu.add_cascade(label = "Altes", menu= self.mAltas)#eslicitament diem els menus son les etiquetes del menu que veiem
-        self.barraMenu.add_cascade(label = "Consultes", menu= self.mConsultas)
-        self.barraMenu.add_cascade(label = "Revisions", menu= self.mRevisiones)
-        self.barraMenu.add_cascade(label = "Arxius", menu= self.mArchivos)
-        self.barraMenu.add_cascade(label = "Sortir", menu= self.mSalir)
+        self.barraMenu.add_cascade(label = "Altas", menu= self.mAltas)#eslicitament diem els menus son les etiquetes del menu que veiem
+        self.barraMenu.add_cascade(label = "Consultas", menu= self.mConsultas)
+        self.barraMenu.add_cascade(label = "Revisiones", menu= self.mRevisiones)
+        self.barraMenu.add_cascade(label = "Archivos", menu= self.mArchivos)
+        self.barraMenu.add_cascade(label = "Salida", menu= self.mSalir)
         
         #Indicar que la barra de menú está en la ventana
         self.v.config(menu = self.barraMenu)#modifiquem el confi( es necessari)
@@ -74,18 +74,18 @@ class Interface():
     
     def alta_paciente(self):
         """
-        Funció que implementa una finestra per fer l'alta de pacient. 
+        Función que implementa una ventana para hacer el alta de una paciente. 
         """
         #Prepara la finestra
         v_ingreso = tk.Toplevel(self.v)#creo la finestra
         v_ingreso.geometry("350x350")
-        v_ingreso.title("Alta de pacient")    
+        v_ingreso.title("Alta de paciente")    
     
-        etiq_0= tk.Label(v_ingreso, text= "Inserir dades del pacient nou:")#etiqueta 0 es letiqueta de dalt de tot
+        etiq_0= tk.Label(v_ingreso, text= "Insertas datos de la paciente nueva")#etiqueta 0 es letiqueta de dalt de tot
         etiq_0.grid(column=0, row=0)#posicio
 
         # Nom
-        etiq_nom = tk.Label(v_ingreso, text= "Nom:")
+        etiq_nom = tk.Label(v_ingreso, text= "Nombre:")
         etiq_nom.grid(column=0, row=1)#posicio
         v_nom = tk.StringVar()
         v_nom.set("")
@@ -93,7 +93,7 @@ class Interface():
         e_nom.grid(column=1, row=1)
         
         # Dirección
-        etiq_dir = tk.Label(v_ingreso, text= "Direcció:")
+        etiq_dir = tk.Label(v_ingreso, text= "Dirección:")
         etiq_dir.grid(column=0, row=2)
         v_dir = tk.StringVar()
         v_dir.set("")
@@ -101,7 +101,7 @@ class Interface():
         e_dir.grid(column=1, row=2)
 
         # Ciutat
-        etiq_ciutat = tk.Label(v_ingreso, text= "Ciutat:")
+        etiq_ciutat = tk.Label(v_ingreso, text= "Ciudad:")
         etiq_ciutat.grid(column=0, row=3)
         v_ciutat = tk.StringVar()
         v_ciutat.set("")
@@ -109,7 +109,7 @@ class Interface():
         e_ciutat.grid(column=1, row=3)
 
         # Codi postal
-        etiq_cp = tk.Label(v_ingreso, text= "Codi Postal:")
+        etiq_cp = tk.Label(v_ingreso, text= "Código Postal:")
         etiq_cp.grid(column=0, row=4)
         v_cp = tk.StringVar()
         v_cp.set("")
@@ -117,7 +117,7 @@ class Interface():
         e_cp.grid(column=1, row=4)
 
         # Telefon
-        etiq_tlf = tk.Label(v_ingreso, text= "Telèfon:")
+        etiq_tlf = tk.Label(v_ingreso, text= "Teléfono:")
         etiq_tlf.grid(column=0, row=5)
         v_tlf = tk.StringVar()
         v_tlf.set("")
@@ -133,10 +133,10 @@ class Interface():
         e_email.grid(column=1, row=6)
         
         # Grup sanguini (desplegable)
-        etiq_sang = tk.Label(v_ingreso, text= "Grup sanguini:")
+        etiq_sang = tk.Label(v_ingreso, text= "Grupo sanguíneo:")
         etiq_sang.grid(column=0, row=7)
-        grup_sanguini = ['O+','A+','B+','O-','A-','AB+','B-','AB-']
-        spin_sang = ttk.Combobox(v_ingreso, values=grup_sanguini)#un desplegable a comobox no cal assignarli variable
+        grupos_sanguineos = ['O+','A+','B+','O-','A-','AB+','B-','AB-']
+        spin_sang = ttk.Combobox(v_ingreso, values=grupos_sanguineos)#un desplegable a comobox no cal assignarli variable
         spin_sang.grid(column=1, row=7)
 
         # de la llibreria functools
@@ -145,7 +145,7 @@ class Interface():
 
         # Programar botó
         btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_pac_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
-        btnSortir=tk.Button(v_ingreso,text="Sortir", command = v_ingreso.destroy).grid(column=1,row=8)#destrueixo la finestra per tant surto
+        btnSortir=tk.Button(v_ingreso,text="Salida", command = v_ingreso.destroy).grid(column=1,row=8)#destrueixo la finestra per tant surto
 
         # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
         v_ingreso.transient()
