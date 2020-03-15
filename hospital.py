@@ -255,6 +255,14 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         for i in dic_med_orden:#recorro el dic i vaig 'escribint-lo' al fitxer
             arx_med.write(str(dic_med_orden[i].muestra_datos()))
         arx_med.close
+        espe_totes=[]
+        for i in self.medicas:
+            espe_totes.append(self.medicas[i].muestra_espe())
+        estadistiques=[]
+        for i in self.especialidades:
+            estadistiques.append([i,espe_totes.count(i)])
+        estadistiques.append(['Numero total de medicas es: ',len(self.medicas)])
+        return estadistiques
       
     def archivo_pacientes(self,pac):#fem un consulta i triem el pacient
         nombre=pac.nombre
