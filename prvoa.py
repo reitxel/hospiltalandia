@@ -6,7 +6,13 @@ Created on Sun Mar  8 21:57:24 2020
 """
 
 
-
+a=datetime.date(2004,18,1)
+b=datetime.date(2004,2,3)
+c=datetime.date(2005,2,1),
+d=datetime.date(2004,5,1)
+lista=[a,b,c,d]
+lista.sorted()
+print (lista)
 #
 ##
 #date_str=input('\nIntroduzca la fecha de revisión en formato "dd-mm-aaaa": ')

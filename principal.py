@@ -399,7 +399,6 @@ def main():
                             nombre=input('Nombre: ')
                             deriva=hosp.consulta_derivacion(nombre)
                             print(deriva)
-                            
                                     
                                     
                         elif opcion2==9: #BUSQUEDA MEDICO POR ESPECIALIDAD
@@ -412,7 +411,7 @@ def main():
                                     print('\n -> ',meds[i],'\n')                        
                                 
                                 
-                        elif opcion2<0 or opcion2>10: #SALIDA
+                        elif opcion2<0 or opcion2>10: #SALIDA'Anarda Monroy'
                             print('la opcion seleccionada no está disponible')
                     except ValueError:
                         print('opcion seleccionada no es valida')

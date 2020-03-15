@@ -49,10 +49,12 @@ class Enfermera(Datos):
             diagnosticos=ultima_rev.diag# llista con todos los diagnosticos
            # print(diagnosticos)
             diag=diagnosticos[-1]#ultimo diagnostico de todos
-           # print(diag)
+            print(diag)
             if diag.derivado==True:
-                deriva=diag.derivado#accedo al objeto DerivaPaciente 
-                especialidad=deriva.muestra_espe()  #muestro la especialidad de la derivacion     
+                deriva=diag.deriva#accedo al objeto DerivaPaciente 
+                print (deriva)
+                print (deriva[0])
+                especialidad=deriva[0].especialidad  #muestro la especialidad de la derivacion     
             elif diag.derivado==False:
                 especialidad=diag.especialidad
                 
