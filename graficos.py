@@ -41,15 +41,15 @@ class Interface():
         self.mAltas.add_command(label="Alta de especialidad", command= self.alta_especialidad)
         self.mAltas.add_command(label="Alta de medicamento", command= self.alta_medicamento)
 
-        self.mConsultas.add_command(label="Consulta de paciente")#, command = self.consulta_paciente)
-        self.mConsultas.add_command(label="Consulta de médica")#, command = self.consulta_medica)
-        self.mConsultas.add_command(label="Consulta de enfermera")#, command = self.consulta_enfermera)
-        self.mConsultas.add_command(label="Consulta de recepcionista")#, command = self.consulta_recepcionista)
-        self.mConsultas.add_command(label="Consulta de especialidad")#, command = self.consulta_especialidad)
-        self.mConsultas.add_command(label="Consulta de medicamento")#, command = self.consulta_medicamento)
+        self.mConsultas.add_command(label="Consulta de paciente", command = self.consulta_paciente)
+        self.mConsultas.add_command(label="Consulta de médica", command = self.consulta_medica)
+        self.mConsultas.add_command(label="Consulta de enfermera", command = self.consulta_enfermera)
+        self.mConsultas.add_command(label="Consulta de recepcionista", command = self.consulta_recepcionista)
+        self.mConsultas.add_command(label="Consulta de especialidad", command = self.consulta_especialidad)
+        self.mConsultas.add_command(label="Consulta de medicamento", command = self.consulta_medicamento)
         self.mConsultas.add_command(label="Consulta de recetas")#, command = self.consulta_recetas)
-        self.mConsultas.add_command(label="Consulta de derivaciones")#, command = self.consulta_derivaciones)
-        self.mConsultas.add_command(label="Consulta de médica por especialidad")#, command = self.consulta_med_espe)
+        self.mConsultas.add_command(label="Consulta de derivaciones", command = self.consulta_derivacion)
+        self.mConsultas.add_command(label="Consulta de médica por especialidad", command = self.consulta_medica_especialidad)
                 
         self.mRevisiones.add_command(label= "Alta de revisiones")
         self.mRevisiones.add_command(label= "Realizar revisión")
@@ -73,7 +73,7 @@ class Interface():
         self.v.mainloop()
     
     
-    def comprobar_recep(self):
+    def comprobar_recep(self): #para el inicio de sesión de recepcionista
         
         v_comprobar = tk.Toplevel(self.v)#creo la finestra
         v_comprobar.geometry("350x350")
@@ -118,9 +118,112 @@ class Interface():
             if log==False:
                  messagebox.showinfo(title='Error', message='No existe esta recepcionista, o la contraseña es incorrecta')
             else:
-                messagebox.showinfo(title='Correcto', message='Bienvenido!') 
+                messagebox.showinfo(title='Correcto', message='Bienvenida!') 
             v_comprobar.destroy()
             return log
+        
+    def comprobar_enf(self): #para el inicio de sesión de enfermera
+        
+        v_comprobar = tk.Toplevel(self.v)#creo la finestra
+        v_comprobar.geometry("350x350")
+        v_comprobar.title("Login enfermera")    
+        
+        
+        etiq_nom = tk.Label(v_comprobar, text= "Nombre:")
+        etiq_nom.grid(column=0, row=1)#posicio
+        v_nom = tk.StringVar()
+        v_nom.set("")
+        e_nom = tk.Entry(v_comprobar, textvariable=v_nom)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_nom.grid(column=1, row=1)
+        
+        etiq_contra = tk.Label(v_comprobar, text= "Contraseña:")
+        etiq_contra.grid(column=0, row=2)#posicio
+        v_contra = tk.StringVar()
+        v_contra.set("")
+        e_contra = tk.Entry(v_comprobar, textvariable=v_contra)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_contra.grid(column=1, row=2)
+        
+        login_enf_params=partial(self.comprobar_enf_aux, v_nom, v_contra,v_comprobar)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+
+        # Programar botó
+        btnAsignar=tk.Button(v_comprobar,text="Asignar", command = login_enf_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+        btnSortir=tk.Button(v_comprobar,text="Sortir", command = v_comprobar.destroy).grid(column=1,row=8)#destrueixo la finestra per tant surto
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_comprobar.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_comprobar.grab_set()
+        self.v.wait_window(v_comprobar)
+        
+        log=self.comprobar_enf_aux(v_nom,v_contra,v_comprobar)
+        
+        return log
+
+    def comprobar_enf_aux(self,nom,contra,v_comprobar):
+        if not all([nom.get(), contra.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
+            messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
+        else:
+            log=self.Hospital.log_enf(nom.get(),contra.get())
+            if log==False:
+                 messagebox.showinfo(title='Error', message='No existe esta enfermera, o la contraseña es incorrecta')
+            else:
+                messagebox.showinfo(title='Correcto', message='Bienvenida!') 
+            v_comprobar.destroy()
+            return log
+        
+        
+    def comprobar_med(self): #para el inicio de sesión de médica
+        
+        v_comprobar = tk.Toplevel(self.v)#creo la finestra
+        v_comprobar.geometry("350x350")
+        v_comprobar.title("Login médica")    
+        
+        
+        etiq_nom = tk.Label(v_comprobar, text= "Nombre:")
+        etiq_nom.grid(column=0, row=1)#posicio
+        v_nom = tk.StringVar()
+        v_nom.set("")
+        e_nom = tk.Entry(v_comprobar, textvariable=v_nom)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_nom.grid(column=1, row=1)
+        
+        etiq_contra = tk.Label(v_comprobar, text= "Contraseña:")
+        etiq_contra.grid(column=0, row=2)#posicio
+        v_contra = tk.StringVar()
+        v_contra.set("")
+        e_contra = tk.Entry(v_comprobar, textvariable=v_contra)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_contra.grid(column=1, row=2)
+        
+        login_med_params=partial(self.comprobar_med_aux, v_nom, v_contra,v_comprobar)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+
+        # Programar botó
+        btnAsignar=tk.Button(v_comprobar,text="Asignar", command = login_med_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+        btnSortir=tk.Button(v_comprobar,text="Sortir", command = v_comprobar.destroy).grid(column=1,row=8)#destrueixo la finestra per tant surto
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_comprobar.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_comprobar.grab_set()
+        self.v.wait_window(v_comprobar)
+        
+        log=self.comprobar_med_aux(v_nom,v_contra,v_comprobar)
+        
+        return log
+
+    def comprobar_med_aux(self,nom,contra,v_comprobar):
+        if not all([nom.get(), contra.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
+            messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
+        else:
+            log=self.Hospital.log_med(nom.get(),contra.get())
+            if log==False:
+                 messagebox.showinfo(title='Error', message='No existe esta médica, o la contraseña es incorrecta')
+            else:
+                messagebox.showinfo(title='Correcto', message='Bienvenida!') 
+            v_comprobar.destroy()
+            return log
+        
+        
     
     def alta_paciente(self):
         """
@@ -426,6 +529,7 @@ class Interface():
     
             # Wait for the window to end
             self.v.wait_window(v_ingreso)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
+            
     def alta_enf_aux(self, nom, apell, dire, ciudad, cp, tlf, email, cat, recep, v_ingreso):
         """
         Auxiliar function to be able to send messageboxes
@@ -697,20 +801,26 @@ class Interface():
         etiq_0.grid(column=0, row=0)
 
         # Nom
-        etiq_nom = tk.Label(v_consulta, text= "Nom:")
+        etiq_nom = tk.Label(v_consulta, text= "Nombre:")
         etiq_nom.grid(column=0, row=1)
         v_nom = tk.StringVar()
         v_nom.set("")
         e_nom = tk.Entry(v_consulta, textvariable=v_nom)
         e_nom.grid(column=1, row=1)
 
+        etiq_apell = tk.Label(v_consulta, text= "Apellido:")
+        etiq_apell.grid(column=0, row=2)#posicio
+        v_apell = tk.StringVar()
+        v_apell.set("")
+        e_apell = tk.Entry(v_consulta, textvariable=v_apell)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_apell.grid(column=1, row=2)
         # de la llibreria functools
         # assignar parcial per a funció, per a poder assignar directament command amb variables
-        alta_pac_params=partial(self.consulta_pac_aux, v_nom, v_consulta)
+        consulta_pac_params=partial(self.consulta_pac_aux, v_nom, v_apell, v_consulta)
 
         # Programar botó
-        btnAsignar=tk.Button(v_consulta,text="Consultar", command = alta_pac_params).grid(column=0,row=8)
-        btnSortir=tk.Button(v_consulta,text="Sortir", command = v_consulta.destroy).grid(column=1,row=8)
+        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_pac_params).grid(column=0,row=3)
+        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=3)
 
         # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
         v_consulta.transient()
@@ -721,17 +831,461 @@ class Interface():
         # Wait for the window to end
         self.v.wait_window(v_consulta)
 
-    def consulta_pac_aux(self, nom, v_consulta):
+    def consulta_pac_aux(self, nom, apell, v_consulta):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si esta empty
+        if not all ([nom.get(), apell.get()]):
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
+        else:
+            # Cridar a alta d'hospital
+            result = self.Hospital.consulta_pac(nom.get(), apell.get())
+            if not result:
+                messagebox.showinfo(title='Error', message='Paciente no encontrada!')
+            else:
+                messagebox.showinfo(title='Paciente', message=result.muestra_datos())
+                
+    def consulta_medica(self):
+        """
+        Funció que implementa una finestra amb la consulta de medica.
+        """
+        #Prepara la finestra
+        v_consulta = tk.Toplevel(self.v)
+        v_consulta.geometry("350x350")
+        v_consulta.title("Consulta médica")    
+    
+        etiq_0= tk.Label(v_consulta, text= "Insertar el nombre a buscar:")
+        etiq_0.grid(column=0, row=0)
+
+        # Nom
+        etiq_nom = tk.Label(v_consulta, text= "Nombre:")
+        etiq_nom.grid(column=0, row=1)
+        v_nom = tk.StringVar()
+        v_nom.set("")
+        e_nom = tk.Entry(v_consulta, textvariable=v_nom)
+        e_nom.grid(column=1, row=1)
+
+        etiq_apell = tk.Label(v_consulta, text= "Apellido:")
+        etiq_apell.grid(column=0, row=2)#posicio
+        v_apell = tk.StringVar()
+        v_apell.set("")
+        e_apell = tk.Entry(v_consulta, textvariable=v_apell)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_apell.grid(column=1, row=2)
+        # de la llibreria functools
+        # assignar parcial per a funció, per a poder assignar directament command amb variables
+        consulta_med_params=partial(self.consulta_med_aux, v_nom, v_apell, v_consulta)
+
+        # Programar botó
+        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_med_params).grid(column=0,row=3)
+        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=3)
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_consulta.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_consulta.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_consulta)
+
+    def consulta_med_aux(self, nom, apell, v_consulta):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si esta empty
+        if not all ([nom.get(), apell.get()]):
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
+        else:
+            # Cridar a alta d'hospital
+            result = self.Hospital.consulta_med(nom.get(), apell.get())
+            if not result:
+                messagebox.showinfo(title='Error', message='Médica no encontrada!')
+            else:
+                messagebox.showinfo(title='Médica', message=result.muestra_datos())
+                
+    def consulta_enfermera(self):
+        """
+        Funció que implementa una finestra amb la consulta de pacient.
+        """
+        #Prepara la finestra
+        v_consulta = tk.Toplevel(self.v)
+        v_consulta.geometry("350x350")
+        v_consulta.title("Consulta enfermera")    
+    
+        etiq_0= tk.Label(v_consulta, text= "Insertar el nombre a buscar:")
+        etiq_0.grid(column=0, row=0)
+
+        # Nom
+        etiq_nom = tk.Label(v_consulta, text= "Nombre:")
+        etiq_nom.grid(column=0, row=1)
+        v_nom = tk.StringVar()
+        v_nom.set("")
+        e_nom = tk.Entry(v_consulta, textvariable=v_nom)
+        e_nom.grid(column=1, row=1)
+
+        etiq_apell = tk.Label(v_consulta, text= "Apellido:")
+        etiq_apell.grid(column=0, row=2)#posicio
+        v_apell = tk.StringVar()
+        v_apell.set("")
+        e_apell = tk.Entry(v_consulta, textvariable=v_apell)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_apell.grid(column=1, row=2)
+        # de la llibreria functools
+        # assignar parcial per a funció, per a poder assignar directament command amb variables
+        consulta_enf_params=partial(self.consulta_enf_aux, v_nom, v_apell, v_consulta)
+
+        # Programar botó
+        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_enf_params).grid(column=0,row=3)
+        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=3)
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_consulta.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_consulta.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_consulta)
+
+    def consulta_enf_aux(self, nom, apell, v_consulta):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si esta empty
+        if not all ([nom.get(), apell.get()]):
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
+        else:
+            # Cridar a alta d'hospital
+            result = self.Hospital.consulta_enf(nom.get(), apell.get())
+            if not result:
+                messagebox.showinfo(title='Error', message='Enfermera no encontrada!')
+            else:
+                messagebox.showinfo(title='Enfermera', message=result.muestra_datos())
+                
+    def consulta_recepcionista(self):
+        """
+        Funció que implementa una finestra amb la consulta de pacient.
+        """
+        #Prepara la finestra
+        v_consulta = tk.Toplevel(self.v)
+        v_consulta.geometry("350x350")
+        v_consulta.title("Consulta enfermera")    
+    
+        etiq_0= tk.Label(v_consulta, text= "Insertar el nombre a buscar:")
+        etiq_0.grid(column=0, row=0)
+
+        # Nom
+        etiq_nom = tk.Label(v_consulta, text= "Nombre:")
+        etiq_nom.grid(column=0, row=1)
+        v_nom = tk.StringVar()
+        v_nom.set("")
+        e_nom = tk.Entry(v_consulta, textvariable=v_nom)
+        e_nom.grid(column=1, row=1)
+
+        etiq_apell = tk.Label(v_consulta, text= "Apellido:")
+        etiq_apell.grid(column=0, row=2)#posicio
+        v_apell = tk.StringVar()
+        v_apell.set("")
+        e_apell = tk.Entry(v_consulta, textvariable=v_apell)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_apell.grid(column=1, row=2)
+        # de la llibreria functools
+        # assignar parcial per a funció, per a poder assignar directament command amb variables
+        consulta_recep_params=partial(self.consulta_recep_aux, v_nom, v_apell, v_consulta)
+
+        # Programar botó
+        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_recep_params).grid(column=0,row=3)
+        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=3)
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_consulta.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_consulta.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_consulta)
+
+    def consulta_recep_aux(self, nom, apell, v_consulta):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si esta empty
+        if not all ([nom.get(), apell.get()]):
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
+        else:
+            # Cridar a alta d'hospital
+            result = self.Hospital.consulta_recep(nom.get(), apell.get())
+            if not result:
+                messagebox.showinfo(title='Error', message='Recepcionista no encontrada!')
+            else:
+                messagebox.showinfo(title='Recepcionista', message=result.muestra_datos())
+                
+    def consulta_especialidad(self):
+        """
+        Funció que implementa una finestra amb la consulta de pacient.
+        """
+        #Prepara la finestra
+        v_consulta = tk.Toplevel(self.v)
+        v_consulta.geometry("350x350")
+        v_consulta.title("Consulta especialidad")    
+    
+        etiq_0= tk.Label(v_consulta, text= "Insertar el nombre a buscar:")
+        etiq_0.grid(column=0, row=0)
+
+        # Nom
+        etiq_nom = tk.Label(v_consulta, text= "Nombre:")
+        etiq_nom.grid(column=0, row=1)
+        v_nom = tk.StringVar()
+        v_nom.set("")
+        e_nom = tk.Entry(v_consulta, textvariable=v_nom)
+        e_nom.grid(column=1, row=1)
+
+        # de la llibreria functools
+        # assignar parcial per a funció, per a poder assignar directament command amb variables
+        consulta_espe_params=partial(self.consulta_espe_aux, v_nom, v_consulta)
+
+        # Programar botó
+        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_espe_params).grid(column=0,row=2)
+        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=2)
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_consulta.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_consulta.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_consulta)
+
+    def consulta_espe_aux(self, nom, v_consulta):
         """
         Auxiliar function to be able to send messageboxes
         """ 
         # Mirar si esta empty
         if not nom.get():
-            messagebox.showinfo(title='Error', message='No ha introduit cap nom!')
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
         else:
             # Cridar a alta d'hospital
-            result = self.Hospital.mpaciente(nom.get())
+            result = self.Hospital.consulta_espe(nom.get())
             if not result:
-                messagebox.showinfo(title='Error', message='Pacient no trobat!')
+                messagebox.showinfo(title='Error', message='Especialidad no encontrada!')
             else:
-                messagebox.showinfo(title='Pacient', message=result.muestra_datos())
+                messagebox.showinfo(title='Especialidad', message=result.muestra_datos())
+                
+    def consulta_medicamento(self):
+        """
+        Funció que implementa una finestra amb la consulta de pacient.
+        """
+        #Prepara la finestra
+        v_consulta = tk.Toplevel(self.v)
+        v_consulta.geometry("350x350")
+        v_consulta.title("Consulta especialidad")    
+    
+        etiq_0= tk.Label(v_consulta, text= "Insertar el nombre a buscar:")
+        etiq_0.grid(column=0, row=0)
+
+        # Nom
+        etiq_cod = tk.Label(v_consulta, text= "Código:")
+        etiq_cod.grid(column=0, row=1)
+        v_cod = tk.StringVar()
+        v_cod.set("")
+        e_cod = tk.Entry(v_consulta, textvariable=v_cod)
+        e_cod.grid(column=1, row=1)
+
+        # de la llibreria functools
+        # assignar parcial per a funció, per a poder assignar directament command amb variables
+        consulta_medi_params=partial(self.consulta_medi_aux, v_cod, v_consulta)
+
+        # Programar botó
+        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_medi_params).grid(column=0,row=2)
+        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=2)
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_consulta.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_consulta.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_consulta)
+
+    def consulta_medi_aux(self, cod, v_consulta):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si esta empty
+        if not cod.get():
+            messagebox.showinfo(title='Error', message='No ha introducido ningún código!')
+        else:
+            # Cridar a alta d'hospital
+            result = self.Hospital.consulta_medi(cod.get())
+            if not result:
+                messagebox.showinfo(title='Error', message='Medicamento no encontrado!')
+            else:
+                messagebox.showinfo(title='Medicamento', message=result.muestra_datos())
+                
+
+#CONSULTA RECETAS: o sea el método de hospital no está pero esto en teoría no tendría por que variar
+    def consulta_receta(self):
+        """
+        Funció que implementa una finestra amb la consulta de pacient.
+        """
+        #Prepara la finestra
+        v_consulta = tk.Toplevel(self.v)
+        v_consulta.geometry("350x350")
+        v_consulta.title("Consulta recetas")    
+    
+        etiq_0= tk.Label(v_consulta, text= "Insertar el nombre del paciente a buscar:")
+        etiq_0.grid(column=0, row=0)
+
+        # Nom
+        etiq_nom = tk.Label(v_consulta, text= "Nombre:")
+        etiq_nom.grid(column=0, row=1)
+        v_nom = tk.StringVar()
+        v_nom.set("")
+        e_nom = tk.Entry(v_consulta, textvariable=v_nom)
+        e_nom.grid(column=1, row=1)
+
+        # de la llibreria functools
+        # assignar parcial per a funció, per a poder assignar directament command amb variables
+        consulta_recet_params=partial(self.consulta_recet_aux, v_nom, v_consulta)
+
+        # Programar botó
+        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_recet_params).grid(column=0,row=2)
+        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=2)
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_consulta.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_consulta.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_consulta)
+
+    def consulta_recet_aux(self, nom, v_consulta):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si esta empty
+        if not nom.get():
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
+        else:
+            # Cridar a alta d'hospital
+            result = self.Hospital.consulta_recet(nom.get())
+            if not result:
+                messagebox.showinfo(title='Error', message='Paciente sin recetas!')
+            else:
+                messagebox.showinfo(title='Recetas', message=result.muestra_datos())
+                
+#CONSULTA DERIVACIONES
+    def consulta_derivacion(self):
+        """
+        Funció que implementa una finestra amb la consulta de pacient.
+        """
+        #Prepara la finestra
+        v_consulta = tk.Toplevel(self.v)
+        v_consulta.geometry("350x350")
+        v_consulta.title("Consulta derivación")    
+    
+        etiq_0= tk.Label(v_consulta, text= "Insertar el nombre del paciente a buscar:")
+        etiq_0.grid(column=0, row=0)
+
+        # Nom
+        etiq_nom = tk.Label(v_consulta, text= "Nombre:")
+        etiq_nom.grid(column=0, row=1)
+        v_nom = tk.StringVar()
+        v_nom.set("")
+        e_nom = tk.Entry(v_consulta, textvariable=v_nom)
+        e_nom.grid(column=1, row=1)
+
+        # de la llibreria functools
+        # assignar parcial per a funció, per a poder assignar directament command amb variables
+        consulta_deriv_params=partial(self.consulta_deriv_aux, v_nom, v_consulta)
+
+        # Programar botó
+        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_deriv_params).grid(column=0,row=2)
+        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=2)
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_consulta.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_consulta.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_consulta)
+
+    def consulta_deriv_aux(self, nom, v_consulta):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si esta empty
+        if not nom.get():
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
+        else:
+            # Cridar a alta d'hospital
+            result = self.Hospital.consulta_deriv(nom.get())
+            if not result:
+                messagebox.showinfo(title='Error', message='Paciente no derivada!')
+            else:
+                messagebox.showinfo(title='Derivación', message=result.muestra_datos())
+                
+#CONSULTA MEDICA POR ESPECIALIDAD
+                
+    def consulta_medica_especialidad(self):
+        """
+        Funció que implementa una finestra amb la consulta de pacient.
+        """
+        #Prepara la finestra
+        v_consulta = tk.Toplevel(self.v)
+        v_consulta.geometry("350x350")
+        v_consulta.title("Consulta médica por especialidad")    
+    
+        etiq_0= tk.Label(v_consulta, text= "Insertar el nombre de la especialidad a buscar:")
+        etiq_0.grid(column=0, row=0)
+
+        # Nom
+        etiq_espe = tk.Label(v_consulta, text= "Nombre especialidad:")
+        etiq_espe.grid(column=0, row=1)
+        v_espe = tk.StringVar()
+        v_espe.set("")
+        e_espe = tk.Entry(v_consulta, textvariable=v_espe)
+        e_espe.grid(column=1, row=1)
+
+        # de la llibreria functools
+        # assignar parcial per a funció, per a poder assignar directament command amb variables
+        consulta_med_espe_params=partial(self.consulta_med_espe_aux, v_espe, v_consulta)
+
+        # Programar botó
+        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_med_espe_params).grid(column=0,row=2)
+        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=2)
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_consulta.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_consulta.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_consulta)
+
+    def consulta_med_espe_aux(self, espe, v_consulta):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si esta empty
+        if not espe.get():
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
+        else:
+            # Cridar a alta d'hospital
+            result = self.Hospital.consulta_med_espe(espe.get())
+            if not result:
+                messagebox.showinfo(title='Error', message='Especialidad no encontrada!')
+            else:
+                messagebox.showinfo(title='Médicas', message=result.muestra_datos())
+    
+#MENU DE REVISIONES
+                
+    
+    

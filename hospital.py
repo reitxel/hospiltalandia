@@ -18,6 +18,9 @@ from medicamento import Medicamento
 from diagnostico import Diagnostico
 from derivapaciente import DerivaPaciente
 
+from datetime import datetime
+
+
 class Hospital(Datos): #relación de herencia con Datos por ello la hereda como parametro
     def __init__(self,_nombre,_direccion,_ciudad,_cp,_telefono,_email,_dic_pacientes,_dic_medicas,_dic_especialidades,_dic_enfermeras,_dic_recepcionistas,_dic_medicamentos): #tiene como atributos los de Datos y los suyos propios
         super().__init__(_nombre,_direccion,_ciudad,_cp,_telefono,_email) #llamada al constructor de Datos
@@ -62,7 +65,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     medicamentos=property(get_medicamentos,set_medicamentos)
     
     #MÉTODO DE INICIAR SESIÓN: tanto medicas, enfermeras como recepcionitas
-    def login_medico(self,nom,contra):#la entrada es el nombre de
+    def login_med(self,nom,contra):#la entrada es el nombre de
         while True:
                 lista_med=[]
                 for i in self.medicas:
@@ -106,8 +109,21 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                             recep=self.recepcionistas[j]
                             return recep 
             return False#si no hi ha contra  ben posada
-        
-        
+     
+    #COMPROBAR FECHA
+    def comprobar_fecha(fecha_str):            
+        while True:
+            try:
+                fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd-mm-aaaa": ')#criterio para que la fecha que me introduzca por pantalla mantenga este formato
+                fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
+                hoy = datetime.now().date()
+                if str(fecha)>=str(hoy):
+                    return fecha
+                elif str(fecha) < str(hoy):
+                    print('\nLa fecha es anterior a la actual')
+            except ValueError:
+                print("\nNo ha introducido una fecha correcta")  
+    #para el despliegue de todas las especialidades en tkinter
     def comprobar_especialidad(self):
         lista_espes=[]
         for i in self.especialidades:
@@ -146,11 +162,41 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     def alta_medi(self,codigo,princ_activ,marca,lab,recep):
         medi=Medicamento(codigo,princ_activ,marca,lab)
         recep.altas(self.medicamentos,medi,codigo)
+        
+#    def alta_rev(self,nom): #nombre y apellido de la paciente
+#        while True:
+#            try:
+#                a=0
+#                fecha=comprobar_fecha()
+#                for i in dic_pacientes:
+#                    if nom in dic_pacientes[i].regresa_nombre():
+#                        pac=dic_pacientes[i]      
+#                        a+=1
+#   
+#                if a==0:
+#                    print('No existe tal paciente')
+#                elif a==1:
+#                    enf.asigna_revision(pac,fecha,dic_medicas)
+#                    print('Revisión a',pac.regresa_nombre(),'asignada')
+#                elif a!=1: #más de unx paciente con el nombre introducido
+#                    print('Hay',a,'pacientes con el nombre introducido:')
+#                    for i in dic_pacientes:
+#                        if nom in dic_pacientes[i].regresa_nombre():
+#                            print(dic_pacientes[i].muestra_datos())
+#                    id_p=int(input('Introduzca el número identificador de la paciente a asignar la revisión: '))
+#                    pac=dic_pacientes[id_p]
+#                    enf.asigna_revision(pac,fecha,dic_medicas)
+#                    print('Revisión a',pac.regresa_nombre(),'asignada')
+#
+#                break
+#            
+#            except ValueError:
+#                print("\nNo ha introducido una fecha correcta")
     
             
     #METODOS DE CONSULTA:
     #metodo que abarca abarca las consultas por NOMBRE de medicas, recepcionistas, enfermeras y especialidades dependiendo del parametro de entrada
-    def consulta_medica(self,nom,apell):
+    def consulta_med(self,nom,apell):
         nom=nom+' '+apell
         lista_consulta=[]
         for i in self.medicas: #localizar un dato que no sea el campo clave del diccionario
@@ -158,18 +204,12 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                 lista_consulta.append(self.medicas[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
         return lista_consulta
     #método de consulta de pacientes por NOMBRE
-    def consulta_paciente(self,nom,recep): #alusion a informa de recepcionista
+    def consulta_pac(self,nom,apell,recep): #alusion a informa de recepcionista
+        nom=nom+' '+apell
         lista=[]
         for pac in recep.informa(nom,self.pacientes):
             lista.append(pac) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
         return lista
-    def consulta_recep(self,nom,apell):
-        lista_consulta=[]
-        nom=nom+' '+apell
-        for i in self.recepcionistas: #localizar un dato que no sea el campo clave del diccionario
-            if nom.title()  in self.recepcionistas[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
-                lista_consulta.append(self.recepcionistas[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
-        return lista_consulta
     
     def consulta_enf(self,nom,apell):
         nom=nom+' '+apell
@@ -178,34 +218,27 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             if nom.title()  in self.enfermeras[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
                 lista_consulta.append(self.enfermeras[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
         return lista_consulta
+    
+    def consulta_recep(self,nom,apell):
+        lista_consulta=[]
+        nom=nom+' '+apell
+        for i in self.recepcionistas: #localizar un dato que no sea el campo clave del diccionario
+            if nom.title()  in self.recepcionistas[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
+                lista_consulta.append(self.recepcionistas[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
+        return lista_consulta
+    
     def consulta_espe(self,nom):
         lista_consulta=[]
         for i in self.especialidades: #localizar un dato que no sea el campo clave del diccionario
             if nom in self.especialidades[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
                 lista_consulta.append(self.especialidades[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
         return lista_consulta
-    def consulta_medicamento(self,cod):
+    
+    def consulta_medi(self,cod):
         lista_meds=[]
         for i in self.medicamentos:
             if cod in self.medicamentos.keys():
                 lista_meds.append(self.medicamento[i].muestra_datos)
-
-      
-    #método qua abarca las consultas por identificador/código de pacientes, médicas, recepcionistas, enfermeras y medicamentos 
-#    def consulta_ident(self,identificador,entrada): #nos da la opción de consultas por número identificador
-#        if entrada=='pac':
-#            dic=self.pacientes
-#        elif entrada=='med':
-#            dic=self.medicas
-#        elif entrada=='recep':
-#            dic=self.recepcionistas
-#        elif entrada=='enf':
-#            dic=self.enfermeras
-#        elif entrada=='medicamento': #en el caso del medicamento nos cogería el código, que es la clave del diccionario
-#            dic=self.medicamentos
-#        
-#        if identificador in dic.keys(): #condición de que el parametro introducido coincida con alguna clave del diccionario de médicas, que son los numeros identificadores
-#            return dic[identificador].muestra_datos() #me devuelve toda la información que corresponda al número en cuestión si existe
 
     #método de búsqueda de especialidade por CODIGO
     def consulta_cod_espe(self,cod):
@@ -214,7 +247,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                 return self.especialidades[i].muestra_datos() 
 
     #métodode consulta de recetas que ordena por fecha y especialidad
-    def consulta_recetas(self,nom): #nombre del paciente como parametro, pero tengo las recetas dentro de diagnostico
+    def consulta_recet(self,nom): #nombre del paciente como parametro, pero tengo las recetas dentro de diagnostico
         lista_recetas=[]
         for i in self.pacientes:
             if nom in i.regresa_nombre():
@@ -256,7 +289,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
 #            recet[i]
     
     #método de consulta derivaciones
-    def consulta_derivacion(self,nombre):
+    def consulta_deriv(self,nombre):
         lista_deriv=[]
         for i in self.pacientes:
             if nombre in self.pacientes[i].regresa_nombre():
