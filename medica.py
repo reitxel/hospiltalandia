@@ -58,7 +58,8 @@ class Medica(Datos):
     def tiene_pacnorev(self,pac):
         self.pacnorev.append(pac)
         return self.pacnorev
-
+    def muestra_espe(self):
+        return self.especialidad
     def muestra_receta(self):
         llista_receta=[]
         for i in self.receta:
