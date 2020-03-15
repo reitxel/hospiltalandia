@@ -66,42 +66,39 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         while True:
                 lista_med=[]
                 for i in self.medicas:
-                    if entrada == self.medicas[i].regresa_nombre():
+                    if nom == self.medicas[i].regresa_nombre():
                         lista_med.append(self.medicas[i].regresa_nombre())
                 if lista_med==[]:
-                    return 2    
+                    return False    
                 for i in lista_med:
                     for j in self.medicas:
                         if lista_med!=[]:
                             if contra==self.medicas[j].password:
                                 med=self.medicas[j]
                                 return med#si es troba un recep
-                return 1#si no es troba la contrasenya
+                return False#si no es troba la contrasenya
             
-    def login_enf(self,entrada):
+    def login_enf(self,nom,contra):
                 lista_enf=[]
                 for i in self.enfermeras:
-                    if entrada == self.enfermeras[i].regresa_nombre():
+                    if nom == self.enfermeras[i].regresa_nombre():
                         lista_enf.append(self.enfermeras[i].regresa_nombre())
                 if lista_enf==[]:
-                    return 2
-                password=input('-> Contraseña (puede introducir ''salir'' para volver al menú principal): ')
-                for i in lista_enf:
+                    return False
                     for j in self.enfermeras:
                         if lista_enf!=[]:
-                            if password==self.enfermeras[j].password:
+                            if contra==self.enfermeras[j].password:
                                 print('Constraseña acertada')
                                 enf=self.enfermeras[j]
                                 return enf
-                            elif password=='salir':
-                                return 1
+                    return False
     def log_recep(self,nom,contra):             
         lista_recep=[]
         for i in self.recepcionistas:
             if nom.title() == self.recepcionistas[i].regresa_nombre():
                 lista_recep.append(self.recepcionistas[i].regresa_nombre())
                 if lista_recep==[]:
-                    return False
+                    return False#si no existeix el nom
             for i in lista_recep:
                 for j in self.recepcionistas:
                     if lista_recep!=[]:
@@ -117,107 +114,98 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             lista_espes.append(self.especialidades[i].regresa_nombre())
         return lista_espes
     
-    #MÉTODO DE INICIAR SESIÓN: tanto medicas, enfermeras como recepcionitas
-    def login_recep_nom(self,entrada):#la entrada es el nombre de la recepcionista
-        lista_med=[]
-        for i in self.medicas:
-            if entrada == self.medicas[i].regresa_nombre():
-                lista_med.append(self.medicas[i].regresa_nombre())
-                
-    def login_recep_contra(self,entrada,lista_med): #compruebo si la contraseña es valida           
-        for i in lista_med:
-            for j in self.medicas:
-                if lista_med!=[]:
-                    if entrada==self.medicas[j].password:
-                        med=self.medicas[j]
-                        return med        
-                    
+  
     #METODOS DE ALTA: medica, paciente, enfermera, recepcionista, especialidad, medicamento
-    def alta_pac(self,nom,dire,ciudad,cp,tlf,email,sang):
+    def alta_pac(self,nom,dire,ciudad,cp,telf,email,sang,recep):
         id_p=len(self.pacientes.keys())+1
-        pac=Paciente(id_p,nom,dire,ciudad,cp,tlf,email,sang)
+        pac=Paciente(id_p,nom.title(),dire,ciudad,cp,telf,email,sang)
         recep.altas(self.pacientes,pac,id_p)
         
-    def alta_med(self,nom,dire,ciudad,cp,tlf,email,espe):
+    def alta_med(self,nom,apell,dire,ciudad,cp,telf,email,espe,recep,password):
+        nom=(nom+' '+apell).title()
         id_m=len(self.medicas.keys())+1
-        med=Medica(id_m,nom,dire,ciudad,cp,tlf,email,espe)
+        med=Medica(id_m,nom,dire,ciudad,cp,telf,email,password,espe)
         recep.altas(self.medicas,med,id_m)
         
-    def alta_enf(self,nom,dire,ciudad,cp,tlf,email,cat):
+    def alta_enf(self,nom,apell,dire,ciudad,cp,telf,email,cat,recep,password):
+        nom=(nom+' '+apell).title()
         id_e=len(self.enfermeras.keys())+1
-        enf=Enfermera(id_e,nom,dire,ciudad,cp,tlf,email,cat)
+        enf=Enfermera(id_e,nom,dire,ciudad,cp,telf,email,password,cat)
         recep.altas(self.enfermeras,enf,id_e)
         
-    def alta_recep(self,nom,dire,ciudad,cp,tlf,email,turno):
+    def alta_recep(self,nom,apell,dire,ciudad,cp,telf,email,turno,recep,password):
+        nom=(nom+' '+apell).title()
         id_r=len(self.recepcionistas.keys())+1
-        rec=Recepcionista(id_r,nom,dire,ciudad,cp,tlf,email,turno)
+        rec=Recepcionista(id_r,nom,dire,ciudad,cp,telf,email,password,turno)
         recep.altas(self.recepcionistas,rec,id_r)
         
-    def alta_espe(self,nom):
-        cod=len(self.especialidades.keys())+1
+    def alta_espe(self,nom,cod,recep):
         espe=Especialidad(cod,nom)
         recep.altas(self.especialidades,espe,cod)
         
-    def alta_medi(self,princ_activ,marca,lab):
-        cod=len(self.medicamentos.keys())+1
-        medi=Medicamento(cod,princ_activ,marca,lab)
-        recep.altas(self.medicamentos,medi,cod)
+    def alta_medi(self,codigo,princ_activ,marca,lab,recep):
+        medi=Medicamento(codigo,princ_activ,marca,lab)
+        recep.altas(self.medicamentos,medi,codigo)
     
-    def metodo_alta(self,obj,ident,recep,entrada): #metodo unico que abarca todas las altas dependiendo del parametro de entrada
-        if entrada=='med':
-            dic=self.medicas
-        elif entrada=='pac':
-            dic=self.pacientes
-        elif entrada=='enf':
-            dic=self.enfermeras
-        elif entrada=='recep':
-            dic=self.recepcionistas
-        elif entrada=='espe':
-            dic=self.especialidades
-        elif entrada=='medicamento':
-            dic=self.medicamentos
-            
-        recep.altas(dic,obj,ident) #llamada al método altas de recepcionistas tomando como parametro este objeto
             
     #METODOS DE CONSULTA:
     #metodo que abarca abarca las consultas por NOMBRE de medicas, recepcionistas, enfermeras y especialidades dependiendo del parametro de entrada
-    def consulta_dics(self,nom,lista_consulta,entrada): #
-        if entrada=='med':
-            dic=self.medicas
-        elif entrada=='recep':
-            dic=self.recepcionistas
-        elif entrada=='enf':
-            dic=self.enfermeras
-        elif entrada=='espe':
-            dic=self.especialidades
+    def consulta_medica(self,nom,apell):
+        nom=nom+' '+apell
         lista_consulta=[]
-        for i in dic: #localizar un dato que no sea el campo clave del diccionario
-            if nom in dic[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
-                lista_consulta.append(dic[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
-        return lista_consulta #me devuelve una lista con todos los datos de las medicas cuyo nombre coincida con algo de lo que se haya introducido por pantalla
-    
+        for i in self.medicas: #localizar un dato que no sea el campo clave del diccionario
+            if nom.title() in self.medicas[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
+                lista_consulta.append(self.medicas[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
+        return lista_consulta
     #método de consulta de pacientes por NOMBRE
     def consulta_paciente(self,nom,recep): #alusion a informa de recepcionista
         lista=[]
         for pac in recep.informa(nom,self.pacientes):
             lista.append(pac) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
         return lista
+    def consulta_recep(self,nom,apell):
+        lista_consulta=[]
+        nom=nom+' '+apell
+        for i in self.recepcionistas: #localizar un dato que no sea el campo clave del diccionario
+            if nom.title()  in self.recepcionistas[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
+                lista_consulta.append(self.recepcionistas[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
+        return lista_consulta
     
+    def consulta_enf(self,nom,apell):
+        nom=nom+' '+apell
+        lista_consulta=[]
+        for i in self.enfermeras: #localizar un dato que no sea el campo clave del diccionario
+            if nom.title()  in self.enfermeras[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
+                lista_consulta.append(self.enfermeras[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
+        return lista_consulta
+    def consulta_espe(self,nom):
+        lista_consulta=[]
+        for i in self.especialidades: #localizar un dato que no sea el campo clave del diccionario
+            if nom in self.especialidades[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
+                lista_consulta.append(self.especialidades[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
+        return lista_consulta
+    def consulta_medicamento(self,cod):
+        lista_meds=[]
+        for i in self.medicamentos:
+            if cod in self.medicamentos.keys():
+                lista_meds.append(self.medicamento[i].muestra_datos)
+
+      
     #método qua abarca las consultas por identificador/código de pacientes, médicas, recepcionistas, enfermeras y medicamentos 
-    def consulta_ident(self,identificador,entrada): #nos da la opción de consultas por número identificador
-        if entrada=='pac':
-            dic=self.pacientes
-        elif entrada=='med':
-            dic=self.medicas
-        elif entrada=='recep':
-            dic=self.recepcionistas
-        elif entrada=='enf':
-            dic=self.enfermeras
-        elif entrada=='medicamento': #en el caso del medicamento nos cogería el código, que es la clave del diccionario
-            dic=self.medicamentos
-        
-        if identificador in dic.keys(): #condición de que el parametro introducido coincida con alguna clave del diccionario de médicas, que son los numeros identificadores
-            return dic[identificador].muestra_datos() #me devuelve toda la información que corresponda al número en cuestión si existe
+#    def consulta_ident(self,identificador,entrada): #nos da la opción de consultas por número identificador
+#        if entrada=='pac':
+#            dic=self.pacientes
+#        elif entrada=='med':
+#            dic=self.medicas
+#        elif entrada=='recep':
+#            dic=self.recepcionistas
+#        elif entrada=='enf':
+#            dic=self.enfermeras
+#        elif entrada=='medicamento': #en el caso del medicamento nos cogería el código, que es la clave del diccionario
+#            dic=self.medicamentos
+#        
+#        if identificador in dic.keys(): #condición de que el parametro introducido coincida con alguna clave del diccionario de médicas, que son los numeros identificadores
+#            return dic[identificador].muestra_datos() #me devuelve toda la información que corresponda al número en cuestión si existe
 
     #método de búsqueda de especialidade por CODIGO
     def consulta_cod_espe(self,cod):
