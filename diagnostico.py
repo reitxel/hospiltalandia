@@ -57,13 +57,18 @@ class Diagnostico():
     derivado=property(get_derivado,set_derivado)
     
     def muestra_datos(self):
-        return [self.especialidad,self.enfermedad,self.observaciones,self.muestra_receta(),self.nommed,self.get_deriva()]
+        return [self.especialidad,self.enfermedad,self.observaciones,self.muestra_receta(),self.nommed,self.muestra_deriva()]
     
     def derivap(self,nommed,fecha,espe):#creo el objeto de derivacion del paciente
         deriv=DerivaPaciente(nommed,fecha,espe)
-        self.deriva.append(deriv.muestra_datos())
+        self.deriva.append(deriv)
         self.derivado = True
-        
+    
+    def muestra_deriva(self):
+        llista_deriva=[]
+        for i in self.deriva:
+            llista_deriva.append(i.muestra_datos())
+        return llista_deriva
     def muestra_receta(self):
         llista_receta=[]
         for i in self.receta:
@@ -75,7 +80,7 @@ class Diagnostico():
 
     def gen_recet(self,medic,dosis):
         recet=RecetaMedica(medic,dosis)
-        self.receta.append(recet.muestra_datos())
+        self.receta.append(recet)
         
 #    def consulta_med:# mirar si existeix especialidat aixo no crec que serveixi la veritat
 #        
