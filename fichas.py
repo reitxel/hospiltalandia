@@ -33,6 +33,7 @@ class FichaRevision():
     
     def muestra_datos(self):
         return [self.codigo,self.fecha,self.muestra_diag()]
+    
     def muestra_diag(self):
         llista_diag=[]
         for i in self.diag:

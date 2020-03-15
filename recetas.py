@@ -13,13 +13,13 @@ class RecetaMedica():
         
     def set_dosis(self,_dosis):
         self.__dosis=_dosis
-    def set_medicamento(self,medicamento):
-        self.medicamento=medicamento
+    def set_medicamento(self,_medicamento):
+        self.__medicamento=_medicamento
     
     def get_dosis(self):
         return self.__dosis
-    def get_medicamento(self,_medicamento):
-        self.__medicamento=_medicamento
+    def get_medicamento(self):
+        self.__medicamento
     
     dosis=property(get_dosis,set_dosis)
     medicamento=property(get_medicamento,set_medicamento)
