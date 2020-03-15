@@ -54,10 +54,10 @@ class Interface():
         self.mRevisiones.add_command(label= "Alta de revisiones")
         self.mRevisiones.add_command(label= "Realizar revisión")
 
-        self.mArchivos.add_command(label= "Informe de médicas")
-        self.mArchivos.add_command(label= "Historial de una paciente")
-        self.mArchivos.add_command(label= "Informe de enfermeras")
-        self.mArchivos.add_command(label= "Informe de recepcionistas")
+        self.mArchivos.add_command(label= "Informe de médicas",command=self.archivo_medicos)
+        self.mArchivos.add_command(label= "Historial de una paciente",command=self.archivo_paciente)
+        self.mArchivos.add_command(label= "Informe de enfermeras",command=self.archivo_enf)
+        self.mArchivos.add_command(label= "Informe de recepcionistas",command=self.archivo_recep)
         
         self.mSalir.add_command(label= "Salida", command= self.v.destroy)# per eleminar uan finestra
 
@@ -222,8 +222,48 @@ class Interface():
                 messagebox.showinfo(title='Correcto', message='Bienvenida!') 
             v_comprobar.destroy()
             return log
+      
+    def comprobar_id(self):
+        
+        v_comprobar = tk.Toplevel(self.v)#creo la finestra
+        v_comprobar.geometry("350x350")
+        v_comprobar.title("Escoger paciente")    
         
         
+        etiq_ids = tk.Label(v_comprobar, text= "Identificador:")
+        etiq_ids.grid(column=0, row=1)#posicio
+        v_ids = tk.StringVar()
+        v_ids.set("")
+        e_ids = tk.Entry(v_comprobar, textvariable=v_ids)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_ids.grid(column=1, row=1)
+        
+        comprobar_id_params=partial(self.comprobar_id_aux, v_ids,v_comprobar)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+
+        # Programar botó
+        btnAsignar=tk.Button(v_comprobar,text="Asignar", command = comprobar_id_params).grid(column=0,row=2)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+        btnSortir=tk.Button(v_comprobar,text="Sortir", command = v_comprobar.destroy).grid(column=1,row=2)#destrueixo la finestra per tant surto
+
+        # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+        v_comprobar.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_comprobar.grab_set()
+        
+        self.v.wait_window(v_comprobar)
+        
+        pac=self.comprobar_id_aux(v_ids,v_comprobar)
+        print(pac)
+        return pac
+    
+        
+    def comprobar_id_aux(self,ids,v_comprobar):
+        if not ids.get():
+            messagebox.showinfo(title='Error', message='El campo está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
+        else:
+            pac=self.Hospital.consulta_id_pac(ids.get())
+            print(pac)
+            return pac
+        v_comprobar.destroy()
     
     def alta_paciente(self):
         """
@@ -792,6 +832,7 @@ class Interface():
         """
         Funció que implementa una finestra amb la consulta de pacient.
         """
+        recep=self.Hospital.recepcionistas[1]
         #Prepara la finestra
         v_consulta = tk.Toplevel(self.v)
         v_consulta.geometry("350x350")
@@ -816,7 +857,7 @@ class Interface():
         e_apell.grid(column=1, row=2)
         # de la llibreria functools
         # assignar parcial per a funció, per a poder assignar directament command amb variables
-        consulta_pac_params=partial(self.consulta_pac_aux, v_nom, v_apell, v_consulta)
+        consulta_pac_params=partial(self.consulta_pac_aux, v_nom, v_apell, recep,v_consulta)
 
         # Programar botó
         btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_pac_params).grid(column=0,row=3)
@@ -831,7 +872,7 @@ class Interface():
         # Wait for the window to end
         self.v.wait_window(v_consulta)
 
-    def consulta_pac_aux(self, nom, apell, v_consulta):
+    def consulta_pac_aux(self, nom, apell,recep, v_consulta):
         """
         Auxiliar function to be able to send messageboxes
         """ 
@@ -840,11 +881,14 @@ class Interface():
             messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
         else:
             # Cridar a alta d'hospital
-            result = self.Hospital.consulta_pac(nom.get(), apell.get())
+            result = self.Hospital.consulta_pac(nom.get().title(), apell.get().title(),recep)
             if not result:
                 messagebox.showinfo(title='Error', message='Paciente no encontrada!')
             else:
-                messagebox.showinfo(title='Paciente', message=result.muestra_datos())
+                pacientes=[]
+                for i in result:
+                    pacientes.append(i.muestra_datos())
+                messagebox.showinfo(title='Paciente', message=pacientes)
                 
     def consulta_medica(self):
         """
@@ -898,11 +942,15 @@ class Interface():
             messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
         else:
             # Cridar a alta d'hospital
-            result = self.Hospital.consulta_med(nom.get(), apell.get())
+            result = self.Hospital.consulta_med(nom.get().title(), apell.get().title())
             if not result:
                 messagebox.showinfo(title='Error', message='Médica no encontrada!')
             else:
-                messagebox.showinfo(title='Médica', message=result.muestra_datos())
+#                medicas=[]
+#                for i in result:
+#                    medicas.append(medicas[i].muestra_datos())
+                messagebox.showinfo(title='Médica', message=result)
+                v_consulta.destroy() 
                 
     def consulta_enfermera(self):
         """
@@ -956,12 +1004,16 @@ class Interface():
             messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
         else:
             # Cridar a alta d'hospital
-            result = self.Hospital.consulta_enf(nom.get(), apell.get())
+            result = self.Hospital.consulta_enf(nom.get().title(), apell.get().title())
             if not result:
                 messagebox.showinfo(title='Error', message='Enfermera no encontrada!')
-            else:
-                messagebox.showinfo(title='Enfermera', message=result.muestra_datos())
-                
+            else:                
+#                enfermeras=[]
+#                for i in result:
+#                    enfermeras.append(i.muestra_datos())
+                messagebox.showinfo(title='Enfermera', message=result)
+                v_consulta.destroy() 
+
     def consulta_recepcionista(self):
         """
         Funció que implementa una finestra amb la consulta de pacient.
@@ -1014,11 +1066,14 @@ class Interface():
             messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
         else:
             # Cridar a alta d'hospital
-            result = self.Hospital.consulta_recep(nom.get(), apell.get())
+            result = self.Hospital.consulta_recep(nom.get().title(), apell.get().title())
             if not result:
                 messagebox.showinfo(title='Error', message='Recepcionista no encontrada!')
             else:
-                messagebox.showinfo(title='Recepcionista', message=result.muestra_datos())
+#                recepcionistas=[]
+#                for i in result:
+#                    recepcionistas.append(i.muestra_datos())
+                messagebox.showinfo(title='Recepcionista', message=result)
                 
     def consulta_especialidad(self):
         """
@@ -1070,8 +1125,9 @@ class Interface():
             if not result:
                 messagebox.showinfo(title='Error', message='Especialidad no encontrada!')
             else:
-                messagebox.showinfo(title='Especialidad', message=result.muestra_datos())
-                
+                messagebox.showinfo(title='Especialidad', message=result)
+                v_consulta.destroy() 
+
     def consulta_medicamento(self):
         """
         Funció que implementa una finestra amb la consulta de pacient.
@@ -1122,8 +1178,9 @@ class Interface():
             if not result:
                 messagebox.showinfo(title='Error', message='Medicamento no encontrado!')
             else:
-                messagebox.showinfo(title='Medicamento', message=result.muestra_datos())
-                
+                messagebox.showinfo(title='Medicamento', message=result)
+                v_consulta.destroy() 
+               
 
 #CONSULTA RECETAS: o sea el método de hospital no está pero esto en teoría no tendría por que variar
     def consulta_receta(self):
@@ -1177,7 +1234,8 @@ class Interface():
                 messagebox.showinfo(title='Error', message='Paciente sin recetas!')
             else:
                 messagebox.showinfo(title='Recetas', message=result.muestra_datos())
-                
+                v_consulta.destroy() 
+               
 #CONSULTA DERIVACIONES
     def consulta_derivacion(self):
         """
@@ -1230,6 +1288,7 @@ class Interface():
                 messagebox.showinfo(title='Error', message='Paciente no derivada!')
             else:
                 messagebox.showinfo(title='Derivación', message=result.muestra_datos())
+                v_consulta.destroy() 
                 
 #CONSULTA MEDICA POR ESPECIALIDAD
                 
@@ -1283,9 +1342,95 @@ class Interface():
             if not result:
                 messagebox.showinfo(title='Error', message='Especialidad no encontrada!')
             else:
-                messagebox.showinfo(title='Médicas', message=result.muestra_datos())
+                messagebox.showinfo(title='Médicas', message=result)
+                v_consulta.destroy() 
     
 #MENU DE REVISIONES
+                
+                
+                
+                
+                
+                
+                
+#MENU DE ARXIVOS
+    def archivo_medicos(self):
+        medicas=self.Hospital.archivo_medicas()  
+        messagebox.showinfo(title='Estadisticas de médicos', message=medicas)
+
+
+    def  archivo_paciente(self):
+        recep=self.Hospital.recepcionistas[1]
+
+        v_arxivo = tk.Toplevel(self.v)
+        v_arxivo.geometry("350x350")
+        v_arxivo.title("Historial de un paciente")    
+    
+        etiq_0= tk.Label(v_arxivo, text= "Insertar el nombre de la paciente a buscar:")
+        etiq_0.grid(column=0, row=0)
+        
+        etiq_nom = tk.Label(v_arxivo, text= "Nombre:")
+        etiq_nom.grid(column=0, row=1)
+        v_nom = tk.StringVar()
+        v_nom.set("")
+        e_nom = tk.Entry(v_arxivo, textvariable=v_nom)
+        e_nom.grid(column=1, row=1)
+        
+        etiq_apell = tk.Label(v_arxivo, text= "Apellido:")
+        etiq_apell.grid(column=0, row=2)
+        v_apell = tk.StringVar()
+        v_apell.set("")
+        e_apell = tk.Entry(v_arxivo, textvariable=v_apell)
+        e_apell.grid(column=1, row=2)
+        
+        archivo_paciente_params=partial(self.archivo_paciente_aux,v_nom,v_apell,recep,v_arxivo)
+        
+                # Programar botó
+        btnAsignar=tk.Button(v_arxivo,text="Consultar", command = archivo_paciente_params).grid(column=0,row=3)
+        btnSortir=tk.Button(v_arxivo,text="Salida", command = v_arxivo.destroy).grid(column=1,row=3)
+        
+        v_arxivo.transient()
+
+        #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+        v_arxivo.grab_set()
+
+        # Wait for the window to end
+        self.v.wait_window(v_arxivo)
+
+
+        
+    def archivo_paciente_aux(self,nom,apell,recep,v_arxivo):
+        if not nom.get():
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
+        else:
+            # Cridar a alta d'hospital
+            pac=self.Hospital.consulta_pac(nom.get().title(),apell.get().title(),recep)
+            if pac==[]:
+                messagebox.showinfo(title='Error', message='Paciente no encontrada!')
+            elif len(pac)==1:
+                result = self.Hospital.archivo_pacientes(pac[0])
+                if result==[]:
+                    messagebox.showinfo(title='Vacío', message='Este paciente aun no tiene revisiones médicas')
+            else:
+                pacientes=[]
+                for a in pac:
+                    pacientes.append(a.muestra_datos())  
+                messagebox.showinfo(title='Hay mas de un paciente con este nombre', message= pacientes)
+                pac=self.comprobar_id()
+                result = self.Hospital.archivo_pacientes(pac)
+                messagebox.showinfo(title='Cantidad de revisiones de cada especialidad', message=result)
+            v_arxivo.destroy()
+#            elif len(pac)>1
+
+        
+    def archivo_enf(self):
+        enf=self.Hospital.archivo_enf()
+        messagebox.showinfo(title='Estadisiticas enfermeras', message= enf)
+        
+    def archivo_recep(self):
+        recep=self.Hospital.archivo_recep()  
+        messagebox.showinfo(title='Estadisiticas recepcionistas', message= recep)
+        
                 
     
     

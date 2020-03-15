@@ -210,6 +210,10 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         for pac in recep.informa(nom,self.pacientes):
             lista.append(pac) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
         return lista
+    def consulta_id_pac(self,ids):
+        for i in self.pacientes:
+            if ids==self.pacientes.keys():
+                return self.pacientes[i]
     
     def consulta_enf(self,nom,apell):
         nom=nom+' '+apell
@@ -239,6 +243,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         for i in self.medicamentos:
             if cod in self.medicamentos.keys():
                 lista_meds.append(self.medicamento[i].muestra_datos)
+        print(lista_meds)
 
     #método de búsqueda de especialidade por CODIGO
     def consulta_cod_espe(self,cod):
@@ -321,6 +326,16 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         for i in dic_med_orden:#recorro el dic i vaig 'escribint-lo' al fitxer
             arx_med.write(str(dic_med_orden[i].muestra_datos()))
         arx_med.close
+        espe_totes=[]
+        for i in self.medicas:
+            espe_totes.append(self.medicas[i].muestra_espe())
+        estadistiques=[]
+        for i in self.especialidades:
+            estadistiques.append([i,espe_totes.count(i)])
+        estadistiques.append(['Numero total de medicas es: ',len(self.medicas)])
+        return estadistiques
+        
+            
       
     def archivo_pacientes(self,pac):#fem un consulta i triem el pacient
         nombre=pac.nombre

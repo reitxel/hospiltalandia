@@ -64,6 +64,8 @@ class Medica(Datos):
         for i in self.receta:
             llista_receta.append(i.muestra_datos())
         return llista_receta
+    def muestra_espe(self):
+        return self.especialidad
     
     def muestra_pacrev(self):
         llista_pacrev=[]
