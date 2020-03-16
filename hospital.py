@@ -92,6 +92,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                 for j in self.enfermeras:
                       if contra==self.enfermeras[j].password.lower():
                           enf=self.enfermeras[j]
+                          print (enf)
                           return enf
             return False
         
@@ -112,24 +113,24 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
      
     #COMPROBAR FECHA
     def comprobar_fecha(self,fecha_str):            
-        while True:
-            fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
-            hoy = datetime.now().date()
-            if str(fecha)>=str(hoy):
-                return fecha
-            elif str(fecha) < str(hoy):
-                return False   
+        fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
+        hoy = datetime.now().date()
+        if str(fecha)>=str(hoy):
+            return fecha
+        elif str(fecha) < str(hoy):
+            return False           
+
     #para el despliegue de todas las especialidades en tkinter
     def comprobar_especialidad(self):
         lista_espes=[]
         for i in self.especialidades:
             lista_espes.append(self.especialidades[i].regresa_nombre())
         return lista_espes
-    #para el despliegue de todos los medicamentos en tkinter
+    
     def comprobar_medi(self):
         lista_medis=[]
         for i in self.medicamentos:
-            lista_medis.append(self.medicamentos[i].regresa_cod())
+            lista_medis.append(self.medicamentos[i].muestra_datos())
         return lista_medis
     
   
@@ -166,51 +167,22 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         medi=Medicamento(codigo,princ_activ,marca,lab)
         recep.altas(self.medicamentos,medi,codigo)
         
-#    def alta_rev(self,nom): #nombre y apellido de la paciente
-#        while True:
-#            try:
-#                a=0
-#                fecha=comprobar_fecha()
-#                for i in dic_pacientes:
-#                    if nom in dic_pacientes[i].regresa_nombre():
-#                        pac=dic_pacientes[i]      
-#                        a+=1
-#   
-#                if a==0:
-#                    print('No existe tal paciente')
-#                elif a==1:
-#                    enf.asigna_revision(pac,fecha,dic_medicas)
-#                    print('Revisión a',pac.regresa_nombre(),'asignada')
-#                elif a!=1: #más de unx paciente con el nombre introducido
-#                    print('Hay',a,'pacientes con el nombre introducido:')
-#                    for i in dic_pacientes:
-#                        if nom in dic_pacientes[i].regresa_nombre():
-#                            print(dic_pacientes[i].muestra_datos())
-#                    id_p=int(input('Introduzca el número identificador de la paciente a asignar la revisión: '))
-#                    pac=dic_pacientes[id_p]
-#                    enf.asigna_revision(pac,fecha,dic_medicas)
-#                    print('Revisión a',pac.regresa_nombre(),'asignada')
-#
-#                break
-#            
-#            except ValueError:
-#                print("\nNo ha introducido una fecha correcta")
     
 #ALTA REVISIONES    
                                 
     def alta_revisiones(self,fecha,nom,apell,recep):
-        nom=(nom+' '+apell).title()
-        fecha=self.comprobar_fecha(fecha)#comprueba la fecha
-        pac=self.consulta_paciente(nom,apell,recep)#comprueva el faciente i genera el objeto  
-        return pac
+                fecha=self.comprobar_fecha(fecha)#comprueba la fecha
+                pac=self.consulta_paciente(nom,apell,recep)#comprueva el faciente i genera el objeto  
+                return pac
 
     def assignar(self,pac,fecha,enf):#creamos este metodo ara no aplicar un metodo que depende de un dic en graficos
-        enf.asigna_revision(pac,fecha,self.medicas)  
+          enf.asigna_revision(pac,fecha,self.medicas)  
     
 #REALIZA REVISION
           
     def rev_hoy(self,med):
         hoy = datetime.now().date()
+        lista_pacrev=med.pacrev #atendidos
         lista_pacnorev=med.pacnorev #lista no atendidos
         lista_atender_hoy=[]
         for i in lista_pacnorev:
@@ -232,100 +204,30 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         return lista_atender_hoy
     
     #de aqui lo llevo a comprueba paceinte, que le pongo el id si hay mas de uno
-    def atender_hoy(pac):       
+    def atender_hoy(self,pac):       
         for i in pac.revmed:#recorro todas la revisiones del paciente y cojo solo de con fecha de hoy
             if i.fecha==datetime.now().date():
                 rev=i
         return rev.diag[-1]   #aqui si no existe supongo que devuelve none, si devuelve el diagnostico seria comporbar si el True lo muestro si es False lo creo y me voy a realizo diag
             
-    def realizar_diag(diag,enfe,obs):
+    def realizar_diag(self,diag,enfe,obs):
         diag.observaciones=obs
         diag.enfermedad=enfe#completo el diagnostico que tenia
+        return diag
+    
+    def expedir_receta(self,diag,codigo,dosis): #preguntamos si quiere expedir receta
+        diag.gen_recet(codigo,dosis)
 
-    def expedir_recet(diag,codigo,dosis): #preguntamos si quiere expedir receta
-        receta=diag.gen_recet(codigo,dosis)
-
-    def derivar(diag,nommed,especialidad,med,pac):    #aqui llega si quiere derivar
+    def derivar(self,diag,nommed,especialidad,med,pac):    #aqui llega si quiere derivar
         diag.deriva(nommed,datetime.now().date(),especialidad)#guardo la derivacio en el diagnotico
         #en algun momento hay que dar la opcion de que pare la derivacion, osea boton de salida
         
-    def actualizar_listas_med(med,pac): #cuando se cumple la derivaicon
+    def actualizar_listas_med(self,med,pac): #cuando se cumple la derivaicon
         lista_pacnorev=med.pacnorev
         lista_pacrev=med.pacrev
         lista_pacnorev.remove(pac)
         lista_pacrev.append(pac)
-        #                                    #IMPRIMIR TODA LA INFO DEL PACIENTE                                  
-#                                    #mostrar toda la información del paciente, que pasa si tengo varias?
-#                                    if len(lista_atender_hoy)==0:
-#                                        print('La médica no tiene ninguna paciente con visita programada para hoy')
-#                                        break
-#                                    elif len(lista_atender_hoy)==1:
-#                                        pac=lista_atender_hoy[0]    
-#                                    elif len(lista_atender_hoy)!=1:
-#                                        print('Hay',len(lista_atender_hoy),'pacientes con el nombre introducido: ')
-#                                        for i in lista_atender_hoy:
-#                                            print(i.muestra_datos()) #imprimo el id y los datos?
-#                                        id_p=int(input('Introduzca el número identificador de la paciente a realizar la revisión: '))
-#                                        for i in lista_atender_hoy:
-#                                            if id_p==i.id_num:
-#                                                pac=i #me crea el objeto paciente con el que haya seleccionado
-#                        #FALTARI PONER LA EXEPCION DE QUE NO EXISTE EL ID
-#                                                print(pac.muestra_datos())
-#                                                print('\nPaciente escogido')
-#                                            #escojo un paciente y ahora prodedo a hacerle la revisión
-#                                            
-#                                            
-#                                    for i in pac.revmed:#recorro todas la revisiones del paciente y cojo solo de con fecha de hoy
-#                                        if i.fecha==hoy:
-#                                            rev=i
-#                                    #revision anterior? pero tener en cuanta entre listas co cosas y una lista de objetos
-#                                    diag=rev.diag[-1]# cojo el ultimo diagnostico
-#                                    if diag.derivado==True: #el paciente ya  esta derivado
-#                                                #MOSTRAR INFO DIAG ANTERIOR
-#                                        print('\nUltimo diágnostico: ', diag)
-#                                            #pedimos a la maedica que rellene ls datos de diagnostico
-#                                    elif diag.derivado==False:#si no esta derivado aun
-#                                        print('\nDatos a introducir diag: ')
-#                                        enf=input('Enfermedad: ')
-#                                        obs=input('Observaciones: ')
-#                                        diag.observaciones=obs
-#                                        diag.enfermedad=enf#completo el diagnostico que tenia
-#                                        print (pac.muestra_datos())   
-#                                            #preguntamos si quiere expedir receta
-#                                        expedir=input('Desea expedir receta? Responda si/no: ').lower()
-#                                        while expedir=='si':
-#                                            print('Introduza los datos para expedir receta: ')
-#                                            codigo=int(input('Codigo del medicamento: '))#ponemos el codigo porque es mas facil de buscar al haber varios con el mismo nombre
-#                                            medicamento=hosp.consulta_ident(codigo,'medicamento')
-#                                            print (medicamento)
-#                                            if medicamento==None: #no ha encontrado ninguna coincidencia
-#                                                print('\nNo figura una medicamento con ese código')
-#                                            else: #lo ha encontrado
-#                                                dosis=input('Dosis del medicamento: ')
-#                                                receta=diag.gen_recet(medicamento,dosis)
-#                                                expedir=input('Desea expedir otra receta? Responda si/no: ').lower()
-#                                
-#                                            #preguntamos si quiere derivar al paciente
-#                                        derivar=input('Desea derivar a la paciente? Responda si/no: ').lower()
-#                                        if derivar=='si':
-#                                            print('Intoduzca los datos necesarios para la derivación: ')
-#                                                #fecha será la actual, nommed es uno nuevo no?
-#                                            nommed=input('Nombre y apellido de la médica a la cual derivamos: ').title()
-#                                            while True:
-#                                                especialidad=input('Nombre de la especialidad: ')
-#                                                if especialidad in dic_especialidades:
-#                                                    diag.derivap(nommed,hoy,especialidad)#guardo la derivacio en el diagnotico
-#                                                    break
-#                                                else:
-#                                                    print('No existe tal especialidad')
-#                                                    no_derivacion=input('Desea continuar con la derivación? Responda si/no').lower()
-#                                                    if no_derivacion=='no':
-#                                                        break
-#                                                    else:
-#                                                        pass
-#                                        
-#                                        lista_pacnorev.remove(pac)
-#                                        lista_pacrev.append(pac)
+        #                                    
             
     #METODOS DE CONSULTA:
     #metodo que abarca abarca las consultas por NOMBRE de medicas, recepcionistas, enfermeras y especialidades dependiendo del parametro de entrada
@@ -386,6 +288,69 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                 return self.especialidades[i].muestra_datos() 
 
     #métodode consulta de recetas que ordena por fecha y especialidad
+    def consulta_recet(self,nom): #nombre del paciente como parametro, pero tengo las recetas dentro de diagnostico
+        lista_recetas=[]
+        for i in self.pacientes:
+            if nom in i.regresa_nombre():
+                pac=i.muestra_datos()
+                revisiones=pac.revmed
+                for a in revisiones:
+                    diag=a.diag
+                    for j in diag:
+                        if len(diag.receta)!=0:
+                            lista_recetas.append(diag.receta)#encara que cada diag tingui mes dunar recepta, com que tindran les mateixes fechas i espes no 'desmonto' la llista
+#        espe_orden=[]
+#        for i in self.especialidades:
+#            espe_orden.append(self.dic_especialidades[i].nombre)
+#        espe_orden.sort(key=str)
+        
+        for i in self.pacientes:
+            if nom in self.pacientes[i].regresa_nombre():
+                pac=self.pacientes[i]
+                rev=pac.revmed #me muestra el último componente de pacientes que se corresponde con la revisión médica
+#                lista_fechas_rev=[]
+#                
+##                for i in rev:
+##                    lista_fechas_rev.append(rev.fecha)
+##                lista_fechas_rev.sort(key=str) 
+                if len(rev)==0:
+                    print('La paciente no tiene revisiones médicas aún')
+                    
+                else:
+                    dia=rev.diag
+                    recet=dia.receta
+                    recet.sort(key=rev.fecha.datatime)
+                    return recet
+                #pasar a data time
+                #mirar arc sort
+                #mirar funcionalidad arc_sort
+                #puedo llamar a atributos desde el sort
+                
+#        for i in range(len(lista_fechas_rev)):
+#            recet[i]
+    
+    #método de consulta derivaciones
+    def consulta_deriv(self,nombre):
+        lista_deriv=[]
+        for i in self.pacientes:
+            if nombre in self.pacientes[i].regresa_nombre():
+                pac=self.pacientes[i].muestra_datos()
+                revisiones=pac.revmed
+                for a in revisiones:
+                    diag=revisiones[a].diag
+                    for j in diag:
+                        if diag.derivado==True:
+                            lista_deriv.append(diag.deriva)
+        return lista_deriv# falta ordenarla por fehcas
+    
+    #método de consulta medicas por especialidad       
+    def consulta_med_espe(self,especialidad):
+        lista_medesp=[]
+        for i in self.medicas:#recorro el dic de medicos y miro que medicos tienen la especialidad puesta como input
+            if especialidad in self.medicas[i].muestra_datos():
+                lista_medesp.append([self.medicas[i].regresa_nombre(),self.medicas[i].regresa_numpac()])#si la espeicalida coincide meto el nombre y el numero de pacientes del medico en una lista
+        return lista_medesp
+       #métodode consulta de recetas que ordena por fecha y especialidad
     def consulta_recet(self,nom): #nombre del paciente como parametro, pero tengo las recetas dentro de diagnostico
         lista_recetas=[]#creo una lista con las recetas de cada diagnostico
         lista_diags=[]#creo una lista con los diagnosticos que tengan recetas
@@ -452,15 +417,6 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                             if a==lista_diags[b].especialidad:#tenint en compre que recorrerem les especialitats i dates en ordre
                                 lista_final.append(lista_recetas[b][0].muestra_datos())#com que la llista diag i rece
         return lista_final
-    
-    #método de consulta medicas por especialidad       
-    def consulta_med_espe(self,especialidad):
-        lista_medesp=[]
-        for i in self.medicas:#recorro el dic de medicos y miro que medicos tienen la especialidad puesta como input
-            if especialidad in self.medicas[i].muestra_datos():
-                lista_medesp.append([self.medicas[i].regresa_nombre(),self.medicas[i].regresa_numpac()])#si la espeicalida coincide meto el nombre y el numero de pacientes del medico en una lista
-        return lista_medesp
-   
     #METODOS DE CREACION DE ARCHIVOS: medicas, pacientes, enfermeras y recepcionistas
     def archivo_medicas(self):
         dic_med_orden={}
