@@ -1417,6 +1417,7 @@ class Interface():
                     elif len(pac)==1:
                         self.Hospital.assignar(pac[0],result,enf)
                         messagebox.showinfo(title='Alta!', message='La revisión ha sido dada de alta!')
+                        v_rev.destroy()
                     else: 
                         pacientes=[]
                         for a in pac:
@@ -1425,6 +1426,7 @@ class Interface():
                         pac=self.comprobar_id()
                         self.Hospital.assignar(pac,result,enf)
                         messagebox.showinfo(title='Alta!', message='La revisión ha sido dada de alta!')
+                        v_rev.destroy()
             except ValueError:
                 messagebox.showinfo(title='Error', message='No ha introducido la fecha en formato correcto!')
     def diagnostico(self,result):
@@ -1481,30 +1483,22 @@ class Interface():
         
             etiq_0= tk.Label(v_recet, text= "Escoja la opción que desee:")
             etiq_0.grid(column=0, row=0)#posicio
-        
-            etiq_res = tk.Label(v_recet, text= "Genera receta/s?:")
-            etiq_res.grid(column=0, row=1)
-            respuesta=['SÍ','NO']
-            spin_res = ttk.Combobox(v_recet, values=respuesta)#un desplegable a comobox no cal assignarli variable
-            spin_res.grid(column=1, row=2)
             
-            receta_params=partial(self.receta_aux,spin_res, v_recet)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
-            btnAsignar=tk.Button(v_recet,text="Expedir", command = receta_params).grid(column=0,row=3)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
-            btnSortir=tk.Button(v_recet,text="Salida", command = v_recet.destroy).grid(column=1,row=3)#destrueixo la finestra per tant surto
+            receta_params=partial(self.receta_aux,v_recet)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+            btnAsignar=tk.Button(v_recet,text="SI", command = receta_params).grid(column=0,row=1)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+            btnSortir=tk.Button(v_recet,text="NO", command = v_recet.destroy).grid(column=1,row=1)#destrueixo la finestra per tant surto
             v_recet.transient()
             v_recet.grab_set()
             self.v.wait_window(v_recet)
-            receta=self.receta_aux(spin_res,v_recet)
+            receta=self.receta_aux(v_recet)
             return receta
-    def receta_aux(self,res,v_recet):
-            if not res.get():
-                messagebox.showinfo(title='Error', message='Algún campo está vació')
-            else:
-                return res.get()
-                v_recet.destroy()
+    def receta_aux(self,v_recet):
+            v_recet.destroy()
+            return True
+            
                 
 
-    def expedir_receta(self,diag):
+    def expedir_receta(self,diag,med,pac):
             v_recet = tk.Toplevel(self.v)#creo la finestra
             v_recet.geometry("350x350")
             v_recet.title("Expedir receta")    
@@ -1513,9 +1507,9 @@ class Interface():
             etiq_0.grid(column=0, row=0)#posicio
     
             # Nom
-            etiq_cod = tk.Label(v_ingreso, text= "Código medicamento:")
+            etiq_cod = tk.Label(v_recet, text= "Código medicamento:")
             etiq_cod.grid(column=0, row=1)#posicio
-            medis = self.Hospital.comprobar_medi()
+            medis = self.Hospital.consulta_medi()
             spin_cod = ttk.Combobox(v_recet, values=medis)#un desplegable a comobox no cal assignarli variable
             spin_cod.grid(column=1, row=1)
             
@@ -1529,7 +1523,7 @@ class Interface():
     
             # de la llibreria functools
             # assignar parcial per a funció, per a poder assignar directament command amb variables
-            expedir_recet_params=partial(self.expedir_recet_aux,diag, v_cod, v_dos, v_recet)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+            expedir_recet_params=partial(self.expedir_recet_aux,diag, v_cod, v_dos,med,pac, v_recet)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
     
             # Programar botó
             btnAsignar=tk.Button(v_recet,text="Expedir", command = expedir_recet_params).grid(column=0,row=3)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
@@ -1544,7 +1538,7 @@ class Interface():
             # Wait for the window to end
             self.v.wait_window(v_recet)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
             
-    def expedir_recet_aux(self,diag, cod, dos, v_recet):
+    def expedir_recet_aux(self,diag, cod, dos,med,pac, v_recet):
         """
         Auxiliar function to be able to send messageboxes
         """ 
@@ -1555,7 +1549,28 @@ class Interface():
             self.Hospital.expedir_recet(diag,cod.get(),dos.get())
             messagebox.showinfo(title='Añadida', message='La receta ha sido añadida!')
             v_recet.destroy()
-
+    def derivar (self):# este metodo serivara para saber si queremos expedir receta o no
+            v_deriv = tk.Toplevel(self.v)#creo la finestra
+            v_deriv.geometry("350x350")
+            v_deriv.title("Desea generar receta?")    
+        
+            etiq_0= tk.Label(v_deriv, text= "Escoja la opción que desee:")
+            etiq_0.grid(column=0, row=0)#posicio
+            
+            receta_params=partial(self.derivar_aux,v_deriv)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+            btnAsignar=tk.Button(v_deriv,text="SI", command = derivar_params).grid(column=0,row=1)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+            btnSortir=tk.Button(v_deriv,text="NO", command = v_deriv.destroy).grid(column=1,row=1)#destrueixo la finestra per tant surto
+            v_deriv.transient()
+            v_deriv.grab_set()
+            self.v.wait_window(v_deriv)
+            derivar=self.derivar_aux(v_deriv)
+            return derivar
+    def derivar_aux(self,v_deriv):
+            v_derivt.destroy()
+            return True
+     
+        
+        
     def realiza_deriv(self,diag,med,pac):
             v_der = tk.Toplevel(self.v)#creo la finestra
             v_der.geometry("350x350")
@@ -1619,7 +1634,7 @@ class Interface():
             else:
                 pacientes=[]
                 for i in pac_hoy:
-                    pacientes.append(i.muestra_datos)
+                    pacientes.append(i.muestra_datos())
                 messagebox.showinfo(title='Hay mas de un paciente hoy',  message= pacientes)
                 pac=self.Hospital.comprueba_id()
             print(pac)
@@ -1629,9 +1644,12 @@ class Interface():
             else:#si no ha sido derivado procedo a completar su diagnostico
                 diag=self.diagnostico(result)#completo el diag con observaciones i enfermedad
                 resultat=self.receta()
-                if resultat=='SÍ':
-                    diag=self.expedir_recet(diag,med,pac)
-#                else 
+                if resultat==True:
+                    diag=self.expedir_receta(diag,med,pac)
+                resultat=self.derivar()
+#                if resultat==True:
+                    
+                        
 #                    if
 #                    self.realiza_deriv(diag,med,pac)
                 
