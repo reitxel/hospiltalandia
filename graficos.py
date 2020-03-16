@@ -53,7 +53,7 @@ class Interface():
         self.mConsultas.add_command(label="Consulta de médica por especialidad", command = self.consulta_medica_especialidad)
                 
         self.mRevisiones.add_command(label= "Alta de revisiones",command=self.alta_revisiones)
-        self.mRevisiones.add_command(label= "Realizar revisión")
+        self.mRevisiones.add_command(label= "Realizar revisión",command=self.realiza_revision)
 
         self.mArchivos.add_command(label= "Informe de médicas",command=self.archivo_medicos)
         self.mArchivos.add_command(label= "Historial de una paciente",command=self.archivo_paciente)
@@ -81,7 +81,7 @@ class Interface():
         v_comprobar.title("Login recepcionsita")    
         
         
-        etiq_nom = tk.Label(v_comprobar, text= "Nombre:")
+        etiq_nom = tk.Label(v_comprobar, text= "Nombre y apellido:")
         etiq_nom.grid(column=0, row=1)#posicio
         v_nom = tk.StringVar()
         v_nom.set("")
@@ -130,7 +130,7 @@ class Interface():
         v_comprobar.title("Login enfermera")    
         
         
-        etiq_nom = tk.Label(v_comprobar, text= "Nombre:")
+        etiq_nom = tk.Label(v_comprobar, text= "Nombre y apellido:")
         etiq_nom.grid(column=0, row=1)#posicio
         v_nom = tk.StringVar()
         v_nom.set("")
@@ -165,7 +165,7 @@ class Interface():
         if not all([nom.get(), contra.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
             messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
         else:
-            log=self.Hospital.login_enf(nom.get().title(),contra.get().title())
+            log=self.Hospital.login_enf(nom.get().title(),contra.get())
             if log==False:
                  messagebox.showinfo(title='Error', message='No existe esta enfermera, o la contraseña es incorrecta')
             else:
@@ -181,7 +181,7 @@ class Interface():
         v_comprobar.title("Login médica")    
         
         
-        etiq_nom = tk.Label(v_comprobar, text= "Nombre:")
+        etiq_nom = tk.Label(v_comprobar, text= "Nombre y apellido:")
         etiq_nom.grid(column=0, row=1)#posicio
         v_nom = tk.StringVar()
         v_nom.set("")
@@ -216,7 +216,7 @@ class Interface():
         if not all([nom.get(), contra.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
             messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
         else:
-            log=self.Hospital.login_med(nom.get(),contra.get())
+            log=self.Hospital.login_med(nom.get().title(),contra.get())
             if log==False:
                  messagebox.showinfo(title='Error', message='No existe esta médica, o la contraseña es incorrecta')
             else:
@@ -1348,7 +1348,6 @@ class Interface():
 #MENU DE REVISIONES
     def alta_revisiones(self):
         enf=self.comprobar_enf()
-        print (enf)
         if enf!=False:
             recep=self.Hospital.recepcionistas[1]
            
@@ -1423,6 +1422,22 @@ class Interface():
             except ValueError:
                 messagebox.showinfo(title='Error', message='No ha introducido la fecha en formato correcto!')
 
+    def realiza_revision(self):
+        med=self.comprobar_med()
+        if med!=False:
+            recep=self.Hospital.recepcionistas[1]
+            pac_hoy=self.Hospital.rev_hoy(med)
+            if pac_hoy==[]:
+                messagebox.showinfo(title='Vacío', message='No tiene pacientes hoy')
+            elif len(pac_hoy)==1:
+                pac=pac_hoy[0]
+                messagebox.showinfo(title='Tiene un paciente hoy', message=pac.muestra_datos())
+            else:
+                pacientes=[]
+                for i in pac_hoy:
+                    pacientes.append(i.muestra_datos)
+                messagebox.showinfo(title='Hay mas de un paciente hoy',  message= pacientes)
+                pac=self.Hospital.comprueba_id()
                 
                 
                 
