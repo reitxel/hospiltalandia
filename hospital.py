@@ -226,6 +226,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         diag.gen_recet(codigo,dosis)
 
     def derivar(self,diag,nommed,especialidad,med,pac):    #aqui llega si quiere derivar
+        print(diag)
         diag.deriva(nommed,datetime.now().date(),especialidad)#guardo la derivacio en el diagnotico
         #en algun momento hay que dar la opcion de que pare la derivacion, osea boton de salida
         
@@ -303,28 +304,25 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         return lista_medesp
     
     #método de consulta de recetas que ordena por fecha y especialidad
-    def consulta_recet(self,nom): #nombre del paciente como parametro, pero tengo las recetas dentro de diagnostico
+    def consulta_recet(self,pac): #nombre del paciente como parametro, pero tengo las recetas dentro de diagnostico
         lista_recetas=[]#creo una lista con las recetas de cada diagnostico
         lista_diags=[]#creo una lista con los diagnosticos que tengan recetas
         lista_fechas=[]
         lista_revs=[]
-        for i in self.pacientes:
-            if nom in self.pacientes[i].regresa_nombre():
-                pac=self.pacientes[i]
-                revisiones=pac.revmed
-                for a in revisiones:
-                    diag=a.diag
-                    lista_fechas.append(a.fecha)
-                    for j in diag:
-                        if j.receta!=[]:
-                            lista_recetas.append(j.receta)#encara que cada diag tingui mes dunar recepta, com que tindran les mateixes fechas i espes no 'desmonto' la llista
-                            lista_diags.append(j)
-                            lista_revs.append(a)
-        lista_fechas=lista_fechas.sort()
+        revisiones=pac.revmed
+        for a in revisiones:
+            diag=a.diag
+            lista_fechas.append(a.fecha)
+            for j in diag:
+                if j.receta!=[]:
+                    lista_recetas.append(j.receta)#encara que cada diag tingui mes dunar recepta, com que tindran les mateixes fechas i espes no 'desmonto' la llista
+                    lista_diags.append(j)
+                    lista_revs.append(a)
+        lista_fechas.sort()
         espe_orden=[]#creo una lista con todas las especilaidades i las ordeno alfabeticamente
         for i in self.especialidades:            
            espe_orden.append(self.especialidades[i].nombre)
-        espe_orden=espe_orden.sort(key=str)
+        espe_orden.sort(key=str)
         
         lista_final=[]
         for i in lista_fechas:#recooro llista fechas por orden

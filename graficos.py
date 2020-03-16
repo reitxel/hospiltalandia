@@ -48,7 +48,7 @@ class Interface():
         self.mConsultas.add_command(label="Consulta de recepcionista", command = self.consulta_recepcionista)
         self.mConsultas.add_command(label="Consulta de especialidad", command = self.consulta_especialidad)
         self.mConsultas.add_command(label="Consulta de medicamento", command = self.consulta_medicamento)
-        self.mConsultas.add_command(label="Consulta de recetas")#, command = self.consulta_recetas)
+        self.mConsultas.add_command(label="Consulta de recetas", command = self.consulta_receta)
         self.mConsultas.add_command(label="Consulta de derivaciones", command = self.consulta_derivacion)
         self.mConsultas.add_command(label="Consulta de médica por especialidad", command = self.consulta_medica_especialidad)
                 
@@ -894,7 +894,7 @@ class Interface():
                 for i in result:
                     pacientes.append(i.muestra_datos())
                 messagebox.showinfo(title='Paciente', message=pacientes)
-                v_ingreso.destroy()
+                v_consulta.destroy()
                 
     def consulta_medica(self):
         """
@@ -1194,6 +1194,8 @@ class Interface():
         """
         Funció que implementa una finestra amb la consulta de pacient.
         """
+        recep=self.Hospital.recepcionistas[1]
+
         #Prepara la finestra
         v_consulta = tk.Toplevel(self.v)
         v_consulta.geometry("350x350")
@@ -1210,13 +1212,19 @@ class Interface():
         e_nom = tk.Entry(v_consulta, textvariable=v_nom)
         e_nom.grid(column=1, row=1)
 
+        etiq_apell = tk.Label(v_consulta, text= "Apellido:")
+        etiq_apell.grid(column=0, row=2)#posicio
+        v_apell = tk.StringVar()
+        v_apell.set("")
+        e_apell = tk.Entry(v_consulta, textvariable=v_apell)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+        e_apell.grid(column=1, row=2)
         # de la llibreria functools
         # assignar parcial per a funció, per a poder assignar directament command amb variables
-        consulta_recet_params=partial(self.consulta_recet_aux, v_nom, v_consulta)
+        consulta_recet_params=partial(self.consulta_recet_aux, v_nom,v_apell ,recep,v_consulta)
 
         # Programar botó
-        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_recet_params).grid(column=0,row=2)
-        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=2)
+        btnAsignar=tk.Button(v_consulta,text="Consultar", command = consulta_recet_params).grid(column=0,row=3)
+        btnSortir=tk.Button(v_consulta,text="Salida", command = v_consulta.destroy).grid(column=1,row=3)
 
         # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
         v_consulta.transient()
@@ -1227,7 +1235,7 @@ class Interface():
         # Wait for the window to end
         self.v.wait_window(v_consulta)
 
-    def consulta_recet_aux(self, nom, v_consulta):
+    def consulta_recet_aux(self, nom,apell,recep, v_consulta):
         """
         Auxiliar function to be able to send messageboxes
         """ 
@@ -1235,13 +1243,23 @@ class Interface():
         if not nom.get():
             messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
         else:
-            # Cridar a alta d'hospital
-            result = self.Hospital.consulta_recet(nom.get())
-            if not result:
-                messagebox.showinfo(title='Error', message='Paciente sin recetas!')
-            else:
-                messagebox.showinfo(title='Recetas', message=result.muestra_datos())
-                v_consulta.destroy() 
+             pac=self.Hospital.consulta_pac(nom.get().title(),apell.get().title(),recep)
+             if pac==[]:
+                 messagebox.showinfo(title='Vacío', message='No existe un paciente con este nombre')
+             elif len(pac)==1:
+                pac=pac[0]
+             else: 
+                pacientes=[]
+                for a in pac:
+                    pacientes.append(a.muestra_datos())
+                    messagebox.showinfo(title='Hay mas de un paciente con este nombre',  message= pacientes)
+                    pac=self.comprobar_id()
+             result = self.Hospital.consulta_recet(pac)
+             if not result:
+                 messagebox.showinfo(title='Error', message='Paciente sin recetas!')
+             else:
+                 messagebox.showinfo(title='Recetas', message=result)
+             v_consulta.destroy() 
                
 #CONSULTA DERIVACIONES
     def consulta_derivacion(self):
@@ -1498,7 +1516,7 @@ class Interface():
         self.v.wait_window(v_rece)
         receta=self.receta_aux(v_rece)
         return receta
-        
+        v_rece.destroy()
     def receta_aux(self,v_rece):
         v_rece.destroy()
         return True
@@ -1523,7 +1541,7 @@ class Interface():
         
         # Codigo
         sclBarra=tk.Scale(v_recet,label="Dosis medicamento [mg/ml]",orient='horizontal',width=25,from_=0,to=1000,tickinterval=250,length=200,resolution=1, showvalue='YES')
-        sclBarra.grid(column=1, row=2)
+        sclBarra.grid(column=0, row=2)
 
         expedir_recet_params=partial(self.expedir_recet_aux,diag, spin_cod, sclBarra, med, pac, v_recet)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
 
