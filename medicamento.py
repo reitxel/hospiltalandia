@@ -41,6 +41,9 @@ class Medicamento(object):
     marca=property(get_marca,set_marca)
     laboratorio=property(get_laboratorio,set_laboratorio)
 
+    def regresa_cod(self):
+        return self.codigo
+    
     def muestra_datos(self):
         return [self.codigo,self.princ_activ,self.marca,self.laboratorio]
 
