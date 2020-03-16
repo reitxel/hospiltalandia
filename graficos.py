@@ -1415,7 +1415,7 @@ class Interface():
                     if pac==[]:
                         messagebox.showinfo(title='Vacío', message='No existe un paciente con este nombre')
                     elif len(pac)==1:
-                        self.Hospital.assignar(pac[0],fecha.get(),enf)
+                        self.Hospital.assignar(pac[0],result,enf)
                         messagebox.showinfo(title='Alta!', message='La revisión ha sido dada de alta!')
                     else: 
                         pacientes=[]
@@ -1423,11 +1423,11 @@ class Interface():
                             pacientes.append(a.muestra_datos())
                         messagebox.showinfo(title='Hay mas de un paciente con este nombre',  message= pacientes)
                         pac=self.comprobar_id()
-                        self.Hospital.assignar(pac,fecha.get(),enf)
+                        self.Hospital.assignar(pac,result,enf)
                         messagebox.showinfo(title='Alta!', message='La revisión ha sido dada de alta!')
             except ValueError:
                 messagebox.showinfo(title='Error', message='No ha introducido la fecha en formato correcto!')
-    def diagnostico_(self,result):
+    def diagnostico(self,result):
         v_diag = tk.Toplevel(self.v)
         v_diag.geometry("350x350")
         v_diag.title("Completar diagnostico")    
@@ -1464,21 +1464,153 @@ class Interface():
         self.v.wait_window(v_diag)  
         diag=self.diagnostico_aux(v_obs,v_enf,result,v_diag)
         return diag
-        
+        v_diag.destroy()
         
     def diagnostico_aux(self,obs,enf,result,v_diag):
         if not all ([obs.get(),enf.get()]):
             messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
         else:
             diag=self.Hospital.realizar_diag(result,enf.get(),obs.get())#funcion que me completa el diagnostico
-            return diag
+            messagebox.showinfo(title='Aceptado', message='Diagnostico completado!')
             v_diag.destroy()
+            return diag
+    def receta (self):# este metodo serivara para saber si queremos expedir receta o no
+            v_recet = tk.Toplevel(self.v)#creo la finestra
+            v_recet.geometry("350x350")
+            v_recet.title("Desea generar receta?")    
+        
+            etiq_0= tk.Label(v_recet, text= "Escoja la opción que desee:")
+            etiq_0.grid(column=0, row=0)#posicio
+        
+            etiq_res = tk.Label(v_recet, text= "Genera receta/s?:")
+            etiq_res.grid(column=0, row=1)
+            respuesta=['SÍ','NO']
+            spin_res = ttk.Combobox(v_recet, values=respuesta)#un desplegable a comobox no cal assignarli variable
+            spin_res.grid(column=1, row=2)
+            
+            receta_params=partial(self.receta_aux,spin_res, v_recet)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+            btnAsignar=tk.Button(v_recet,text="Expedir", command = receta_params).grid(column=0,row=3)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+            btnSortir=tk.Button(v_recet,text="Salida", command = v_recet.destroy).grid(column=1,row=3)#destrueixo la finestra per tant surto
+            v_recet.transient()
+            v_recet.grab_set()
+            self.v.wait_window(v_recet)
+            receta=self.receta_aux(spin_res,v_recet)
+            return receta
+    def receta_aux(self,res,v_recet):
+            if not res.get():
+                messagebox.showinfo(title='Error', message='Algún campo está vació')
+            else:
+                return res.get()
+                v_recet.destroy()
+                
 
+    def expedir_receta(self,diag):
+            v_recet = tk.Toplevel(self.v)#creo la finestra
+            v_recet.geometry("350x350")
+            v_recet.title("Expedir receta")    
+        
+            etiq_0= tk.Label(v_recet, text= "Insertar datos de la receta a expedir:")#etiqueta 0 es letiqueta de dalt de tot
+            etiq_0.grid(column=0, row=0)#posicio
+    
+            # Nom
+            etiq_cod = tk.Label(v_ingreso, text= "Código medicamento:")
+            etiq_cod.grid(column=0, row=1)#posicio
+            medis = self.Hospital.comprobar_medi()
+            spin_cod = ttk.Combobox(v_recet, values=medis)#un desplegable a comobox no cal assignarli variable
+            spin_cod.grid(column=1, row=1)
+            
+            # Codigo
+            etiq_dos = tk.Label(v_recet, text= "Dosis medicamento:")
+            etiq_dos.grid(column=0, row=2)#posicio
+            v_dos = tk.StringVar()
+            v_dos.set("")
+            e_dos = tk.Entry(v_recet, textvariable=v_dos)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+            e_dos.grid(column=1, row=2)
+    
+            # de la llibreria functools
+            # assignar parcial per a funció, per a poder assignar directament command amb variables
+            expedir_recet_params=partial(self.expedir_recet_aux,diag, v_cod, v_dos, v_recet)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+    
+            # Programar botó
+            btnAsignar=tk.Button(v_recet,text="Expedir", command = expedir_recet_params).grid(column=0,row=3)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+            btnSortir=tk.Button(v_recet,text="Salida", command = v_recet.destroy).grid(column=1,row=3)#destrueixo la finestra per tant surto
+    
+            # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+            v_recet.transient()
+    
+            #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+            v_recet.grab_set()
+    
+            # Wait for the window to end
+            self.v.wait_window(v_recet)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
+            
+    def expedir_recet_aux(self,diag, cod, dos, v_recet):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si algun esta empty
+        if not all([cod.get(),dos.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
+            messagebox.showinfo(title='Error', message='Algún campo está vació')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
+        else:
+            self.Hospital.expedir_recet(diag,cod.get(),dos.get())
+            messagebox.showinfo(title='Añadida', message='La receta ha sido añadida!')
+            v_recet.destroy()
+
+    def realiza_deriv(self,diag,med,pac):
+            v_der = tk.Toplevel(self.v)#creo la finestra
+            v_der.geometry("350x350")
+            v_der.title("Expedir receta")    
+        
+            etiq_0= tk.Label(v_recet, text= "Insertar datos de la derivación:")#etiqueta 0 es letiqueta de dalt de tot
+            etiq_0.grid(column=0, row=0)#posicio
+    
+            # Nom
+            etiq_nom = tk.Label(v_ingreso, text= "Nombre de la médica:")
+            etiq_nom.grid(column=0, row=1)#posicio
+            v_nom = tk.StringVar()
+            v_nom.set("")
+            e_nom = tk.Entry(v_der, textvariable=v_nom)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+            e_nom.grid(column=0, row=1)
+            
+            etiq_espe = tk.Label(v_ingreso, text= "Especialidad:")
+            etiq_espe.grid(column=0, row=2)
+            especialidades = self.Hospital.comprobar_especialidad()
+            spin_espe = ttk.Combobox(v_der, values=especialidades)#un desplegable a comobox no cal assignarli variable
+            spin_espe.grid(column=1, row=2)
+    
+            # de la llibreria functools
+            # assignar parcial per a funció, per a poder assignar directament command amb variables
+            realiza_deriv_params=partial(self.realiza_deriv_aux,diag, v_nom, v_espe,mod,pac, v_der)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+            # Programar botó
+            btnAsignar=tk.Button(v_recet,text="Realizar", command = realiza_deriv_params).grid(column=0,row=3)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+            btnSortir=tk.Button(v_recet,text="Salida", command = v_.destroy).grid(column=1,row=3)#destrueixo la finestra per tant surto
+    
+            # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+            v_der.transient()
+    
+            #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+            v_der.grab_set()
+    
+            # Wait for the window to end
+            self.v.wait_window(v_der)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
+            
+    def realiza_deriv_aux(self,diag, nom, espe,med,pac, v_deriv):
+        """
+        Auxiliar function to be able to send messageboxes
+        """ 
+        # Mirar si algun esta empty
+        if not all([nom.get(),espe.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
+            messagebox.showinfo(title='Error', message='Algún campo está vació')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
+        else:
+            #FALTA OBJETO PACIENTE Y MEDICO CREO
+            self.Hospital.derivar(nom.get(),espe.get()) #
+            messagebox.showinfo(title='Añadida', message='Se ha realizado la derivación!')
+            v_der.destroy()
+            
     def realiza_revision(self):
         med=self.comprobar_med()
         if med!=False:
-            recep=self.Hospital.recepcionistas[1]
-            pac_hoy=self.Hospital.rev_hoy(med)
+            pac_hoy=self.Hospital.revision_hoy(med)
             if pac_hoy==[]:
                 messagebox.showinfo(title='Vacío', message='No tiene pacientes hoy')
             elif len(pac_hoy)==1:
@@ -1490,14 +1622,18 @@ class Interface():
                     pacientes.append(i.muestra_datos)
                 messagebox.showinfo(title='Hay mas de un paciente hoy',  message= pacientes)
                 pac=self.Hospital.comprueba_id()
-            
+            print(pac)
             result=self.Hospital.atender_hoy(pac)
             if result.derivado==True:#si el paciente ya ha sido derivado lo muestro su ultimo diag
                 messagebox.showinfo(title='El paciente ya ha sido derivado', message=result.muestra_datos())
             else:#si no ha sido derivado procedo a completar su diagnostico
-                diag=self.Hospital.realizar_diag(result)#completo el diag con observaciones i enfermedad
-            print(diag)
-            
+                diag=self.diagnostico(result)#completo el diag con observaciones i enfermedad
+                resultat=self.receta()
+                if resultat=='SÍ':
+                    diag=self.expedir_recet(diag,med,pac)
+#                else 
+#                    if
+#                    self.realiza_deriv(diag,med,pac)
                 
                 
                 
@@ -1574,9 +1710,7 @@ class Interface():
                 else:
                     messagebox.showinfo(title='Cantidad de revisiones de cada especialidad', message=result)
             v_arxivo.destroy()
-#            elif len(pac)>1
 
-        
     def archivo_enf(self):
         enf=self.Hospital.archivo_enf()
         messagebox.showinfo(title='Estadisiticas enfermeras', message= enf)
