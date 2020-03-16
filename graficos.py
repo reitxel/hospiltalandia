@@ -288,60 +288,66 @@ class Interface():
             e_nom = tk.Entry(v_ingreso, textvariable=v_nom)#li pos la finestre i el lligo amb una variavbel 'v_nom'
             e_nom.grid(column=1, row=1)
 
+            etiq_apell = tk.Label(v_ingreso, text= "Apellido:")
+            etiq_apell.grid(column=0, row=2)#posicio
+            v_apell = tk.StringVar()
+            v_apell.set("")
+            e_apell = tk.Entry(v_ingreso, textvariable=v_apell)#li pos la finestre i el lligo amb una variavbel 'v_nom'
+            e_apell.grid(column=1, row=2)
             # Dirección
             etiq_dir = tk.Label(v_ingreso, text= "Dirección:")
-            etiq_dir.grid(column=0, row=2)
+            etiq_dir.grid(column=0, row=3)
             v_dir = tk.StringVar()
             v_dir.set("")
             e_dir = tk.Entry(v_ingreso, textvariable=v_dir)
-            e_dir.grid(column=1, row=2)
+            e_dir.grid(column=1, row=3)
 
             # Ciutat
             etiq_ciudad = tk.Label(v_ingreso, text= "Ciutad:")
-            etiq_ciudad.grid(column=0, row=3)
+            etiq_ciudad.grid(column=0, row=4)
             v_ciudad = tk.StringVar()
             v_ciudad.set("")
             e_ciudad = tk.Entry(v_ingreso, textvariable=v_ciudad)
-            e_ciudad.grid(column=1, row=3)
+            e_ciudad.grid(column=1, row=4)
 
             # Codi postal
             etiq_cp = tk.Label(v_ingreso, text= "Código Postal:")
-            etiq_cp.grid(column=0, row=4)
+            etiq_cp.grid(column=0, row=5)
             v_cp = tk.StringVar()
             v_cp.set("")
             e_cp = tk.Entry(v_ingreso, textvariable=v_cp)
-            e_cp.grid(column=1, row=4)
+            e_cp.grid(column=1, row=5)
 
             # Telefon
             etiq_tlf = tk.Label(v_ingreso, text= "Teléfono:")
-            etiq_tlf.grid(column=0, row=5)
+            etiq_tlf.grid(column=0, row=6)
             v_tlf = tk.StringVar()
             v_tlf.set("")
             e_tlf = tk.Entry(v_ingreso, textvariable=v_tlf)
-            e_tlf.grid(column=1, row=5)
+            e_tlf.grid(column=1, row=6)
 
             # email
             etiq_email = tk.Label(v_ingreso, text= "Email:")
-            etiq_email.grid(column=0, row=6)
+            etiq_email.grid(column=0, row=7)
             v_email = tk.StringVar()
             v_email.set("")
             e_email = tk.Entry(v_ingreso, textvariable=v_email)
-            e_email.grid(column=1, row=6)
+            e_email.grid(column=1, row=7)
 
             # Grup sanguini (desplegable)
             etiq_sang = tk.Label(v_ingreso, text= "Grupo sanguíneo:")
-            etiq_sang.grid(column=0, row=7)
+            etiq_sang.grid(column=0, row=8)
             grupos_sanguineos = ['O+','A+','B+','O-','A-','AB+','B-','AB-']
             spin_sang = ttk.Combobox(v_ingreso, values=grupos_sanguineos)#un desplegable a comobox no cal assignarli variable
-            spin_sang.grid(column=1, row=7)
+            spin_sang.grid(column=1, row=8)
 
             # de la llibreria functools
             # assignar parcial per a funció, per a poder assignar directament command amb variables
             alta_pac_params=partial(self.alta_pac_aux, v_nom, v_dir, v_ciudad, v_cp, v_tlf, v_email, spin_sang,recep,v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
 
             # Programar botó
-            btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_pac_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
-            btnSortir=tk.Button(v_ingreso,text="Salida", command = v_ingreso.destroy).grid(column=1,row=8)#destrueixo la finestra per tant surto
+            btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_pac_params).grid(column=0,row=9)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+            btnSortir=tk.Button(v_ingreso,text="Salida", command = v_ingreso.destroy).grid(column=1,row=9)#destrueixo la finestra per tant surto
 
             # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
             v_ingreso.transient()
@@ -353,19 +359,19 @@ class Interface():
             self.v.wait_window(v_ingreso)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
 
             #self.alta_pac_aux(v_nom, v_dir, v_ciudad, v_cp, v_tlf, v_email, spin_sang,v_ingreso()
-    def alta_pac_aux(self, nom, dire, ciudad, cp, tlf, email,  sang, recep, v_ingreso):
+    def alta_pac_aux(self, nom, apell,dire, ciudad, cp, tlf, email,  sang, recep, v_ingreso):
         """
         Auxiliar function to be able to send messageboxes
         """ 
         # Mirar si algun esta empty
-        if not all([nom.get(), dire.get(), ciudad.get(), cp.get(), tlf.get(), email.get(), sang.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
+        if not all([nom.get(),apell.get(), dire.get(), ciudad.get(), cp.get(), tlf.get(), email.get(), sang.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
             messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
-        elif self.Hospital.consulta_paciente(nom.get(),recep)==[]:
-            a=self.Hospital.alta_pac(nom.get(), dire.get(), ciudad.get(), cp.get(), tlf.get(), email.get(), sang.get(),recep)
-            messagebox.showinfo(title='Añadida', message='La médica ha sido añadida!')
+        elif self.Hospital.consulta_pac(nom.get(),apell.get(),recep)==[]:
+            a=self.Hospital.alta_pac(nom.get(),apell.get(), dire.get(), ciudad.get(), cp.get(), tlf.get(), email.get(), sang.get(),recep)
+            messagebox.showinfo(title='Añadida', message='La paciente ha sido añadida!')
             v_ingreso.destroy()
         else:
-            a=self.Hospital.consulta_paciente(nom.get(),recep)
+            a=self.Hospital.consulta_pac(nom.get().title(),apell.get(),recep)
             lista_pac=[]
             for i in a:
                 lista_pac.append(i.muestra_datos())
@@ -1421,6 +1427,52 @@ class Interface():
                         messagebox.showinfo(title='Alta!', message='La revisión ha sido dada de alta!')
             except ValueError:
                 messagebox.showinfo(title='Error', message='No ha introducido la fecha en formato correcto!')
+    def diagnostico_(self,result):
+        v_diag = tk.Toplevel(self.v)
+        v_diag.geometry("350x350")
+        v_diag.title("Completar diagnostico")    
+        
+        etiq_0= tk.Label(v_diag, text= "Completar diagnostico:")
+        etiq_0.grid(column=0, row=0)
+    
+    #Observaciones
+        etiq_obs = tk.Label(v_diag, text= "Observaciones:")
+        etiq_obs.grid(column=0, row=1)
+        v_obs = tk.StringVar()
+        v_obs.set("")
+        e_obs = tk.Entry(v_diag, textvariable=v_obs)
+        e_obs.grid(column=1, row=1)
+    
+            # Enfermedad
+        etiq_enf = tk.Label(v_diag, text= 'Enfermedad:')
+        etiq_enf.grid(column=0, row=2)
+        v_enf = tk.StringVar()
+        v_enf.set("")
+        e_enf = tk.Entry(v_diag, textvariable=v_enf)
+        e_enf.grid(column=1, row=2)
+            
+        diagnostico_params=partial(self.diagnostico_aux, v_obs,v_enf,result,v_diag)
+    
+    # Programar botó
+        btnAsignar=tk.Button(v_diag,text="Alta", command = diagnostico_params).grid(column=0,row=3)
+        btnSortir=tk.Button(v_diag,text="Salida", command = v_diag.destroy).grid(column=1,row=3)
+    
+        v_diag.transient()
+    
+        v_diag.grab_set()
+    
+        self.v.wait_window(v_diag)  
+        diag=self.diagnostico_aux(v_obs,v_enf,result,v_diag)
+        return diag
+        
+        
+    def diagnostico_aux(self,obs,enf,result,v_diag):
+        if not all ([obs.get(),enf.get()]):
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
+        else:
+            diag=self.Hospital.realizar_diag(result,enf.get(),obs.get())#funcion que me completa el diagnostico
+            return diag
+            v_diag.destroy()
 
     def realiza_revision(self):
         med=self.comprobar_med()
@@ -1438,6 +1490,15 @@ class Interface():
                     pacientes.append(i.muestra_datos)
                 messagebox.showinfo(title='Hay mas de un paciente hoy',  message= pacientes)
                 pac=self.Hospital.comprueba_id()
+            
+            result=self.Hospital.atender_hoy(pac)
+            if result.derivado==True:#si el paciente ya ha sido derivado lo muestro su ultimo diag
+                messagebox.showinfo(title='El paciente ya ha sido derivado', message=result.muestra_datos())
+            else:#si no ha sido derivado procedo a completar su diagnostico
+                diag=self.Hospital.realizar_diag(result)#completo el diag con observaciones i enfermedad
+            print(diag)
+            
+                
                 
                 
                 
