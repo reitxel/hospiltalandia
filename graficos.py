@@ -8,6 +8,7 @@ from functools import partial
 from tkinter import messagebox
 from utilidades import Utilidades
 
+
 class Interface():
     util=Utilidades()
     def __init__(self, Hospital):
@@ -51,7 +52,7 @@ class Interface():
         self.mConsultas.add_command(label="Consulta de derivaciones", command = self.consulta_derivacion)
         self.mConsultas.add_command(label="Consulta de médica por especialidad", command = self.consulta_medica_especialidad)
                 
-        self.mRevisiones.add_command(label= "Alta de revisiones")
+        self.mRevisiones.add_command(label= "Alta de revisiones",command=self.alta_revisiones)
         self.mRevisiones.add_command(label= "Realizar revisión")
 
         self.mArchivos.add_command(label= "Informe de médicas",command=self.archivo_medicos)
@@ -94,10 +95,10 @@ class Interface():
         e_contra = tk.Entry(v_comprobar, textvariable=v_contra)#li pos la finestre i el lligo amb una variavbel 'v_nom'
         e_contra.grid(column=1, row=2)
         
-        login_recep_params=partial(self.comprobar_recep_aux, v_nom, v_contra,v_comprobar)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+        comprobar_recep_params=partial(self.comprobar_recep_aux, v_nom, v_contra,v_comprobar)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
 
         # Programar botó
-        btnAsignar=tk.Button(v_comprobar,text="Asignar", command = login_recep_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+        btnAsignar=tk.Button(v_comprobar,text="Asignar", command = comprobar_recep_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
         btnSortir=tk.Button(v_comprobar,text="Sortir", command = v_comprobar.destroy).grid(column=1,row=8)#destrueixo la finestra per tant surto
 
         # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
@@ -143,10 +144,10 @@ class Interface():
         e_contra = tk.Entry(v_comprobar, textvariable=v_contra)#li pos la finestre i el lligo amb una variavbel 'v_nom'
         e_contra.grid(column=1, row=2)
         
-        login_enf_params=partial(self.comprobar_enf_aux, v_nom, v_contra,v_comprobar)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+        comprobar_enf_params=partial(self.comprobar_enf_aux, v_nom, v_contra,v_comprobar)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
 
         # Programar botó
-        btnAsignar=tk.Button(v_comprobar,text="Asignar", command = login_enf_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+        btnAsignar=tk.Button(v_comprobar,text="Asignar", command = comprobar_enf_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
         btnSortir=tk.Button(v_comprobar,text="Sortir", command = v_comprobar.destroy).grid(column=1,row=8)#destrueixo la finestra per tant surto
 
         # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
@@ -157,14 +158,14 @@ class Interface():
         self.v.wait_window(v_comprobar)
         
         log=self.comprobar_enf_aux(v_nom,v_contra,v_comprobar)
-        
+        print(log)
         return log
 
     def comprobar_enf_aux(self,nom,contra,v_comprobar):
         if not all([nom.get(), contra.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
             messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
         else:
-            log=self.Hospital.log_enf(nom.get(),contra.get())
+            log=self.Hospital.login_enf(nom.get().title(),contra.get().title())
             if log==False:
                  messagebox.showinfo(title='Error', message='No existe esta enfermera, o la contraseña es incorrecta')
             else:
@@ -194,10 +195,10 @@ class Interface():
         e_contra = tk.Entry(v_comprobar, textvariable=v_contra)#li pos la finestre i el lligo amb una variavbel 'v_nom'
         e_contra.grid(column=1, row=2)
         
-        login_med_params=partial(self.comprobar_med_aux, v_nom, v_contra,v_comprobar)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+        comprobar_med_params=partial(self.comprobar_med_aux, v_nom, v_contra,v_comprobar)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
 
         # Programar botó
-        btnAsignar=tk.Button(v_comprobar,text="Asignar", command = login_med_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
+        btnAsignar=tk.Button(v_comprobar,text="Asignar", command = comprobar_med_params).grid(column=0,row=8)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
         btnSortir=tk.Button(v_comprobar,text="Sortir", command = v_comprobar.destroy).grid(column=1,row=8)#destrueixo la finestra per tant surto
 
         # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
@@ -215,7 +216,7 @@ class Interface():
         if not all([nom.get(), contra.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
             messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
         else:
-            log=self.Hospital.log_med(nom.get(),contra.get())
+            log=self.Hospital.login_med(nom.get(),contra.get())
             if log==False:
                  messagebox.showinfo(title='Error', message='No existe esta médica, o la contraseña es incorrecta')
             else:
@@ -261,9 +262,8 @@ class Interface():
             messagebox.showinfo(title='Error', message='El campo está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
         else:
             pac=self.Hospital.consulta_id_pac(ids.get())
-            print(pac)
+            v_comprobar.destroy()
             return pac
-        v_comprobar.destroy()
     
     def alta_paciente(self):
         """
@@ -1346,8 +1346,83 @@ class Interface():
                 v_consulta.destroy() 
     
 #MENU DE REVISIONES
-                
-                
+    def alta_revisiones(self):
+        enf=self.comprobar_enf()
+        print (enf)
+        if enf!=False:
+            recep=self.Hospital.recepcionistas[1]
+           
+            v_rev = tk.Toplevel(self.v)
+            v_rev.geometry("350x350")
+            v_rev.title("Alta de revisiones")    
+        
+            etiq_0= tk.Label(v_rev, text= "Insertar el nombre del paciente a crear revisión:")
+            etiq_0.grid(column=0, row=0)
+    
+            # Nom
+            etiq_nom = tk.Label(v_rev, text= "Nombre:")
+            etiq_nom.grid(column=0, row=1)
+            v_nom = tk.StringVar()
+            v_nom.set("")
+            e_nom = tk.Entry(v_rev, textvariable=v_nom)
+            e_nom.grid(column=1, row=1)
+    
+            # Apellido
+            etiq_apell = tk.Label(v_rev, text= 'Apellido:')
+            etiq_apell.grid(column=0, row=2)
+            v_apell = tk.StringVar()
+            v_apell.set("")
+            e_apell = tk.Entry(v_rev, textvariable=v_apell)
+            e_apell.grid(column=1, row=2)
+            
+            # Fecha
+            etiq_fecha = tk.Label(v_rev, text= "Fecha (dd-mm-aaaa):")
+            etiq_fecha.grid(column=0, row=3)
+            v_fecha = tk.StringVar()
+            v_fecha.set("")
+            e_fecha= tk.Entry(v_rev, textvariable=v_fecha)
+            e_fecha.grid(column=1, row=3)
+    
+            alta_revisiones_params=partial(self.alta_revisiones_aux, v_nom,v_apell,v_fecha,recep,enf,v_rev)
+    
+            # Programar botó
+            btnAsignar=tk.Button(v_rev,text="Alta", command = alta_revisiones_params).grid(column=0,row=4)
+            btnSortir=tk.Button(v_rev,text="Salida", command = v_rev.destroy).grid(column=1,row=4)
+    
+            # Funcio per a obligar aquesta finestra a estar damunt de la anterior (estètic)
+            v_rev.transient()
+    
+            #Funcio per a obligar aquesta finestra a tenir l'atenció, i fa que no es puguin fer inputs a l'anterior
+            v_rev.grab_set()
+    
+            # Wait for the window to end
+            self.v.wait_window(v_rev)                
+    def alta_revisiones_aux(self,nom,apell,fecha,recep,enf,v_rev):
+        if not all ([nom.get(), apell.get(),fecha.get()]):
+            messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
+        else:
+            result=self.Hospital.comprobar_fecha(fecha.get())
+            try:
+                if result==False:
+                    messagebox.showinfo(title='Error', message='La fecha es anteriror a la actual!')
+                else:
+                    pac=self.Hospital.consulta_pac(nom.get().title(),apell.get().title(),recep)
+                    if pac==[]:
+                        messagebox.showinfo(title='Vacío', message='No existe un paciente con este nombre')
+                    elif len(pac)==1:
+                        self.Hospital.assignar(pac[0],fecha.get(),enf)
+                        messagebox.showinfo(title='Alta!', message='La revisión ha sido dada de alta!')
+                    else: 
+                        pacientes=[]
+                        for a in pac:
+                            pacientes.append(a.muestra_datos())
+                        messagebox.showinfo(title='Hay mas de un paciente con este nombre',  message= pacientes)
+                        pac=self.comprobar_id()
+                        self.Hospital.assignar(pac,fecha.get(),enf)
+                        messagebox.showinfo(title='Alta!', message='La revisión ha sido dada de alta!')
+            except ValueError:
+                messagebox.showinfo(title='Error', message='No ha introducido la fecha en formato correcto!')
+
                 
                 
                 
@@ -1404,7 +1479,7 @@ class Interface():
             messagebox.showinfo(title='Error', message='No ha introducido ningún nombre!')
         else:
             # Cridar a alta d'hospital
-            pac=self.Hospital.consulta_pac(nom.get().title(),apell.get().title(),recep)
+            pac = self.Hospital.consulta_pac(nom.get().title(), apell.get().title(),recep)
             if pac==[]:
                 messagebox.showinfo(title='Error', message='Paciente no encontrada!')
             elif len(pac)==1:
@@ -1418,7 +1493,10 @@ class Interface():
                 messagebox.showinfo(title='Hay mas de un paciente con este nombre', message= pacientes)
                 pac=self.comprobar_id()
                 result = self.Hospital.archivo_pacientes(pac)
-                messagebox.showinfo(title='Cantidad de revisiones de cada especialidad', message=result)
+                if result==[]:
+                    messagebox.showinfo(title='Vacío', message='Este paciente aun no tiene revisiones médicas')
+                else:
+                    messagebox.showinfo(title='Cantidad de revisiones de cada especialidad', message=result)
             v_arxivo.destroy()
 #            elif len(pac)>1
 

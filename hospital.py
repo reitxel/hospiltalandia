@@ -72,57 +72,61 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                     if nom == self.medicas[i].regresa_nombre():
                         lista_med.append(self.medicas[i].regresa_nombre())
                 if lista_med==[]:
-                    return False    
-                for i in lista_med:
-                    for j in self.medicas:
-                        if lista_med!=[]:
-                            if contra==self.medicas[j].password:
+                    return False 
+                else:
+                    for i in lista_med:
+                        for j in self.medicas:
+                            if contra==self.medicas[j].password.lower():
                                 med=self.medicas[j]
                                 return med#si es troba un recep
-                return False#si no es troba la contrasenya
+                    return False#si no es troba la contrasenya
             
     def login_enf(self,nom,contra):
-                lista_enf=[]
-                for i in self.enfermeras:
-                    if nom == self.enfermeras[i].regresa_nombre():
-                        lista_enf.append(self.enfermeras[i].regresa_nombre())
-                if lista_enf==[]:
-                    return False
-                    for j in self.enfermeras:
-                        if lista_enf!=[]:
-                            if contra==self.enfermeras[j].password:
-                                print('Constraseña acertada')
-                                enf=self.enfermeras[j]
-                                return enf
-                    return False
+        lista_enf=[]
+        for i in self.enfermeras:
+            if nom == self.enfermeras[i].regresa_nombre():
+                print (nom)
+                lista_enf.append(self.enfermeras[i].regresa_nombre())
+        if lista_enf==[]:
+               print ('o')
+               return False
+        else:
+            for i in lista_enf:
+                for j in self.enfermeras:
+                      if contra==self.enfermeras[j].password.lower():
+                          enf=self.enfermeras[j]
+                          print (enf)
+                          return enf
+            return False
+        
     def log_recep(self,nom,contra):             
         lista_recep=[]
         for i in self.recepcionistas:
             if nom.title() == self.recepcionistas[i].regresa_nombre():
                 lista_recep.append(self.recepcionistas[i].regresa_nombre())
-                if lista_recep==[]:
-                    return False#si no existeix el nom
+        if lista_recep==[]:
+            return False#si no existeix el nom
+        elif lista_recep!=[]:
             for i in lista_recep:
                 for j in self.recepcionistas:
-                    if lista_recep!=[]:
-                        if contra==self.recepcionistas[j].password.lower():
-                            recep=self.recepcionistas[j]
-                            return recep 
+                    if contra==self.recepcionistas[j].password.lower():
+                        recep=self.recepcionistas[j]
+                        return recep 
             return False#si no hi ha contra  ben posada
      
     #COMPROBAR FECHA
-    def comprobar_fecha(fecha_str):            
+    def comprobar_fecha(self,fecha_str):            
         while True:
             try:
-                fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd-mm-aaaa": ')#criterio para que la fecha que me introduzca por pantalla mantenga este formato
                 fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
                 hoy = datetime.now().date()
                 if str(fecha)>=str(hoy):
                     return fecha
                 elif str(fecha) < str(hoy):
-                    print('\nLa fecha es anterior a la actual')
+                    return False           
             except ValueError:
-                print("\nNo ha introducido una fecha correcta")  
+                print("\nNo ha introducido una fecha correcta") 
+
     #para el despliegue de todas las especialidades en tkinter
     def comprobar_especialidad(self):
         lista_espes=[]
@@ -211,9 +215,12 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             lista.append(pac) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
         return lista
     def consulta_id_pac(self,ids):
-        for i in self.pacientes:
-            if ids==self.pacientes.keys():
-                return self.pacientes[i]
+        for i in self.pacientes.keys():
+            #print (self.pacientes.keys())
+            if str(i)==str(ids):
+                pac=self.pacientes[i]
+
+                return pac
     
     def consulta_enf(self,nom,apell):
         nom=nom+' '+apell
@@ -239,11 +246,9 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         return lista_consulta
     
     def consulta_medi(self,cod):
-        lista_meds=[]
         for i in self.medicamentos:
-            if cod in self.medicamentos.keys():
-                lista_meds.append(self.medicamento[i].muestra_datos)
-        print(lista_meds)
+            if str(cod)==str(i):
+                return(self.medicamentos[i].muestra_datos())
 
     #método de búsqueda de especialidade por CODIGO
     def consulta_cod_espe(self,cod):
@@ -334,8 +339,30 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             estadistiques.append([i,espe_totes.count(i)])
         estadistiques.append(['Numero total de medicas es: ',len(self.medicas)])
         return estadistiques
-        
-            
+
+#Alta revisiones     
+                                
+    def alta_revisiones(self,fecha,nom,apell,recep):
+                fecha=self.comprobar_fecha(fecha)
+                pac=self.consulta_paciente(nom,apell,recep)  
+                return pac
+
+    def assignar(self,pac,fecha,enf):
+          enf.asigna_revision(pac,fecha,self.medicas)     
+
+#                            return False
+#                            elif len(pac)==1:
+#                                enf.asigna_revision(pac[0],fecha,dic_medicas)
+#                                return revision
+#                                else: #más de unx paciente con el nombre introducido
+#                                    print('Hay',a,'pacientes con el nombre introducido:')
+#                                    for i in dic_pacientes:
+#                                        if nom in dic_pacientes[i].regresa_nombre():
+#                                            print(dic_pacientes[i].muestra_datos())
+#                                            id_p=int(input('Introduzca el número identificador de la paciente a asignar la revisión: '))
+#                                            pac=dic_pacientes[id_p]
+#                                            enf.asigna_revision(pac,fecha,dic_medicas)
+#                                            print('Revisión a',pac.regresa_nombre(),'asignada')               
       
     def archivo_pacientes(self,pac):#fem un consulta i triem el pacient
         nombre=pac.nombre
