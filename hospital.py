@@ -125,13 +125,21 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         lista_espes=[]
         for i in self.especialidades:
             lista_espes.append(self.especialidades[i].regresa_nombre())
+        lista_espes.sort(key=str)
         return lista_espes
     
     def comprobar_medi(self):
         lista_medis=[]
         for i in self.medicamentos:
-            lista_medis.append(self.medicamentos[i].muestra_datos())
+            lista_medis.append(self.medicamentos[i].regresa_cod())
         return lista_medis
+    
+    def mcomprobar(self):
+        lista_m=[]
+        for i in self.medicas:
+            lista_m.append(self.medicas[i].regresa_nombre())
+        lista_m.sort(key=str)
+        return lista_m
     
   
     #METODOS DE ALTA: medica, paciente, enfermera, recepcionista, especialidad, medicamento
@@ -182,7 +190,6 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
           
     def rev_hoy(self,med):
         hoy = datetime.now().date()
-        lista_pacrev=med.pacrev #atendidos
         lista_pacnorev=med.pacnorev #lista no atendidos
         lista_atender_hoy=[]
         for i in lista_pacnorev:
@@ -286,62 +293,6 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         for i in self.especialidades:
             if cod in self.especialidades[i].muestra_datos():
                 return self.especialidades[i].muestra_datos() 
-
-    #métodode consulta de recetas que ordena por fecha y especialidad
-    def consulta_recet(self,nom): #nombre del paciente como parametro, pero tengo las recetas dentro de diagnostico
-        lista_recetas=[]
-        for i in self.pacientes:
-            if nom in i.regresa_nombre():
-                pac=i.muestra_datos()
-                revisiones=pac.revmed
-                for a in revisiones:
-                    diag=a.diag
-                    for j in diag:
-                        if len(diag.receta)!=0:
-                            lista_recetas.append(diag.receta)#encara que cada diag tingui mes dunar recepta, com que tindran les mateixes fechas i espes no 'desmonto' la llista
-#        espe_orden=[]
-#        for i in self.especialidades:
-#            espe_orden.append(self.dic_especialidades[i].nombre)
-#        espe_orden.sort(key=str)
-        
-        for i in self.pacientes:
-            if nom in self.pacientes[i].regresa_nombre():
-                pac=self.pacientes[i]
-                rev=pac.revmed #me muestra el último componente de pacientes que se corresponde con la revisión médica
-#                lista_fechas_rev=[]
-#                
-##                for i in rev:
-##                    lista_fechas_rev.append(rev.fecha)
-##                lista_fechas_rev.sort(key=str) 
-                if len(rev)==0:
-                    print('La paciente no tiene revisiones médicas aún')
-                    
-                else:
-                    dia=rev.diag
-                    recet=dia.receta
-                    recet.sort(key=rev.fecha.datatime)
-                    return recet
-                #pasar a data time
-                #mirar arc sort
-                #mirar funcionalidad arc_sort
-                #puedo llamar a atributos desde el sort
-                
-#        for i in range(len(lista_fechas_rev)):
-#            recet[i]
-    
-    #método de consulta derivaciones
-    def consulta_deriv(self,nombre):
-        lista_deriv=[]
-        for i in self.pacientes:
-            if nombre in self.pacientes[i].regresa_nombre():
-                pac=self.pacientes[i].muestra_datos()
-                revisiones=pac.revmed
-                for a in revisiones:
-                    diag=revisiones[a].diag
-                    for j in diag:
-                        if diag.derivado==True:
-                            lista_deriv.append(diag.deriva)
-        return lista_deriv# falta ordenarla por fehcas
     
     #método de consulta medicas por especialidad       
     def consulta_med_espe(self,especialidad):
@@ -350,7 +301,8 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             if especialidad in self.medicas[i].muestra_datos():
                 lista_medesp.append([self.medicas[i].regresa_nombre(),self.medicas[i].regresa_numpac()])#si la espeicalida coincide meto el nombre y el numero de pacientes del medico en una lista
         return lista_medesp
-       #métodode consulta de recetas que ordena por fecha y especialidad
+    
+    #método de consulta de recetas que ordena por fecha y especialidad
     def consulta_recet(self,nom): #nombre del paciente como parametro, pero tengo las recetas dentro de diagnostico
         lista_recetas=[]#creo una lista con las recetas de cada diagnostico
         lista_diags=[]#creo una lista con los diagnosticos que tengan recetas
@@ -385,7 +337,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         return lista_final
     
     #método de consulta derivaciones
-    def consulta_deriv(self,nombre):
+    def consulta_deriv(self,nom):
         lista_recetas=[]#creo una lista con las recetas de cada diagnostico
         lista_diags=[]#creo una lista con los diagnosticos que tengan recetas
         lista_fechas=[]
@@ -417,6 +369,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                             if a==lista_diags[b].especialidad:#tenint en compre que recorrerem les especialitats i dates en ordre
                                 lista_final.append(lista_recetas[b][0].muestra_datos())#com que la llista diag i rece
         return lista_final
+    
     #METODOS DE CREACION DE ARCHIVOS: medicas, pacientes, enfermeras y recepcionistas
     def archivo_medicas(self):
         dic_med_orden={}
