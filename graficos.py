@@ -1,13 +1,13 @@
 """
 Class implementing a graphical interface for the Hospital.
 """
-
+        
 import tkinter as tk
 from tkinter import ttk
 from functools import partial
 from tkinter import messagebox
 from utilidades import Utilidades
-
+from PIL import Image,ImageTk
 
 class Interface():
     util=Utilidades()
@@ -16,6 +16,13 @@ class Interface():
         self.v.geometry("600x480")
         self.v.title("Gestió de l'hospital")
         self.Hospital=Hospital
+        
+        image=Image.open('hospi.png')
+        photo=ImageTk.PhotoImage(image)
+        
+        label= tk.Label(image=photo)
+        label.image=photo
+        label.pack()
 
     def create_main_window(self):
         """
@@ -1584,10 +1591,9 @@ class Interface():
             messagebox.showinfo(title='Error', message='Algún campo está vació')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
         else:
             self.Hospital.expedir_receta(diag,cod.get(),dos.get())
-            print(self.Hospital.expedir_receta(diag,cod.get(),dos.get()))
             messagebox.showinfo(title='Añadida', message='La receta ha sido añadida!')
             v_recet.destroy()
-            self.receta()
+#            self.receta()
             
     def derivar (self):# este metodo serivara para saber si queremos expedir receta o no
         v_deriv = tk.Toplevel(self.v)#creo la finestra
