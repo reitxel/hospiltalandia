@@ -1,13 +1,13 @@
 """
 Class implementing a graphical interface for the Hospital.
 """
-        
+
 import tkinter as tk
 from tkinter import ttk
 from functools import partial
 from tkinter import messagebox
 from utilidades import Utilidades
-from PIL import Image,ImageTk
+
 
 class Interface():
     util=Utilidades()
@@ -16,13 +16,6 @@ class Interface():
         self.v.geometry("600x480")
         self.v.title("Gestió de l'hospital")
         self.Hospital=Hospital
-        
-        image=Image.open('hospi.png')
-        photo=ImageTk.PhotoImage(image)
-        
-        label= tk.Label(image=photo)
-        label.image=photo
-        label.pack()
 
     def create_main_window(self):
         """
