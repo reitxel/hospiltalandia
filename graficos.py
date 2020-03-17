@@ -795,7 +795,7 @@ class Interface():
     
             # de la llibreria functools
             # assignar parcial per a funció, per a poder assignar directament command amb variables
-            alta_medi_params=partial(self.alta_medi_aux,v_cod, v_princ_activ, v_marca, v_lab, v_ingreso,recep)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+            alta_medi_params=partial(self.alta_medi_aux,v_cod, v_princ_activ, v_marca, v_lab, recep, v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
     
             # Programar botó
             btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_medi_params).grid(column=0,row=5)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
