@@ -7,16 +7,12 @@ Created on Thu Jan 30 14:49:33 2020
 """
 from datos import Datos #hereda de la clase Datos
 
-from utilidades import Utilidades
-
 from medica import Medica
 from paciente import Paciente
 from especialidad import Especialidad
 from enfermera import Enfermera
 from recepcionista import Recepcionista
 from medicamento import Medicamento
-from diagnostico import Diagnostico
-from derivapaciente import DerivaPaciente
 
 from datetime import datetime
 
@@ -141,7 +137,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         return lista_m
     
   
-    #METODOS DE ALTA: medica, paciente, enfermera, recepcionista, especialidad, medicamento
+#METODOS DE ALTA: medica, paciente, enfermera, recepcionista, especialidad, medicamento
     def alta_pac(self,nom,apell,dire,ciudad,cp,telf,email,sang,recep):
         nom=(nom+' '+apell).title()
         id_p=len(self.pacientes.keys())+1
@@ -173,69 +169,9 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     def alta_medi(self,codigo,princ_activ,marca,lab,recep):
         medi=Medicamento(codigo,princ_activ,marca,lab)
         recep.altas(self.medicamentos,medi,codigo)
-        
-    
-#ALTA REVISIONES    
-                                
-    def alta_revisiones(self,fecha,nom,apell,recep):
-                fecha=self.comprobar_fecha(fecha)#comprueba la fecha
-                pac=self.consulta_paciente(nom,apell,recep)#comprueva el faciente i genera el objeto  
-                return pac
-
-    def assignar(self,pac,fecha,enf):#creamos este metodo ara no aplicar un metodo que depende de un dic en graficos
-          enf.asigna_revision(pac,fecha,self.medicas)  
-    
-#REALIZA REVISION
-          
-    def rev_hoy(self,med):
-        hoy = datetime.now().date()
-        lista_pacnorev=med.pacnorev #lista no atendidos
-        lista_atender_hoy=[]
-        for i in lista_pacnorev:
-            revision=i.revmed
-            for j in revision:
-                if j.fecha == hoy: #pasar fecha del formato str a datetime
-                    lista_atender_hoy.append(i) 
-        return lista_atender_hoy
-    
-    
-    def revision_hoy(self,med):
-        lista_pacnorev=med.pacnorev #lista no atendidos
-        lista_atender_hoy=[]
-        for i in lista_pacnorev:
-            revision=i.revmed
-            for j in revision:
-                if j.fecha == datetime.now().date(): #pasar fecha del formato str a datetime
-                    lista_atender_hoy.append(i)  
-        return lista_atender_hoy
-    
-    #de aqui lo llevo a comprueba paceinte, que le pongo el id si hay mas de uno
-    def atender_hoy(self,pac):       
-        for i in pac.revmed:#recorro todas la revisiones del paciente y cojo solo de con fecha de hoy
-            if i.fecha==datetime.now().date():
-                rev=i
-        return rev.diag[-1]   #aqui si no existe supongo que devuelve none, si devuelve el diagnostico seria comporbar si el True lo muestro si es False lo creo y me voy a realizo diag
+                                          
             
-    def realizar_diag(self,diag,enfe,obs):
-        diag.observaciones=obs
-        diag.enfermedad=enfe#completo el diagnostico que tenia
-        return diag
-    
-    def expedir_receta(self,diag,codigo,dosis): #preguntamos si quiere expedir receta
-        diag.gen_recet(codigo,dosis)
-
-    def derivar(self,diag,nommed,especialidad,med,pac):    #aqui llega si quiere derivar
-        diag.derivap(nommed,datetime.now().date(),especialidad)#guardo la derivacio en el diagnotico
-        #en algun momento hay que dar la opcion de que pare la derivacion, osea boton de salida
-        
-    def actualizar_listas_med(self,med,pac): #cuando se cumple la derivaicon
-        lista_pacnorev=med.pacnorev
-        lista_pacrev=med.pacrev
-        lista_pacnorev.remove(pac)
-        lista_pacrev.append(pac)
-        #                                    
-            
-    #METODOS DE CONSULTA:
+#METODOS DE CONSULTA:
     #metodo que abarca abarca las consultas por NOMBRE de medicas, recepcionistas, enfermeras y especialidades dependiendo del parametro de entrada
     def consulta_med(self,nom,apell):
         nom=nom+' '+apell
@@ -285,9 +221,6 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         for i in self.medicamentos:
             if str(cod)==str(i):
                 return (self.medicamentos[i].muestra_datos())
-            
-#        if cod==self.medicamentos.keys():
-#            return [self.medicamentos[i].muestra_datos()]
 
     #método de búsqueda de especialidade por CODIGO
     def consulta_cod_espe(self,cod):
@@ -356,8 +289,66 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                 if i==j.fecha:#si la data de la derivacio concideix amb la data es guardara tenint en compte que les dates van en ordre
                     lista_ordre.append(j.muestra_datos())
         return lista_ordre
+
+#METODOS MENU REVISIÓN   
+    #ALTA REVISIONES                                    
+    def alta_revisiones(self,fecha,nom,apell,recep):
+                fecha=self.comprobar_fecha(fecha)#comprueba la fecha
+                pac=self.consulta_paciente(nom,apell,recep)#comprueva el faciente i genera el objeto  
+                return pac
+
+    def assignar(self,pac,fecha,enf):#creamos este metodo ara no aplicar un metodo que depende de un dic en graficos
+          enf.asigna_revision(pac,fecha,self.medicas)  
     
-    #METODOS DE CREACION DE ARCHIVOS: medicas, pacientes, enfermeras y recepcionistas
+    #REALIZA REVISION
+    def rev_hoy(self,med):
+        hoy = datetime.now().date()
+        lista_pacnorev=med.pacnorev #lista no atendidos
+        lista_atender_hoy=[]
+        for i in lista_pacnorev:
+            revision=i.revmed
+            for j in revision:
+                if j.fecha == hoy: #pasar fecha del formato str a datetime
+                    lista_atender_hoy.append(i) 
+        return lista_atender_hoy
+    
+    
+    def revision_hoy(self,med):
+        lista_pacnorev=med.pacnorev #lista no atendidos
+        lista_atender_hoy=[]
+        for i in lista_pacnorev:
+            revision=i.revmed
+            for j in revision:
+                if j.fecha == datetime.now().date(): #pasar fecha del formato str a datetime
+                    lista_atender_hoy.append(i)  
+        return lista_atender_hoy
+    
+    #de aqui lo llevo a comprueba paceinte, que le pongo el id si hay mas de uno
+    def atender_hoy(self,pac):       
+        for i in pac.revmed:#recorro todas la revisiones del paciente y cojo solo de con fecha de hoy
+            if i.fecha==datetime.now().date():
+                rev=i
+        return rev.diag[-1]#aqui si no existe supongo que devuelve none, si devuelve el diagnostico seria comporbar si el True lo muestro si es False lo creo y me voy a realizo diag
+            
+    def realizar_diag(self,diag,enfe,obs):
+        diag.observaciones=obs
+        diag.enfermedad=enfe#completo el diagnostico que tenia
+        return diag
+    
+    def expedir_receta(self,diag,codigo,dosis): #preguntamos si quiere expedir receta
+        diag.gen_recet(codigo,dosis) #funcion de diagnotico que me genera la receta
+
+    def derivar(self,diag,nommed,especialidad,med,pac):    #aqui llega si quiere derivar
+        diag.derivap(nommed,datetime.now().date(),especialidad)#guardo la derivacio en el diagnotico
+        #en algun momento hay que dar la opcion de que pare la derivacion, osea boton de salida
+        
+    def actualizar_listas_med(self,med,pac): #cuando se cumple la derivaicon
+        lista_pacnorev=med.pacnorev
+        lista_pacrev=med.pacrev
+        lista_pacnorev.remove(pac)
+        lista_pacrev.append(pac) 
+    
+#METODOS DE CREACION DE ARCHIVOS: medicas, pacientes, enfermeras y recepcionistas
     def archivo_medicas(self):
         dic_med_orden={}
         for a in self.especialidades:
