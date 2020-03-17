@@ -92,7 +92,6 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                 for j in self.enfermeras:
                       if contra==self.enfermeras[j].password.lower():
                           enf=self.enfermeras[j]
-                          print (enf)
                           return enf
             return False
         
@@ -226,8 +225,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         diag.gen_recet(codigo,dosis)
 
     def derivar(self,diag,nommed,especialidad,med,pac):    #aqui llega si quiere derivar
-        print(diag)
-        diag.deriva(nommed,datetime.now().date(),especialidad)#guardo la derivacio en el diagnotico
+        diag.derivap(nommed,datetime.now().date(),especialidad)#guardo la derivacio en el diagnotico
         #en algun momento hay que dar la opcion de que pare la derivacion, osea boton de salida
         
     def actualizar_listas_med(self,med,pac): #cuando se cumple la derivaicon
@@ -255,7 +253,6 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         return lista
     def consulta_id_pac(self,ids):
         for i in self.pacientes.keys():
-            #print (self.pacientes.keys())
             if str(i)==str(ids):
                 pac=self.pacientes[i]
 
@@ -331,42 +328,31 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                     if i==j.fecha:#en cas que la data coinsitexi amb una diag del de la llista 
                         for b in range(len(lista_diags)):
                             if a==lista_diags[b].especialidad:#tenint en compre que recorrerem les especialitats i dates en ordre
-                                lista_final.append(lista_recetas[b][0].muestra_datos())#com que la llista diag i rece
-        return lista_final
+                                for g in range(len(lista_recetas[b])):
+                                    lista_final.append(lista_recetas[b][0].muestra_datos())#com que la llista diag i rece
+        return lista_final# estan ordenades per diagnostics, en ordre de dia i per especialitat del diagnostic en cas d'havar-hi dos en el mateix dia
     
     #método de consulta derivaciones
-    def consulta_deriv(self,nom):
-        lista_recetas=[]#creo una lista con las recetas de cada diagnostico
-        lista_diags=[]#creo una lista con los diagnosticos que tengan recetas
-        lista_fechas=[]
-        lista_revs=[]
-        for i in self.pacientes:
-            if nom in self.pacientes[i].regresa_nombre():
-                pac=self.pacientes[i]
-                revisiones=pac.revmed
-                for a in revisiones:
-                    diag=a.diag
-                    lista_fechas.append(a.fecha)
-                    for j in diag:
-                        if j.receta!=[]:
-                            lista_recetas.append(j.receta)#encara que cada diag tingui mes dunar recepta, com que tindran les mateixes fechas i espes no 'desmonto' la llista
-                            lista_diags.append(j)
-                            lista_revs.append(a)
-        lista_fechas=lista_fechas.sort()
-        espe_orden=[]#creo una lista con todas las especilaidades i las ordeno alfabeticamente
-        for i in self.especialidades:            
-           espe_orden.append(self.especialidades[i].nombre)
-        espe_orden=espe_orden.sort(key=str)
-        
-        lista_final=[]
-        for i in lista_fechas:#recooro llista fechas por orden
-            for a in espe_orden:#recooro la lista de espeicalidades en orden
-                for j in lista_revs:
-                    if i==j.fecha:#en cas que la data coinsitexi amb una diag del de la llista 
-                        for b in range(len(lista_diags)):
-                            if a==lista_diags[b].especialidad:#tenint en compre que recorrerem les especialitats i dates en ordre
-                                lista_final.append(lista_recetas[b][0].muestra_datos())#com que la llista diag i rece
-        return lista_final
+    def consulta_deriv(self,pac):
+        lista_deriv=[]#llista amb els objetes derivacio
+        lista_fecha=[]#llista de dates amb els de les derivacions
+        revisiones=pac.revmed
+        for a in revisiones:
+            diag=a.diag
+            for j in diag:
+                if j.derivado==True:
+                    derivacion=j.deriva
+                    for b in derivacion:
+                        lista_deriv.append(b)
+                        lista_fecha.append(b.fecha)                   
+        lista_fecha.sort()
+        fechas_orden=lista_fecha[::-1]#invierto la lista de fechas para tener la mas temprana antes
+        lista_ordre=[]
+        for i in fechas_orden:
+            for j in lista_deriv:
+                if i==j.fecha:#si la data de la derivacio concideix amb la data es guardara tenint en compte que les dates van en ordre
+                    lista_ordre.append(j.muestra_datos())
+        return lista_ordre
     
     #METODOS DE CREACION DE ARCHIVOS: medicas, pacientes, enfermeras y recepcionistas
     def archivo_medicas(self):
@@ -403,8 +389,8 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
             diags=i.diag
             for a in diags:#cada element de la llsita es un diagnostic dins d'una llista, llavors agafant el 1r element ja ho tenim
                 if a.derivado==True:
-                    derivacion=diags[a].deriva#accedo al objeto DerivaPaciente 
-                    list_espe.append(derivacion.muestra_espe())#muestro la especialidad de la derivacion i la meto en la lista
+                    derivacion=a.deriva#accedo al objeto DerivaPaciente 
+                    list_espe.append(derivacion[0].muestra_espe())#muestro la especialidad de la derivacion i la meto en la lista
                 elif a.derivado==False:
                     list_espe.append(a.muestra_espe())
         lista_estadisticas=[]  #LISTA VAcia donde metere las estadisticas              
