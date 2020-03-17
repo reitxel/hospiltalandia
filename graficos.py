@@ -340,7 +340,7 @@ class Interface():
 
             # de la llibreria functools
             # assignar parcial per a funció, per a poder assignar directament command amb variables
-            alta_pac_params=partial(self.alta_pac_aux, v_nom, v_dir, v_ciudad, v_cp, v_tlf, v_email, spin_sang,recep,v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+            alta_pac_params=partial(self.alta_pac_aux, v_nom, v_apell, v_dir, v_ciudad, v_cp, v_tlf, v_email, spin_sang,recep,v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
 
             # Programar botó
             btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_pac_params).grid(column=0,row=9)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
@@ -374,7 +374,6 @@ class Interface():
                 lista_pac.append(i.muestra_datos())
             messagebox.showinfo(title='Paciente ya existente', message=lista_pac)
             # Cridar a alta d'hospital
-            v_ingreso.destroy()
             
 
     def alta_medica(self):
@@ -474,15 +473,14 @@ class Interface():
         # Mirar si algun esta empty
         if not all([nom.get(), apell.get(), dire.get(), ciudad.get(), cp.get(), tlf.get(), email.get(), espe.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
             messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
-        elif self.Hospital.consulta_medica(nom.get(),apell.get())==[]:
+        elif self.Hospital.consulta_med(nom.get(),apell.get())==[]:
             password=self.util.crea_password(nom.get(),apell.get(),tlf.get())
             a=self.Hospital.alta_med(nom.get(),apell.get(), dire.get(), ciudad.get(), cp.get(), tlf.get(), email.get(), espe.get(),recep,password)
             messagebox.showinfo(title='Añadida', message='La médica ha sido añadida!')
             v_ingreso.destroy()
         else:
-            a=self.Hospital.consulta_medica(nom.get().title(),apell.get().title())
+            a=self.Hospital.consulta_med(nom.get().title(),apell.get().title())
             messagebox.showinfo(title='Medica ya existente', message=a)
-            v_ingreso.destroy()
        
     def alta_enfermera(self):
         recep=self.comprobar_recep()
@@ -588,7 +586,6 @@ class Interface():
         else:
             a=self.Hospital.consulta_enf(nom.get().title(),apell.get().title())
             messagebox.showinfo(title='Enfermera ya existente', message=a)
-            v_ingreso.destroy()
             
     def alta_recepcionista(self):
         recep=self.comprobar_recep()
@@ -666,7 +663,7 @@ class Interface():
     
             # de la llibreria functools
             # assignar parcial per a funció, per a poder assignar directament command amb variables
-            alta_recep_params=partial(self.alta_recep_aux, v_nom,v_apell, v_dir, v_ciudad, v_cp, v_tlf, v_email, spin_turn, v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
+            alta_recep_params=partial(self.alta_recep_aux, v_nom,v_apell, v_dir, v_ciudad, v_cp, v_tlf, v_email, spin_turn, recep, v_ingreso)# PASO LA FUNCIO I TOTS ELS PARAMETRES QUE VULL QUE TINGUI LA FUNCIO, AIXO SI QUE HO PUC POSAR AL COMMAND
     
             # Programar botó
             btnAsignar=tk.Button(v_ingreso,text="Asignar", command = alta_recep_params).grid(column=0,row=9)#creo dos botons, no li puc passa parametres, solcuio posa un self dabant de toss el v_ o importar la funcio PARTIAL
@@ -681,7 +678,7 @@ class Interface():
             # Wait for the window to end
             self.v.wait_window(v_ingreso)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
         
-    def alta_recep_aux(self, nom,apell, dire, ciudad, cp, tlf, email, turn,recep,v_ingreso):
+    def alta_recep_aux(self, nom, apell, dire, ciudad, cp, tlf, email, turn, recep, v_ingreso):
         """
         Auxiliar function to be able to send messageboxes
         """ 
@@ -689,13 +686,12 @@ class Interface():
             messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
         elif self.Hospital.consulta_recep(nom.get(),apell.get())==[]:
             password=self.util.crea_password(nom.get(),apell.get(),tlf.get())
-            a=self.Hospital.alta_recep(nom.get(),apell.get(), dire.get(), ciudad.get(), cp.get(), tlf.get(), email.get(), turn.get(),recep,password)
+            a=self.Hospital.alta_recep(nom.get(),apell.get(), dire.get(), ciudad.get(), cp.get(), tlf.get(), email.get(), turn.get(), recep, password)
             messagebox.showinfo(title='Añadida', message='La recepcionista ha sido añadida!')
             v_ingreso.destroy()
         else:
-            a=self.Hospital.consulta_enf(nom.get().title(),apell.get().title())
+            a=self.Hospital.consulta_recep(nom.get().title(),apell.get().title())
             messagebox.showinfo(title='Recepcionista ya existente', message=a)
-            v_ingreso.destroy()
     
     def alta_especialidad(self):
         recep=self.comprobar_recep()
@@ -752,10 +748,10 @@ class Interface():
                 self.Hospital.alta_espe(nom.get(),cod.get(),recep)
                 messagebox.showinfo(title='Añadida', message='La especialidad ha sido añadida!') 
                 v_ingreso.destroy()
-            messagebox.showinfo(title='Error', message='Este codigo ya esta registrado')
+            else:
+                messagebox.showinfo(title='Error', message='Este codigo ya esta registrado')
         else:
             messagebox.showinfo(title='Añadida', message='Esta especialida ya esta registrada')
-            v_ingreso.destroy()
        
         
     def alta_medicamento(self):
@@ -814,22 +810,21 @@ class Interface():
             # Wait for the window to end
             self.v.wait_window(v_ingreso)# QUE LA VENTANA ORIGINAL ESPERA HASTA QUE LA ACTUAL PETE
             
-    def alta_medi_aux(self,cod, princ_activ, marca, lab,recep, v_ingreso):
+    def alta_medi_aux(self,cod, princ_activ, marca, lab, recep, v_ingreso):
         """
         Auxiliar function to be able to send messageboxes
         """ 
         # Mirar si algun esta empty
-        if not all([cod.get(),princ_activ.get(), marca.get(), lab.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
+        if not all([cod.get(), princ_activ.get(), marca.get(), lab.get()]):# NOMES SEXECUTA AL CLICAL AL BOTO
             messagebox.showinfo(title='Error', message='Alguno de los campos está vacío')
         else:
             # Cridar a alta d'hospital
-            if self.Hospital.consulta_medicamento(cod.get())==[]:
-                self.Hospital.alta_medi(cod.get(),princ_activ.get(), marca.get(), lab.get(),recep)
+            if self.Hospital.consulta_medi(cod.get())==None:
+                self.Hospital.alta_medi(cod.get(),princ_activ.get(), marca.get(), lab.get(), recep)
                 messagebox.showinfo(title='Añadido', message='El medicamento ha sido añadido!')
                 v_ingreso.destroy() 
             else:
                 messagebox.showinfo(title='Error', message='Este medicamento ya esta registrado!')
-                v_ingreso.destroy()
             
     def consulta_paciente(self):
         """
@@ -1078,7 +1073,7 @@ class Interface():
 #                for i in result:
 #                    recepcionistas.append(i.muestra_datos())
                 messagebox.showinfo(title='Recepcionista', message=result)
-                v_ingreso.destroy()
+                v_consulta.destroy()
                 
     def consulta_especialidad(self):
         """

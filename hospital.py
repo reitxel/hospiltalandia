@@ -241,7 +241,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         nom=nom+' '+apell
         lista_consulta=[]
         for i in self.medicas: #localizar un dato que no sea el campo clave del diccionario
-            if nom.title() in self.medicas[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
+            if nom.title() == self.medicas[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
                 lista_consulta.append(self.medicas[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
         return lista_consulta
     #método de consulta de pacientes por NOMBRE
@@ -262,7 +262,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         nom=nom+' '+apell
         lista_consulta=[]
         for i in self.enfermeras: #localizar un dato que no sea el campo clave del diccionario
-            if nom.title()  in self.enfermeras[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
+            if nom.title()  == self.enfermeras[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
                 lista_consulta.append(self.enfermeras[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
         return lista_consulta
     
@@ -270,21 +270,24 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         lista_consulta=[]
         nom=nom+' '+apell
         for i in self.recepcionistas: #localizar un dato que no sea el campo clave del diccionario
-            if nom.title()  in self.recepcionistas[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
+            if nom.title()  == self.recepcionistas[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
                 lista_consulta.append(self.recepcionistas[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
         return lista_consulta
     
     def consulta_espe(self,nom):
         lista_consulta=[]
         for i in self.especialidades: #localizar un dato que no sea el campo clave del diccionario
-            if nom in self.especialidades[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
+            if nom.capitalize() == self.especialidades[i].regresa_nombre(): #comparo lo que el usuario ha introducido con el método que me devuelve el nombre de la médica
                 lista_consulta.append(self.especialidades[i].muestra_datos()) #estoy metiendo en la lista todos los datos de las médicas con ese nombre
         return lista_consulta
     
     def consulta_medi(self,cod):
         for i in self.medicamentos:
             if str(cod)==str(i):
-                return(self.medicamentos[i].muestra_datos())
+                return (self.medicamentos[i].muestra_datos())
+            
+#        if cod==self.medicamentos.keys():
+#            return [self.medicamentos[i].muestra_datos()]
 
     #método de búsqueda de especialidade por CODIGO
     def consulta_cod_espe(self,cod):
