@@ -15,9 +15,10 @@ from especialidad import Especialidad
 from enfermera import Enfermera
 from recepcionista import Recepcionista
 from medicamento import Medicamento
+from diagnostico import Diagnostico
+from derivapaciente import DerivaPaciente
 
 from datetime import datetime
-from datetime import date
 
 def pedir_datos():#este metodo lo creamos para no pedir los mismos datos en cada una de las altas de personas
     nombre=input('-> Nombre: ').title()
@@ -29,55 +30,6 @@ def pedir_datos():#este metodo lo creamos para no pedir los mismos datos en cada
     email=input('-> Email: ')
     return nombre,apellido,direccion,ciudad,cp,telf,email
 
-def login(util,dic,entrada):
-    nombre=input('-> Nombre: ')
-    apellido=input('-> Primer apellido: ')
-    nom=nombre+' '+apellido
-    if entrada=='med':
-        for i in dic:
-            if nom in dic[i].regresa_nombre():
-                password=input('-> Contraseña: ')
-                id_r,nom,direccion,ciudad,cp,telf,email=dic[i].muestra_datos()
-                password_verdadera=util.crea_password(nombre,apellido,telf)
-                while True:
-                    if password==password_verdadera:
-                        print('Constraseña acertada')
-                        med=Medica(id_r,nom,direccion,ciudad,cp,telf,email,password)
-                        return med
-                    else:
-                        print('Contraseña incorrecta')
-                
-    elif entrada=='enf':
-        for i in dic:
-            if nom in dic[i].regresa_nombre():
-                password=input('-> Contraseña: ')
-                id_e,nom,direccion,ciudad,cp,telf,email,categoria=dic[i].muestra_datos()
-                password_verdadera=util.crea_password(nombre,apellido,telf)
-                while True:
-                    if password==password_verdadera:
-                        print('Constraseña acertada')
-                        enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,categoria,password)
-                        return enf
-                    else:
-                        print('Contraseña incorrecta')
-                        
-        
-    elif entrada=='recep':
-        for i in dic:
-            if nom in dic[i].regresa_nombre():
-                password=input('-> Contraseña: ')
-                id_r,nom,direccion,ciudad,cp,telf,email,turno=dic[i].muestra_datos()
-                password_verdadera=util.crea_password(nombre,apellido,telf)
-                while True:
-                    if password==password_verdadera:
-                        print('Constraseña acertada')
-                        recep=Recepcionista(id_r,nom,direccion,ciudad,cp,telf,email,turno,password)
-                        return recep
-                    else:
-                        print('Contraseña incorrecta')
-            else:
-                print('No existe tal recepcionista')
-
 def comprobar_fecha():            
     while True:
         try:
@@ -85,14 +37,11 @@ def comprobar_fecha():
             fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
             hoy = datetime.now().date()
             if str(fecha)>=str(hoy):
-                return fecha,fecha_str
-                break
+                return fecha
             elif str(fecha) < str(hoy):
-                print('La fecha es anterior a la actual')
+                print('\nLa fecha es anterior a la actual')
         except ValueError:
-            print("\nNo ha introducido una fecha correcta")
-   
-    
+            print("\nNo ha introducido una fecha correcta")  
     
 #def comprobar(nombre,apellido,direccion,ciudad,cp,telf,email,espe_gruposang):
 #    if len(nombre)!=0 and len(apellido)!=0 and len(direccion)!=0 and len(ciudad)!=0 and len(cp)!=0 and len(telf)!=0 and len(email)!=0 and len(espe_gruposang)!=0:
@@ -120,124 +69,129 @@ def main():
             if opcion==1:
                 #MENU ALTAS
                 opcion1=0
-                login(util,dic_recepcionistas,'recep')
-                while opcion1!=7:
-                    try:
-                        print('\nMenú de altas\n 1) Médica\n 2) Paciente\n 3) Enfermeras\n 4) Recepcionista\n 5) Especialidad\n 6) Medicamento\n 7) Regresar al menú de opciones')
-                        opcion1=int(input('Seleccione una opción: ')) #input ha de ser un integer, sino salta a la expeción
-                        if opcion1==1: #ALTA MEDICA
-                            #comprobar_fechas(fecha)
+                print('Inicio sesión recepcionista')
+                log=hosp.login('recep') #tendria que ser a cada opcion
+                if log == 1:
+                    print('\nNo se ha iniciado sesión')
+                elif log == 2:
+                    print('\nNo existe tal empleada')
+                else:
+                    while opcion1!=7:
+                        try:
+                            print('\nMenú de altas\n 1) Médica\n 2) Paciente\n 3) Enfermeras\n 4) Recepcionista\n 5) Especialidad\n 6) Medicamento\n 7) Regresar al menú de opciones')
+                            opcion1=int(input('Seleccione una opción: ')) #input ha de ser un integer, sino salta a la expeción
+                            if opcion1==1: #ALTA MEDICA
+                                #comprobar_fechas(fecha)
+                                
+                                print('\nInformación de la médica a dar de alta: ')
+                                #pido por pantalla todos los inputs necesarios para dar de alta una médica, en este caso no ponemos criterios de entrada por pantalla
+                                nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
+                                nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
+                                especialidad=input('-> Especialidad: ') #ningún criterio de entrada de especialidad, no se especifica que tenga que estar dentro del dic_especialidades
+                                
+                                id_m=len(dic_medicas.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
+                                password=util.crea_password(nombre,apellido,telf) #creo la contraseña con el metodo de la clase utilidades
+                                med=Medica(id_m,nom,direccion,ciudad,cp,telf,email,especialidad,password) #creo el objeto de la clase médica
+                                hosp.metodo_alta(med,id_m,recep,'med') #llamada al método de hospital
+                                print('Médica dada de alta con éxito')
                             
-                            print('\nInformación de la médica a dar de alta: ')
-                            #pido por pantalla todos los inputs necesarios para dar de alta una médica, en este caso no ponemos criterios de entrada por pantalla
-                            nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
-                            nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
-                            especialidad=input('-> Especialidad: ') #ningún criterio de entrada de especialidad, no se especifica que tenga que estar dentro del dic_especialidades
                             
-                            id_m=len(dic_medicas.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
-                            password=util.crea_password(nombre,apellido,telf) #creo la contraseña con el metodo de la clase utilidades
-                            med=Medica(id_m,nom,direccion,ciudad,cp,telf,email,especialidad,password) #creo el objeto de la clase médica
-                            hosp.metodo_alta(med,id_m,recep,'med') #llamada al método de hospital
-                            print('Médica dada de alta con éxito')
+                            elif opcion1==2: #ALTA PACIENTE
+                                
+                                print('\nInformación de la paciente a dar de alta: ')
+                                nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
+                                nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
+                                
+                                grupos_sanguineos=('AB+','AB-','A+','A-','B+','B-','0+','0-')
+                                while True:
+                                    grupo_sanguineo=input('-> Grupo Sanguíneo: ') #compruebo que el grupo sanguieno introducido por pantalla estea dentro de la tupla
+                                    if grupo_sanguineo in grupos_sanguineos:
+                                        id_p=len(dic_pacientes.keys())+1
+                                        pac=Paciente(id_p,nom,direccion,ciudad,cp,telf,email,grupo_sanguineo)
+                                        hosp.metodo_alta(pac,id_p,recep,'pac')
+                                        print('Paciente dada de alta con éxito')
+                                        break
+                                    else: 
+                                        print('No existe tal grupo sanguíneo')
+                                        
+                            elif opcion1==3: #ALTA ENFERMERA
+                                
+                                print('\nInformación de la enfermera a dar de alta: ')
+                                nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
+                                nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
+                                
+                                categorias=['P:practicante','J:enfermera junior','M:enfermera senior','JE:jefa de enfermeras']
+                                print('Categorías disponibles: ',categorias, '\nSeleccione una categoría: ')
+    
+                                while True:
+                                    categoria=input('-> Categoria: ')
+                                    if categoria in categorias:
+                                        id_e=len(dic_enfermeras.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
+                                        password=util.crea_password(nombre,apellido,telf)
+                                        enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,categoria,password)
+                                        hosp.metodo_alta(enf,id_e,recep,'enf')
+                                        print('Enfermera dada de alta con éxito')
+                                        break
+                                    else:
+                                        print('No existe tal categoría')
+                                        
+                            elif opcion1==4: # ALTA RECEPCIONISTA
+                                
+                                print('\nInformación de la recepcionista a dar de alta: ')
+                                nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
+                                nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
+                                
+                                turnos=['1:matutino','2:verspertino','3:nocturno','4:rotatorio']
+                                print('Turnos disponibles: ',turnos, '\nSeleccione un turno: ')
+    
+                                while True:
+                                    turno=input('-> Turno: ')
+                                    if turno in turnos:
+                                        id_r=len(dic_recepcionistas.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
+                                        password=util.crea_password(nombre,apellido,telf)
+                                        recep=Recepcionista(id_r,nom,direccion,ciudad,cp,telf,email,turno,password)
+                                        hosp.metodo_alta(recep,id_r,recep,'recep')
+                                        print('Recepcionista dada de alta con éxito')
+                                        break
+                                    else:
+                                        print('No existe tal turno')
+                                
+                            elif opcion1==5: #ALTA ESPECIALIDAD
+                                
+                                 print('Información de la especialidad a dar de alta: ')
+                                 codigo=input('-> Código: ').upper()
+                                 if codigo in dic_especialidades.keys():
+                                     print('La especialidad ya existe')
+                                 elif codigo not in dic_especialidades.keys():
+                                    nombre=input('-> Nombre: ').capitalize()
+                                    espe=Especialidad(codigo,nombre)
+                                    hosp.metodo_alta(espe,codigo,recep,'espe')
+                                    print('Especialidad dada de alta con éxito')
+                                     
+                            elif opcion1==6: #ALTA MEDICAMENTO
+                                
+                                print('Información sobre le medicamento a dar de alta: ')
+                                try:
+                                    codigo=int(input('Código: '))
+                                    if codigo in dic_medicamentos.keys():
+                                        print('El medicamento ya existe')
+                                    elif codigo not in dic_medicamentos.keys():
+                                        princ_activ=input('Principio Activo: ')
+                                        marca=input('Marca: ')
+                                        laboratorio=input('Laboratorio: ')
+                                        medicamento=Medicamento(codigo,princ_activ,marca,laboratorio)
+                                        hosp.metodo_alta(medicamento,codigo,recep,'medicamento')
+                                        print('Medicamento dado de alta con éxito')
+                                except ValueError:
+                                    print('El código han de ser números y enteros')
+                                
+                            elif opcion1<1 or opcion1>6: #SALIDA MENU ALTAS
+                                print('La opcion seleccionada no está disponible')
+                                
+                        except ValueError:
+                            print('Opción seleccionada no válida')
                         
-                        
-                        elif opcion1==2: #ALTA PACIENTE
-                            
-                            print('\nInformación de la paciente a dar de alta: ')
-                            nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
-                            nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
-                            
-                            grupos_sanguineos=('AB+','AB-','A+','A-','B+','B-','0+','0-')
-                            while True:
-                                grupo_sanguineo=input('-> Grupo Sanguíneo: ') #compruebo que el grupo sanguieno introducido por pantalla estea dentro de la tupla
-                                if grupo_sanguineo in grupos_sanguineos:
-                                    id_p=len(dic_pacientes.keys())+1
-                                    pac=Paciente(id_p,nom,direccion,ciudad,cp,telf,email,grupo_sanguineo)
-                                    hosp.metodo_alta(pac,id_p,recep,'pac')
-                                    print('Paciente dada de alta con éxito')
-                                    break
-                                else: 
-                                    print('No existe tal grupo sanguíneo')
-                                    
-                        elif opcion1==3: #ALTA ENFERMERA
-                            
-                            print('\nInformación de la enfermera a dar de alta: ')
-                            nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
-                            nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
-                            
-                            categorias=['P:practicante','J:enfermera junior','M:enfermera senior','JE:jefa de enfermeras']
-                            print('Categorías disponibles: ',categorias, '\nSeleccione una categoría: ')
-
-                            while True:
-                                categoria=input('-> Categoria: ')
-                                if categoria in categorias:
-                                    id_e=len(dic_enfermeras.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
-                                    password=util.crea_password(nombre,apellido,telf)
-                                    enf=Enfermera(id_e,nom,direccion,ciudad,cp,telf,email,categoria,password)
-                                    hosp.metodo_alta(enf,id_e,recep,'enf')
-                                    print('Enfermera dada de alta con éxito')
-                                    break
-                                else:
-                                    print('No existe tal categoría')
-                                    
-                        elif opcion1==4: # ALTA RECEPCIONISTA
-                            
-                            print('\nInformación de la recepcionista a dar de alta: ')
-                            nombre,apellido,direccion,ciudad,cp,telf,email=pedir_datos()
-                            nom=nombre+' '+apellido #dado como un unico parametro dentro de los atributos
-                            
-                            turnos=['1:matutino','2:verspertino','3:nocturno','4:rotatorio']
-                            print('Turnos disponibles: ',turnos, '\nSeleccione un turno: ')
-
-                            while True:
-                                turno=input('-> Turno: ')
-                                if turno in turnos:
-                                    id_r=len(dic_recepcionistas.keys())+1 #el identificador será el siguiente a tantas claves del diccionario habrá
-                                    password=util.crea_password(nombre,apellido,telf)
-                                    recep=Recepcionista(id_r,nom,direccion,ciudad,cp,telf,email,turno,password)
-                                    hosp.metodo_alta(recep,id_r,recep,'recep')
-                                    print('Recepcionista dada de alta con éxito')
-                                    break
-                                else:
-                                    print('No existe tal turno')
-                            
-                        elif opcion1==5: #ALTA ESPECIALIDAD
-                            
-                             print('Información de la especialidad a dar de alta: ')
-                             codigo=input('-> Código: ').upper()
-                             if codigo in dic_especialidades.keys():
-                                 print('La especialidad ya existe')
-                             elif codigo not in dic_especialidades.keys():
-                                nombre=input('-> Nombre: ').capitalize()
-                                espe=Especialidad(codigo,nombre)
-                                hosp.metodo_alta(espe,codigo,recep,'espe')
-                                print('Especialidad dada de alta con éxito')
-                                 
-                        elif opcion1==6: #ALTA MEDICAMENTO
-                            
-                            inicio_sesion_recepcionista(util,dic_recepcionistas)
-                            print('Información sobre le medicamento a dar de alta: ')
-                            try:
-                                codigo=int(input('Código: '))
-                                if codigo in dic_medicamentos.keys():
-                                    print('El medicamento ya existe')
-                                elif codigo not in dic_medicamentos.keys():
-                                    princ_activ=input('Principio Activo: ')
-                                    marca=input('Marca: ')
-                                    laboratorio=input('Laboratorio: ')
-                                    medicamento=Medicamento(codigo,princ_activ,marca,laboratorio)
-                                    hosp.metodo_alta(medicamento,codigo,recep,'medicamento')
-                                    print('Medicamento dado de alta con éxito')
-                            except ValueError:
-                                print('El código han de ser números y enteros')
-                            
-                        elif opcion1<1 or opcion1>6: #SALIDA MENU ALTAS
-                            print('La opcion seleccionada no está disponible')
-                            
-                    except ValueError:
-                        print('Opción seleccionada no válida')
-                        
-                print('Ha salido del menú de altas')
+                print('\nHa salido del menú de altas')
                             
                                 
             elif opcion==2: #MENU CONSULTAS
@@ -295,8 +249,8 @@ def main():
                                             if pac==[]: #si la lista esta vacía quiere decir que no ha encontrado ninguna paciente con ese nombre
                                                 print('\nNo figura una paciente con ese nombre')
                                             else: #la lista no está vacía, hay una o más pacientes con el nombre introducido
-                                                for i in range(len(pac)): #recorro la lista, puede que recorra más posiciones de las que necesito, pero solo me imprimirá las que encuentre en la lista
-                                                    print(' -> ',pac[i][i].muestra_datos(),'\n') #me imprime una flechita por cada paciente que haya
+                                                for i in pac: #recorro la lista, puede que recorra más posiciones de las que necesito, pero solo me imprimirá las que encuentre en la lista
+                                                    print(' -> ',i.muestra_datos(),'\n') #me imprime una flechita por cada paciente que haya
                                         else:
                                             print('Debe introducir letras') #cuando lo introducido no son letras y son números o símbolos
                                     elif opcion3==2: #busqueda paciente por identificador
@@ -429,11 +383,22 @@ def main():
                                     print('La opción seleccionada no es válida, por favor, seleccione otra opción')
                             
                         elif opcion2==7: #BUSQUEDA RECETAS  
-                            nom=input('Nombre y apellido del paciente: ')
-                            revmed=hosp.consulta_revmed(nom)
-                            print(revmed)
-#                        elif opcion2==8: #BUSQUEDA DERIVACIONES
-#                            nombre=input('Nombre: ')
+                            nom=input('Nombre y apellido del paciente: ').title()
+                            receta=hosp.consulta_recetas(nom)
+                            print(receta)
+                            #ordenar por diagnostico y especialidades
+                            
+                            #recetas esta dentro de diagnostico, y -> diagnostio tiene espe,obs,enfe,nommed
+                            #for i in revmed: #recorro todas las revisiones que tengo
+                                
+                                
+                            #- fichas tiene una lista con codigo,fecha y diag
+                            
+                            
+                        elif opcion2==8: #BUSQUEDA DERIVACIONES
+                            nombre=input('Nombre: ')
+                            deriva=hosp.consulta_derivacion(nombre)
+                            print(deriva)
                             
                                     
                                     
@@ -459,190 +424,192 @@ def main():
                             print('\nMenú revisiones\n 1) Altas revisiones\n 2) Realiza revisión\n 3) Regresa menú de opciones')
                             opcion4=int(input('Selecciones una opción: '))
                             if opcion4==1: #ALTAS REVISIONES
-                                login(util,dic_enfermeras,'enf')
-                                nom=input("Introduzca el nombre y apellido de la paciente: ").title()
-                                if nom.replace(' ','').isalpha()==True:
-                                    while True:
-                                        try:
-                                            a=0
-                                            fecha,fecha_str=comprobar_fecha()
-                                            for i in dic_pacientes:
-                                                if nom in dic_pacientes[i].regresa_nombre():
-                                                    pac=dic_pacientes[i]      
-                                                    a+=1
-                                            #print ('a')
-                                            if a==0:
-                                                print('No existe tal paciente')
-                                            elif a==1:
-                                                enf.asigna_revision(pac,fecha_str,dic_medicas)
-                                                print (pac.muestra_datos())
-                                                print('\nRevisión asignada')
-                                            elif a!=1: #más de unx paciente con el nombre introducido
-                                                print('Hay',a,'pacientes con el nombre introducido:')
+                                print('Inicio sesión enfermera\n')
+                                
+                                enf=hosp.login('enf') #tendria que ser a cada opcion
+                                if enf == 1:
+                                    print('\nNo se ha iniciado sesión')
+                                elif enf == 2:
+                                    print('\nNo existe tal empleada')
+                                else:    
+                                    nom=input("Introduzca el nombre y apellido de la paciente: ").title()
+                                    if nom.replace(' ','').isalpha()==True:
+                                        while True:
+                                            try:
+                                                a=0
+                                                fecha=comprobar_fecha()
                                                 for i in dic_pacientes:
                                                     if nom in dic_pacientes[i].regresa_nombre():
-                                                        print(dic_pacientes[i].muestra_datos())
-                                                id_p=int(input('Introduzca el número identificador de la paciente a asignar la revisión: '))
-                                                pac=dic_pacientes[id_p]
-                                                enf.asigna_revision(pac,fecha_str,dic_medicas)
-                                                print('Revisión a',pac.regresa_nombre(),'asignada')
-
-                                            break
-                                        
-                                        except ValueError:
-                                            print("\nNo ha introducido una fecha correcta")
+                                                        pac=dic_pacientes[i]      
+                                                        a+=1
+                               
+                                                if a==0:
+                                                    print('No existe tal paciente')
+                                                elif a==1:
+                                                    enf.asigna_revision(pac,fecha,dic_medicas)
+                                                    print('Revisión a',pac.regresa_nombre(),'asignada')
+                                                elif a!=1: #más de unx paciente con el nombre introducido
+                                                    print('Hay',a,'pacientes con el nombre introducido:')
+                                                    for i in dic_pacientes:
+                                                        if nom in dic_pacientes[i].regresa_nombre():
+                                                            print(dic_pacientes[i].muestra_datos())
+                                                    id_p=int(input('Introduzca el número identificador de la paciente a asignar la revisión: '))
+                                                    pac=dic_pacientes[id_p]
+                                                    enf.asigna_revision(pac,fecha,dic_medicas)
+                                                    print('Revisión a',pac.regresa_nombre(),'asignada')
+    
+                                                break
+                                            
+                                            except ValueError:
+                                                print("\nNo ha introducido una fecha correcta")
+                                            
+                                            
                             elif opcion4==2: #REALIZAR REVISION
-                                login(util,dic_medicas,'med')
-                                #nom=input('Nombre paciente: ')
-                                for i in dic_pacientes:
-                                    for a in dic_pacientes[i].revmed:
-                                        if revmed[a].fecha()==datetime.now.date():
-                                            print(dic_pacientes[a].muestra_datos())#mostramos el paciente con visita programada hoy
+                                print('Inicio sesión médica\n')
                                 
+                                med=hosp.login('med') #tendria que ser a cada opcion
+                                if med == 1:
+                                    print('\nNo se ha iniciado sesión')
+                                elif med == 2:
+                                    print('\nNo existe tal empleada')
+                                else:
+                                    #mirar si hay pacientes que tenga una fecha actual para realizar la revision
+                                    hoy = datetime.now().date()
+                                    lista_pacrev=med.pacrev #atendidos
+                                    lista_pacnorev=med.pacnorev #lista no atendidos
+                                    lista_atender_hoy=[]
+                                    for i in lista_pacnorev:
+                                        revision=i.revmed
+                                        for j in revision:
+                                            if j.fecha == hoy: #pasar fecha del formato str a datetime
+                                                lista_atender_hoy.append(i)                                        
+                                    #IMPRIMIR TODA LA INFO DEL PACIENTE                                  
+                                    #mostrar toda la información del paciente, que pasa si tengo varias?
+                                    if len(lista_atender_hoy)==0:
+                                        print('La médica no tiene ninguna paciente con visita programada para hoy')
+                                        break
+                                    elif len(lista_atender_hoy)==1:
+                                        pac=lista_atender_hoy[0]    
+                                    elif len(lista_atender_hoy)!=1:
+                                        print('Hay',len(lista_atender_hoy),'pacientes con el nombre introducido: ')
+                                        for i in lista_atender_hoy:
+                                            print(i.muestra_datos()) #imprimo el id y los datos?
+                                        id_p=int(input('Introduzca el número identificador de la paciente a realizar la revisión: '))
+                                        for i in lista_atender_hoy:
+                                            if id_p==i.id_num:
+                                                pac=i #me crea el objeto paciente con el que haya seleccionado
+                        #FALTARI PONER LA EXEPCION DE QUE NO EXISTE EL ID
+                                                print(pac.muestra_datos())
+                                                print('\nPaciente escogido')
+                                            #escojo un paciente y ahora prodedo a hacerle la revisión
+                                            
+                                            
+                                    for i in pac.revmed:#recorro todas la revisiones del paciente y cojo solo de con fecha de hoy
+                                        if i.fecha==hoy:
+                                            rev=i
+                                    #revision anterior? pero tener en cuanta entre listas co cosas y una lista de objetos
+                                    diag=rev.diag[-1]# cojo el ultimo diagnostico
+                                    if diag.derivado==True: #el paciente ya  esta derivado
+                                                #MOSTRAR INFO DIAG ANTERIOR
+                                        print('\nUltimo diágnostico: ', diag)
+                                            #pedimos a la maedica que rellene ls datos de diagnostico
+                                    elif diag.derivado==False:#si no esta derivado aun
+                                        print('\nDatos a introducir diag: ')
+                                        enf=input('Enfermedad: ')
+                                        obs=input('Observaciones: ')
+                                        diag.observaciones=obs
+                                        diag.enfermedad=enf#completo el diagnostico que tenia
+                                        print (pac.muestra_datos())   
+                                            #preguntamos si quiere expedir receta
+                                        expedir=input('Desea expedir receta? Responda si/no: ').lower()
+                                        while expedir=='si':
+                                            print('Introduza los datos para expedir receta: ')
+                                            codigo=int(input('Codigo del medicamento: '))#ponemos el codigo porque es mas facil de buscar al haber varios con el mismo nombre
+                                            medicamento=hosp.consulta_ident(codigo,'medicamento')
+                                            print (medicamento)
+                                            if medicamento==None: #no ha encontrado ninguna coincidencia
+                                                print('\nNo figura una medicamento con ese código')
+                                            else: #lo ha encontrado
+                                                dosis=input('Dosis del medicamento: ')
+                                                receta=diag.gen_recet(medicamento,dosis)
+                                                expedir=input('Desea expedir otra receta? Responda si/no: ').lower()
+                                
+                                            #preguntamos si quiere derivar al paciente
+                                        derivar=input('Desea derivar a la paciente? Responda si/no: ').lower()
+                                        if derivar=='si':
+                                            print('Intoduzca los datos necesarios para la derivación: ')
+                                                #fecha será la actual, nommed es uno nuevo no?
+                                            nommed=input('Nombre y apellido de la médica a la cual derivamos: ').title()
+                                            while True:
+                                                especialidad=input('Nombre de la especialidad: ')
+                                                if especialidad in dic_especialidades:
+                                                    diag.derivap(nommed,hoy,especialidad)#guardo la derivacio en el diagnotico
+                                                    break
+                                                else:
+                                                    print('No existe tal especialidad')
+                                                    no_derivacion=input('Desea continuar con la derivación? Responda si/no').lower()
+                                                    if no_derivacion=='no':
+                                                        break
+                                                    else:
+                                                        pass
+                                        
+                                        lista_pacnorev.remove(pac)
+                                        lista_pacrev.append(pac)
+                                            
+                                        #NO SE SI FALTARÍA HACERLO CUANDO SOLO TENEMOS UN PACIENTE PARA ATENDER HOY
+                                    
+                                
+#                                else: #si simplemente hay una paciente
+#                                    if hosp.consulta_revmed(nom)==[]:
+#                                        print('\nEsta paciente no tiene revisiones médicas')
+#                                    else:
+#                                        print('\nLas revisiones médicas de la paciente',nom,'son:\n',hosp.consulta_revmed(nom))
+                                            
                             elif opcion4<1 or opcion4>3:#SALIDA
-                                print('la opcion seleccionada no está disponible')
+                               print('la opcion seleccionada no está disponible')
                                 
                             
                         except ValueError:
                             print('La opción seleccionada no es válida, por favor, seleccione otra opción')
 
-
-                        
-#                        elif opcion1==3: #busqueda revisiones
-#                            opcion2=0
-#                            while opcion2!=3:
-#                                try: 
-#                                    print('\nOpciones de búsqueda de revisiones médicas\n 1) Por nombre y apellido de la paciente\n 2) Por número identificador\n 3) Regresar al menú de búsqueda\n')
-#                                    opcion2=int(input('Seleccione una opción: '))
-#                                    
-#                                    if opcion2==1: 
-#                                        nom=input('Introduzca el nombre y apellido de la paciente: ').title()
-#                                        if nom.replace(' ','').isalpha():
-#                                            for i in dic_pacientes:
-#                                                if nom in dic_pacientes[i].regresa_nombre():
-#                                                    pac=dic_pacientes[i] #cada vez que encuentre un paciente en el diccionario con el nombre introducido nos umará uno a b
-#                                                    b+=1
-#                                            if b==0: #si no ha encontrado ningun paciente b será cero
-#                                                print('No existe tal paciente')
-#                                            elif b!=1: #mas de unx paciente con el nombre introducido
-#                                                print('Hay',b,'paceintes con el nombre introducido: ')
-#                                                for i in dic_pacientes:
-#                                                    if nom in dic_pacientes[i].regresa_nombre():
-#                                                        print(dic_pacientes[i].muestra_datos()) #me imprime los datos de las pacientes que haya encontrado
-#                                                id_p=int(input('Introduzca el número identificador de la paciente: ')) #pido por pantalla el número de identificador del paciente que deseemos
-#                                                pac=dic_pacientes[id_p] #me crea el objeto paciente con el que haya seleccionado
-#                                                
-#                                                if hosp.consulta_revmed(nom)==[]: #si la lista de revisiones esta vacía
-#                                                    print('\nEsta paciente no tiene revisiones médicas')
-#                                                else: 
-#                                                    print('\nLas revisiones médicas de la paciente',nom,'son:\n',hosp.consulta_revmed(nom))
-#                                            else: #si simplemente hay una paciente
-#                                                if hosp.consulta_revmed(nom)==[]:
-#                                                    print('\nEsta paciente no tiene revisiones médicas')
-#                                                else:
-#                                                    print('\nLas revisiones médicas de la paciente',nom,'son:\n',hosp.consulta_revmed(nom)) 
-#                                        else:
-#                                            print('Debe introducir letras') #cuando lo introducido no son letras y son números o símbolos
-#                                                    
-#                                    elif opcion2==2:
-#                                        try: 
-#                                            ident=int(input('Introduzca el número identificador de la paciente: ')) #directamente a través del número identificador, solo habrá una paciente con tal número
-#                                            if hosp.irevmed(ident)==[]:
-#                                                print('Esta paciente no tiene revisiones médicas')
-#                                            else:
-#                                                print('Las revisiones médicas de la paciente son:\n',hosp.irevmed(ident))
-#                                        except ValueError: #si el id no es número
-#                                            print('\nDebe introducir un número')
-#                                    elif opcion2<1 or opcion>3:
-#                                        print('\nLa opción seleccionada no está disponible')
-#                                      
-#                                except ValueError: #cuando al introducir la opcion introduzca algo que no sea un entero
-#                                    print('La opción seleccionada no es válida, por favor, seleccione otra opción')
-#                         
-#                        elif opcion1<1 or opcion1>3:
-#                            print('\nLa opción seleccionada no está disponible')
-#                                    
-#                    except ValueError: #cuando al introducir la opcion introduzca algo que no sea un entero
-#                        print('La opción seleccionada no es válida, por favor, seleccione otra opción')
-#                print('\nHa salido del menú de opciones')                  
-#                            
-#                    
-#                        elif opcion2==3: #alta revision medica: asignar revision de enfermera
-#                            a=0
-#                            nom=input("Introduzca el nombre y apellido de la paciente: ").title()
-#                            if nom.replace(' ','').isalpha()==True:
-#                                while True:
-#                                    try:
-#                                        fecha_str=input('\nIntroduzca la fecha de revisión en formato "dd/mm/aaaa": ') #criterio para que la fecha que me introduzca por pantalla mantenga este formato
-#                                        fecha=datetime.strptime(fecha_str,'%d/%m/%Y')
-#                                        for i in dic_pacientes:
-#                                            if nom in dic_pacientes[i].regresa_nombre():
-#                                                pac=dic_pacientes[i]      
-#                                                a+=1
-#                                        if a==0:
-#                                            print('No existe tal paciente')
-#                                        elif a!=1: #más de unx paciente con el nombre introducido
-#                                            print('Hay',a,'pacientes con el nombre introducido:')
-#                                            for i in dic_pacientes:
-#                                                if nom in dic_pacientes[i].regresa_nombre():
-#                                                    print(dic_pacientes[i].muestra_datos())
-#                                            id_p=int(input('Introduzca el número identificador de la paciente a asignar la revisión: '))
-#                                            pac=dic_pacientes[id_p]
-#                                            enf.asigna_revision(pac,fecha_str,dic_medicas)
-#                                            print('Revisión a',pac.regresa_nombre(),'asignada')
-#                                        else:
-#                                            enf.asigna_revision(pac,fecha_str,dic_medicas)
-#                                            print('Revisión asignada')
-#                                        break
-#                                    
-#                                    except ValueError:
-#                                        print("\nNo ha introducido una fecha correcta")
-#            
-#                            else: 
-#                                print('Debe introducir letras')
-#                                
-#                        elif opcion2<1 or opcion2>4:
-#                            print('\nLa opción seleccionada no está disponible')
-#
-#                    except ValueError:
-#                        print('La opción seleccionada no es válida, por favor, seleccione otra opción')
-#                print('\nHa salido del menú de altas') 
-#                
-#            elif opcion==3: 
-#                #LISTADOS: usamos todas las funciones de muestra de hospital
-#                opcion3=0
-#                while opcion3!=6:
-#                    try:
-#                        print('\nMenú Listados \n 1) Mostrar lista médicas\n 2) Mostrar lista pacientes\n 3) Mostrar especialidades\n 4) Mostrar recepcionistas\n 5) Mostrar enfermeras\n 6) Regresar al menú de opciones\n')
-#                        opcion3=int(input('Seleccione una opción: '))
-#                        if opcion3==1: #Mostrar lista médicas
-#                            print('Lista de médicas:\n')
-#                            for i in range(len(hosp.muestra_medicas())): #recorro la lista que devuelve ese metodo de Hospital
-#                                print('-> ',hosp.muestra_medicas()[i]) #imprimo cada elemento de la lista con una flechita
-#                        
-#                        elif opcion3==2: #Mostrar lista pacientes
-#                            print('Lista de pacientes:\n')
-#                            for i in range(len(hosp.muestra_pacientes())):
-#                                print('-> ',hosp.muestra_pacientes()[i])
-#                                    
-#                        elif opcion3==3: #mostrar especialidades
-#                            print('Lista de especialidades:\n')
-#                            for i in range(len(hosp.muestra_especialidades())):
-#                                print('-> ',hosp.muestra_especialidades()[i])
-#                                
-#                        elif opcion3==4: #mostrar recepcionistas
-#                            print('Lista de recepcionistas:\n')
-#                            for i in range(len(hosp.muestra_recepcionistas())):
-#                                print('-> ',hosp.muestra_recepcionistas()[i])
-#                        elif opcion3==5: #mostrar enfermeras
-#                            print('Lista de enfermeras:\n')
-#                            for i in range(len(hosp.muestra_enfermeras())):
-#                                print('-> ',hosp.muestra_enfermeras()[i])
-#                        elif opcion3<1 or opcion3>6:
-#                            print('\nLa opción seleccionada no está disponible')
-#                            
-#                    except ValueError: #en el caso de que haya introducido algo erroneo como opcion
-#                        print('\nLa opción seleccionada no es válida, por favor, seleccione otra opción')
+            elif opcion==4:# menu de archivos
+                opcion5=0
+                while opcion5!=4:
+                    try:
+                        print('\nMenú revisiones\n 1) Medicos\n 2) Historial de un paciente\n 3) Enfermeras\n 4) Recepcionistas\n 5) Regresa menú de opciones')
+                        opcion5=int(input('Selecciones una opción: '))
+                        if opcion5==1: #ARCHIVO MEDICAS
+                            hosp.archivo_medicas()
+                            print('\nSe ha generado el archivo')
+                        elif opcion5==2: #ARCHIVO PACIENTES
+                            nom=input("Introduzca el nombre y apellido de la paciente: ").title()
+                            pac=hosp.consulta_paciente(nom,recep)
+                            if pac==[]:
+                                print('No existe tal paciente')
+                            elif len(pac)==1:
+                                pac=pac[0]#saco el objeto paciente de su lista
+                                #ESTAMOS RENOMBRANDO LA MISMA VARIABLE, NO SE SI TIENE SENTIDO
+                            elif len(pac)!=1: #más de unx paciente con el nombre introducido
+                                print('\nHay',len(pac),'pacientes con el nombre introducido:')
+                                for i in pac:
+                                    print(i.muestra_datos())
+                                id_p=int(input('Introduzca el número identificador de la paciente a la que quieras el historial: '))
+                                pac=dic_pacientes[id_p]
+                            espe=hosp.archivo_pacientes(pac)
+                            print(espe)
+                        elif opcion5==3: #ARCHIVO ENFERMERAS
+                            estad=hosp.archivo_enf()
+                            print('\nSe ha generado el archivo')
+                            print(estad)
+                        elif opcion5==4: #ARCHIVO RECEPCIONISTAS
+                            estad=hosp.archivo_recep()
+                            print('\nSe ha generado el archivo')
+                            print(estad)
+                        elif opcion5<1 or opcion5>5: #SALIDA
+                            print('la opcion seleccionada no está disponible')
+                    except ValueError:
+                        print('La opción seleccionada no es válida, por favor, seleccione otra opción')
+                            
                         
             elif opcion<1 or opcion>4:
                 print('\nLa opción seleccionada no está disponible')

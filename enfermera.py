@@ -6,8 +6,6 @@ Created on Thu Feb 13 16:48:00 2020
 @author: raquel
 """
 from datos import Datos
-from fichas import FichaRevision
-import random
 #relacion con paciente
 
 class Enfermera(Datos):
@@ -40,28 +38,37 @@ class Enfermera(Datos):
         return [self.id_num,nombre,direccion,ciudad,cp,telefono,email,self.categoria]
     
     def asigna_revision(self,p,fecha,dic_medicas):
-        revmed=p.muestra_revisiones()
+        revmed=p.revmed
         #revmed=p.revmed()
-        lista_meds=[]
-        lista_meds2=[]
         if len(revmed)==0: #si la lista esta vacia quiere decir que no hay revisiones para ese paciente
-            for i in dic_medicas:
-                if 'Médico de familia' in dic_medicas[i].muestra_datos():
-                    lista_meds.append(dic_medicas[i].regresa_nombre())
-            med=random.choice(lista_meds)
-            revmed=p.tiene_revision(len(revmed)+1,fecha,med,'Médico de Familia')
+            especialidad='Médico de familia'
         else:
-            ultima_rev=revmed[-1] #revision anterior? pero tener en cuanta entre listas co cosas y una lista de objetos
-            diag=ultima_rev[-1]
-            especialidad=diag[0][0]
-            for i in dic_medicas:
-                if especialidad in dic_medicas[i].muestra_datos():
-                    lista_meds2.append(dic_medicas[i].regresa_nombre())
-            med=lista_meds2[0]
-            revmed=p.tiene_revision(len(revmed)+1,fecha,med,especialidad)
-            #miramos la revision anterior
-            #codigo se forma secuencial, uno mas que el anterior
-            #especialidad igual que la anterior
-            #nombre del medico seraw el primero que aparezca con tal especialidad
-        return revmed 
-    
+            # porque tenemos una lista dentro de otra#la revison es el ultimo elemento
+            ultima_rev=revmed[-1]#sacamos la ultima revision
+            #print(ultima_rev)
+            diagnosticos=ultima_rev.diag# llista con todos los diagnosticos
+           # print(diagnosticos)
+            diag=diagnosticos[-1]#ultimo diagnostico de todos
+            print(diag)
+            if diag.derivado==True:
+                deriva=diag.deriva#accedo al objeto DerivaPaciente 
+                print (deriva)
+                print (deriva[0])
+                especialidad=deriva[0].especialidad  #muestro la especialidad de la derivacion     
+            elif diag.derivado==False:
+                especialidad=diag.especialidad
+                
+        for i in dic_medicas:#recorro el dic de medicos y guardo en una lista los medicos con la especialidad deseada
+            if especialidad in dic_medicas[i].muestra_datos():
+                #print (dic_medicas[i].pacrev())
+                if dic_medicas[i].regresa_numpac()<=10:
+                    med=dic_medicas[i].regresa_nombre()
+                    medico=dic_medicas[i]
+                    break
+                
+        #revmed.tiene_diagnostico(med,especialidad)  #me crea un objeto del tipo diagnostico y me lo añade a la lista diag con todos us atributos)
+        revisio=p.tiene_revision(len(revmed)+1,fecha,especialidad,med)  #codigo se forma secuencial, uno mas que el anterior   
+        medico.tiene_pacnorev(p)
+        return revisio
+ 
+

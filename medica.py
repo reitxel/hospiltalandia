@@ -13,7 +13,7 @@ class Medica(Datos):
         self.set_id_num(_id_num)
         self.set_especialidad(_especialidad)
         self.set_password(_password)
-        self.__pacrev=[]#no atendidos
+        self.__pacrev=[]#ya atendidos
         self.__pacnorev=[]#revision pendiente
     
     def set_id_num(self,_id_num):
@@ -46,4 +46,35 @@ class Medica(Datos):
     
     def muestra_datos(self):
         nombre,direccion,ciudad,cp,telefono,email=self.obtener_datos() #llamada al método de la clase de la que hereda y guardando lo que devulve en sus respectivas variables
-        return [self.id_num,nombre,direccion,ciudad,cp,telefono,self.especialidad] 
+        return [self.id_num,nombre,direccion,ciudad,cp,telefono,self.especialidad,self.muestra_pacrev(),self.muestra_pacnorev()] 
+    
+    def regresa_numpac(self):
+        return len(self.pacnorev)
+    
+    def tiene_pacrev(self,pac):
+        self.pacrev.append(pac)
+        return self.pacrev
+        
+    def tiene_pacnorev(self,pac):
+        self.pacnorev.append(pac)
+        return self.pacnorev
+
+    def muestra_receta(self):
+        llista_receta=[]
+        for i in self.receta:
+            llista_receta.append(i.muestra_datos())
+        return llista_receta
+    def muestra_espe(self):
+        return self.especialidad
+    
+    def muestra_pacrev(self):
+        llista_pacrev=[]
+        for i in self.pacrev:
+            llista_pacrev.append(i.muestra_datos())
+        return llista_pacrev
+    
+    def muestra_pacnorev(self):
+        llista_pacnorev=[]
+        for i in self.pacnorev:
+            llista_pacnorev.append(i.muestra_datos())
+        return llista_pacnorev

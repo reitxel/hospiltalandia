@@ -47,6 +47,6 @@ class Paciente(Datos):
     
     def tiene_revision(self,cod,fecha,espec,med):
         fr=FichaRevision(cod,fecha) #creo objeto de la clase fichas
-        f=fr.tiene_diagnostico(espec,med)
+        fr.tiene_diagnostico(espec,med)
         self.revmed.append(fr) #añado en la lista revmed el objeto con todos sus atributos
         return self.revmed

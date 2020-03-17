@@ -8,6 +8,11 @@ Created on Thu Feb 13 16:52:51 2020
 
 class Medicamento(object):
     def __init__(self,_codigo,_princ_activ,_marca,_laboratorio):
+#        self.codigo=_codigo
+#        self.princ_activ=_princ_activ
+#        self.marca=_marca
+#        self.laboratorio=_laboratorio
+        
         self.set_codigo(_codigo)
         self.set_princ_activ(_princ_activ)
         self.set_marca(_marca)
@@ -36,6 +41,9 @@ class Medicamento(object):
     marca=property(get_marca,set_marca)
     laboratorio=property(get_laboratorio,set_laboratorio)
 
+    def regresa_cod(self):
+        return self.codigo
+    
     def muestra_datos(self):
-        return [self.codigo,self.nombre]
+        return [self.codigo,self.princ_activ,self.marca,self.laboratorio]
 
