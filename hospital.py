@@ -300,19 +300,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     def assignar(self,pac,fecha,enf):#creamos este metodo ara no aplicar un metodo que depende de un dic en graficos
           enf.asigna_revision(pac,fecha,self.medicas)  
     
-    #REALIZA REVISION
-    def rev_hoy(self,med):
-        hoy = datetime.now().date()
-        lista_pacnorev=med.pacnorev #lista no atendidos
-        lista_atender_hoy=[]
-        for i in lista_pacnorev:
-            revision=i.revmed
-            for j in revision:
-                if j.fecha == hoy: #pasar fecha del formato str a datetime
-                    lista_atender_hoy.append(i) 
-        return lista_atender_hoy
-    
-    
+    #REALIZA REVISION   
     def revision_hoy(self,med):
         lista_pacnorev=med.pacnorev #lista no atendidos
         lista_atender_hoy=[]
