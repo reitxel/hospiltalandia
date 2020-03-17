@@ -265,7 +265,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                         for b in range(len(lista_diags)):
                             if a==lista_diags[b].especialidad:#tenint en compre que recorrerem les especialitats i dates en ordre
                                 for g in range(len(lista_recetas[b])):
-                                    lista_final.append(lista_recetas[b][g].muestra_datos())#com que la llista diag i rece
+                                    lista_final.append(lista_recetas[g][0].muestra_datos())#com que la llista diag i rece
         return lista_final# estan ordenades per diagnostics, en ordre de dia i per especialitat del diagnostic en cas d'havar-hi dos en el mateix dia
     
     #método de consulta derivaciones
@@ -293,14 +293,14 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
 #METODOS MENU REVISIÓN   
     #ALTA REVISIONES                                    
     def alta_revisiones(self,fecha,nom,apell,recep):
-                fecha=self.comprobar_fecha(fecha)#comprueba la fecha
-                pac=self.consulta_paciente(nom,apell,recep)#comprueva el faciente i genera el objeto  
-                return pac
+        fecha=self.comprobar_fecha(fecha)#comprueba la fecha
+        pac=self.consulta_paciente(nom,apell,recep)#comprueva el faciente i genera el objeto  
+        return pac
 
     def assignar(self,pac,fecha,enf):#creamos este metodo ara no aplicar un metodo que depende de un dic en graficos
           enf.asigna_revision(pac,fecha,self.medicas)  
     
-    #REALIZA REVISION   
+    #REALIZA REVISION
     def revision_hoy(self,med):
         lista_pacnorev=med.pacnorev #lista no atendidos
         lista_atender_hoy=[]
@@ -325,6 +325,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     
     def expedir_receta(self,diag,codigo,dosis): #preguntamos si quiere expedir receta
         diag.gen_recet(codigo,dosis) #funcion de diagnotico que me genera la receta
+        print(diag.muestra_receta())
 
     def derivar(self,diag,nommed,especialidad,med,pac):    #aqui llega si quiere derivar
         diag.derivap(nommed,datetime.now().date(),especialidad)#guardo la derivacio en el diagnotico

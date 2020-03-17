@@ -1530,10 +1530,7 @@ class Interface():
     
     def receta_aux(self,opcionSI, v_rece):
             v_rece.destroy()
-            return opcionSI.get()
-
-            
-        
+            return opcionSI.get()   
 
     def expedir_receta(self,diag,med,pac):
         v_recet = tk.Toplevel(self.v)#creo la finestra
@@ -1550,8 +1547,16 @@ class Interface():
         spin_cod = ttk.Combobox(v_recet, values=medis)#un desplegable a comobox no cal assignarli variable
         spin_cod.grid(column=1, row=1)
         
+#        etiq_dos = tk.Label(v_recet, text= 'Dosis medicamento [mg/ml]:')
+#        etiq_dos.grid(column=0, row=2)
+#        v_dos = tk.StringVar()
+#        v_dos.set("")
+#        e_dos = tk.Entry(v_recet, textvariable=v_dos)
+#        e_dos.grid(column=1, row=2)
+        
         
         # Codigo
+        #HEMOS INTENTADO HACER UN SLIDER CON LAS DOSIS PERO NO CONSGUIMOS SABER COMO SE GUARDA LA INFORMACION Y POR LO TANTO LO QUITAMOS
         sclBarra=tk.Scale(v_recet,label="Dosis medicamento [mg/ml]",orient='horizontal',width=25,from_=0,to=1000,tickinterval=250,length=200,resolution=1, showvalue='YES')
         sclBarra.grid(column=0, row=2)
 
@@ -1579,6 +1584,7 @@ class Interface():
             messagebox.showinfo(title='Error', message='Algún campo está vació')#COMPROBACIO QUE CAP DELS CAMPS ESTIGUU SOL
         else:
             self.Hospital.expedir_receta(diag,cod.get(),dos.get())
+            print(self.Hospital.expedir_receta(diag,cod.get(),dos.get()))
             messagebox.showinfo(title='Añadida', message='La receta ha sido añadida!')
             v_recet.destroy()
             self.receta()
