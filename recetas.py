@@ -7,7 +7,7 @@ Created on Thu Feb 13 16:51:05 2020
 """
 
 class RecetaMedica():
-    def __init__(self,_dosis,_medicamento):
+    def __init__(self,_medicamento,_dosis):
         self.set_dosis(_dosis)
         self.set_medicamento(_medicamento)
         
@@ -19,12 +19,12 @@ class RecetaMedica():
     def get_dosis(self):
         return self.__dosis
     def get_medicamento(self):
-        self.__medicamento
+        return self.__medicamento
     
     dosis=property(get_dosis,set_dosis)
     medicamento=property(get_medicamento,set_medicamento)
     
     def muestra_datos(self):
-        return [self.dosis,self.medicamento]
+        return [self.medicamento,self.dosis]
     
     
