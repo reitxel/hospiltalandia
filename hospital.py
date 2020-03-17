@@ -265,7 +265,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
                         for b in range(len(lista_diags)):
                             if a==lista_diags[b].especialidad:#tenint en compre que recorrerem les especialitats i dates en ordre
                                 for g in range(len(lista_recetas[b])):
-                                    lista_final.append(lista_recetas[b][0].muestra_datos())#com que la llista diag i rece
+                                    lista_final.append(lista_recetas[b][g].muestra_datos())#com que la llista diag i rece
         return lista_final# estan ordenades per diagnostics, en ordre de dia i per especialitat del diagnostic en cas d'havar-hi dos en el mateix dia
     
     #método de consulta derivaciones
