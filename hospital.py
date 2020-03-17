@@ -63,15 +63,15 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     #MÉTODO DE INICIAR SESIÓN: tanto medicas, enfermeras como recepcionitas
     def login_med(self,nom,contra):#la entrada es el nombre de
         lista_med=[]
-        for i in self.medicas:
-            if nom == self.medicas[i].regresa_nombre():
+        for i in self.medicas:#recorro el diccionario
+            if nom == self.medicas[i].regresa_nombre():#miro si el nombre introducido se encuentra en el dic
                 lista_med.append(self.medicas[i].regresa_nombre())
         if lista_med==[]:
-            return False 
+            return False #si no encuentra medicos con ese nombre
         else:
             for i in lista_med:
                 for j in self.medicas:
-                    if contra==self.medicas[j].password.lower():
+                    if contra==self.medicas[j].password.lower():#compruevo si la contraseña es la misma que la del diccionario
                         med=self.medicas[j]
                         return med#si es troba un recep
             return False#si no es troba la contrasenya
@@ -108,16 +108,16 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
      
     #COMPROBAR FECHA
     def comprobar_fecha(self,fecha_str):            
-        fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()
+        fecha = datetime.strptime(fecha_str,'%d-%m-%Y').date()#paso la data a format datetime perque aixi poder compara difernetes dates
         hoy = datetime.now().date()
-        if str(fecha)>=str(hoy):
-            return fecha
+        if str(fecha)>=str(hoy):#str ja que en entra en int i per poderho comprobar
+            return fecha#si es igual o posterior a la actual
         elif str(fecha) < str(hoy):
-            return False           
+            return False   #si es anterior a la actual         
 
     #para el despliegue de todas las especialidades en tkinter
     def comprobar_especialidad(self):
-        lista_espes=[]
+        lista_espes=[]#si la especialitat es troba en el diccionari es guardara en aquesta llista
         for i in self.especialidades:
             lista_espes.append(self.especialidades[i].regresa_nombre())
         lista_espes.sort(key=str)
@@ -139,10 +139,10 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
   
 #METODOS DE ALTA: medica, paciente, enfermera, recepcionista, especialidad, medicamento
     def alta_pac(self,nom,apell,dire,ciudad,cp,telf,email,sang,recep):
-        nom=(nom+' '+apell).title()
-        id_p=len(self.pacientes.keys())+1
+        nom=(nom+' '+apell).title()#poso el title perque mho guardi amb el mateix format que els que ja tinc en el diccionari
+        id_p=len(self.pacientes.keys())+1#com els id son consecutius la seva llergada sera el numero de pacients que hi ha
         pac=Paciente(id_p,nom.title(),dire,ciudad,cp,telf,email,sang)
-        recep.altas(self.pacientes,pac,id_p)
+        recep.altas(self.pacientes,pac,id_p)#crido el metode de altes de recepcionista
         
     def alta_med(self,nom,apell,dire,ciudad,cp,telf,email,espe,recep,password):
         nom=(nom+' '+apell).title()
@@ -159,11 +159,11 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     def alta_recep(self,nom,apell,dire,ciudad,cp,telf,email,turno,recep,password):
         nom=(nom+' '+apell).title()
         id_r=len(self.recepcionistas.keys())+1
-        rec=Recepcionista(id_r,nom,dire,ciudad,cp,telf,email,password,turno)
+        rec=Recepcionista(id_r,nom,dire,ciudad,cp,telf,email,password,turno)#creo obj
         recep.altas(self.recepcionistas,rec,id_r)
         
     def alta_espe(self,nom,cod,recep):
-        espe=Especialidad(cod,nom)
+        espe=Especialidad(cod,nom)#creo lobjecte
         recep.altas(self.especialidades,espe,cod)
         
     def alta_medi(self,codigo,princ_activ,marca,lab,recep):
@@ -187,11 +187,11 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         for pac in recep.informa(nom,self.pacientes):
             lista.append(pac) #llamada al método informa de la clase recepccionista a través de un objeto de esta clase que toma como parámetro
         return lista
+    
     def consulta_id_pac(self,ids):
-        for i in self.pacientes.keys():
-            if str(i)==str(ids):
+        for i in self.pacientes.keys():#miro si el id introduit esta en les claus del dic
+            if str(i)==str(ids):#en cas que coincideixo retorno el pacient amb aquell identificador, es a dir, el contingut que hi ha el dic cuan la clau es el id
                 pac=self.pacientes[i]
-
                 return pac
     
     def consulta_enf(self,nom,apell):
@@ -219,7 +219,7 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     
     def consulta_medi(self,cod):
         for i in self.medicamentos:
-            if str(cod)==str(i):
+            if str(cod)==str(i):# los paso a str porq me lo compare bien sino puede que cod sea un int y no me lo compare bien
                 return (self.medicamentos[i].muestra_datos())
 
     #método de búsqueda de especialidade por CODIGO
@@ -243,11 +243,11 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         lista_fechas=[]
         lista_revs=[]
         revisiones=pac.revmed
-        for a in revisiones:
+        for a in revisiones:#recorro la revsisones
             diag=a.diag
             lista_fechas.append(a.fecha)
-            for j in diag:
-                if j.receta!=[]:
+            for j in diag:#recorro los diagnosticos
+                if j.receta!=[]:# si la receta no esta vacia
                     lista_recetas.append(j.receta)#encara que cada diag tingui mes dunar recepta, com que tindran les mateixes fechas i espes no 'desmonto' la llista
                     lista_diags.append(j)
                     lista_revs.append(a)
@@ -276,12 +276,12 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         for a in revisiones:
             diag=a.diag
             for j in diag:
-                if j.derivado==True:
+                if j.derivado==True:#si si que ha estat derivat
                     derivacion=j.deriva
-                    for b in derivacion:
-                        lista_deriv.append(b)
-                        lista_fecha.append(b.fecha)                   
-        lista_fecha.sort()
+                    for b in derivacion:#recorro les derives
+                        lista_deriv.append(b)#guardo la deriva en la llista
+                        lista_fecha.append(b.fecha) #guardo la data de la deriva a la llista                  
+        lista_fecha.sort()#ordeno la lista por odren
         fechas_orden=lista_fecha[::-1]#invierto la lista de fechas para tener la mas temprana antes
         lista_ordre=[]
         for i in fechas_orden:
@@ -333,8 +333,10 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
     def actualizar_listas_med(self,med,pac): #cuando se cumple la derivaicon
         lista_pacnorev=med.pacnorev
         lista_pacrev=med.pacrev
-        lista_pacnorev.remove(pac)
-        lista_pacrev.append(pac) 
+        lista_pacnorev.remove(pac)#una vez reliazada de revison borro el paciente de la lista de no revisados
+        lista_pacrev.append(pac) #i lafegeixo a la llista de atendidos
+    
+    
     
 #METODOS DE CREACION DE ARCHIVOS: medicas, pacientes, enfermeras y recepcionistas
     def archivo_medicas(self):
@@ -347,20 +349,20 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
         for i in dic_med_orden:#recorro el dic i vaig 'escribint-lo' al fitxer
             arx_med.write(str(dic_med_orden[i].muestra_datos()))
         arx_med.close
-        espe_totes=[]
+        espe_totes=[]#en esta lista guardo todas las posibles especialidades de los medicos
         for i in self.medicas:
             espe_totes.append(self.medicas[i].muestra_espe())
         estadistiques=[]
         for i in self.especialidades:
             estadistiques.append([i,espe_totes.count(i)])
-        estadistiques.append(['Numero total de medicas es: ',len(self.medicas)])
+        estadistiques.append(['Numero total de medicas es: ',len(self.medicas)])#numero de medicos total que se añade a la lista
         return estadistiques           
       
     def archivo_pacientes(self,pac):#fem un consulta i triem el pacient
         nombre=pac.nombre
         nombre=nombre.replace(' ','')
         paciente=pac.muestra_datos()
-        arx_pac=open(nombre+'.txt','w')
+        arx_pac=open(nombre+'.txt','w')#creo larxivo con el nombre del paciente
         for i in paciente:
             arx_pac.write(str(i))
         arx_pac.close
@@ -421,6 +423,6 @@ class Hospital(Datos): #relación de herencia con Datos por ello la hereda como 
            turn.append( self.recepcionistas[i].turno)
         estadist=[]
         for i in turnos:
-            estadist.append([i,turn.count(i)])
+            estadist.append([i,turn.count(i)])#em conta quants cops apareix cada element de la llista trunos en la llista e turns
         return estadist
             
